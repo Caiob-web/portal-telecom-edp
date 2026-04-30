@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --edp-green: #00A651;
+  --edp-dark: #006E35;
+  --edp-light: #7DC242;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #00A651; border-radius: 3px; }
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  border-radius: 0.75rem;
+  z-index: 0;
+}
+
+@keyframes notif-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 166, 81, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(0, 166, 81, 0); }
+}
+.notif-pulse { animation: notif-pulse 2s infinite; }
+
+.priority-urgent { @apply bg-red-100 text-red-700 border border-red-200; }
+.priority-high   { @apply bg-orange-100 text-orange-700 border border-orange-200; }
+.priority-normal { @apply bg-blue-100 text-blue-700 border border-blue-200; }
+.priority-low    { @apply bg-gray-100 text-gray-700 border border-gray-200; }
+
+.notification-card { transition: all 0.2s ease; }
+.notification-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
