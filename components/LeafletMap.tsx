@@ -3,8 +3,20 @@
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 
-interface Municipality { id: number; name: string; state: string; latitude: number; longitude: number; population?: number }
-interface Props { municipalities: Municipality[]; userMunicipality?: string; fullscreen?: boolean }
+interface Municipality {
+  id: number
+  name: string
+  state: string
+  latitude: number
+  longitude: number
+  population?: number
+}
+
+interface Props {
+  municipalities: Municipality[]
+  userMunicipality?: string
+  fullscreen?: boolean
+}
 
 delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -28,7 +40,11 @@ export default function LeafletMap({ municipalities, userMunicipality }: Props) 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
 
-    const map = L.map(containerRef.current, { center: [-23.05, -45.5], zoom: 9, zoomControl: true })
+    const map = L.map(containerRef.current, {
+      center: [-23.05, -45.5],
+      zoom: 9,
+      zoomControl: true,
+    })
     mapRef.current = map
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -36,9 +52,10 @@ export default function LeafletMap({ municipalities, userMunicipality }: Props) 
       maxZoom: 18,
     }).addTo(map)
 
-    L.rectangle([[-22.4, -46.3], [-23.7, -44.1]], {
-      color: '#00A651', weight: 2, opacity: 0.4, fillOpacity: 0.05, dashArray: '6, 4',
-    }).addTo(map)
+    L.rectangle(
+      [[-22.4, -46.3], [-23.7, -44.1]] as L.LatLngBoundsLiteral,
+      { color: '#00A651', weight: 2, opacity: 0.4, fillOpacity: 0.05, dashArray: '6, 4' }
+    ).addTo(map)
 
     municipalities.forEach(mun => {
       const isUser = mun.name === userMunicipality
@@ -54,34 +71,45 @@ export default function LeafletMap({ municipalities, userMunicipality }: Props) 
         </div>
       `, { maxWidth: 200 })
 
-      marker.bindTooltip(mun.name, { permanent: false, direction: 'top', offset: [0, -8] })
+      marker.bindTooltip(mun.name, {
+        permanent: false,
+        direction: 'top',
+        offset: [0, -8],
+      })
     })
 
     if (municipalities.length > 0) {
-      const latlngs = municipalities.map(m => [m.latitude, m.longitude] as [number, number])
+      const latlngs = municipalities.map(m => [m.latitude, m.longitude] as L.LatLngTuple)
       map.fitBounds(L.latLngBounds(latlngs), { padding: [40, 40] })
     }
 
-    const legend = L.control({ position: 'bottomright' })
-    legend.onAdd = () => {
-      const div = L.DomUtil.create('div')
-      div.style.cssText = 'background:white;padding:10px 14px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-family:system-ui;font-size:12px;'
-      div.innerHTML = `
-        <div style="font-weight:700;margin-bottom:8px;color:#1a1a1a;">Legenda</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-          <div style="width:14px;height:14px;background:#00A651;border:2px solid white;border-radius:50%;"></div>
-          <span style="color:#374151;">Seu município</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div style="width:10px;height:10px;background:#6B7280;border:2px solid white;border-radius:50%;"></div>
-          <span style="color:#374151;">Outros municípios</span>
-        </div>
-      `
-      return div
-    }
-    legend.addTo(map)
+    // ✅ Fix: usar L.Control.extend em vez de L.control()
+    const LegendControl = L.Control.extend({
+      onAdd() {
+        const div = L.DomUtil.create('div')
+        div.style.cssText =
+          'background:white;padding:10px 14px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-family:system-ui;font-size:12px;'
+        div.innerHTML = `
+          <div style="font-weight:700;margin-bottom:8px;color:#1a1a1a;">Legenda</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <div style="width:14px;height:14px;background:#00A651;border:2px solid white;border-radius:50%;"></div>
+            <span style="color:#374151;">Seu município</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:10px;height:10px;background:#6B7280;border:2px solid white;border-radius:50%;"></div>
+            <span style="color:#374151;">Outros municípios</span>
+          </div>
+        `
+        return div
+      },
+    })
 
-    return () => { map.remove(); mapRef.current = null }
+    new LegendControl({ position: 'bottomright' }).addTo(map)
+
+    return () => {
+      map.remove()
+      mapRef.current = null
+    }
   }, [municipalities, userMunicipality])
 
   return <div ref={containerRef} style={{ height: '100%', width: '100%' }} />
