@@ -34,7 +34,7 @@ const createIcon = (color: string, size = 12) =>
   })
 
 export default function LeafletMap({ municipalities, userMunicipality }: Props) {
-  const mapRef = useRef<L.Map | null>(null)
+  const mapRef       = useRef<L.Map | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -59,8 +59,8 @@ export default function LeafletMap({ municipalities, userMunicipality }: Props) 
 
     municipalities.forEach(mun => {
       const isUser = mun.name === userMunicipality
-      const icon = createIcon(isUser ? '#00A651' : '#6B7280', isUser ? 16 : 10)
-      const marker = L.marker([mun.latitude, mun.longitude], { icon }).addTo(map)
+      const icon   = createIcon(isUser ? '#00A651' : '#6B7280', isUser ? 16 : 10)
+      const marker = L.marker([mun.latitude, mun.longitude] as L.LatLngTuple, { icon }).addTo(map)
 
       marker.bindPopup(`
         <div style="font-family:system-ui;padding:4px;min-width:160px;">
@@ -71,11 +71,7 @@ export default function LeafletMap({ municipalities, userMunicipality }: Props) 
         </div>
       `, { maxWidth: 200 })
 
-      marker.bindTooltip(mun.name, {
-        permanent: false,
-        direction: 'top',
-        offset: [0, -8],
-      })
+      marker.bindTooltip(mun.name, { permanent: false, direction: 'top', offset: [0, -8] })
     })
 
     if (municipalities.length > 0) {
@@ -83,34 +79,44 @@ export default function LeafletMap({ municipalities, userMunicipality }: Props) 
       map.fitBounds(L.latLngBounds(latlngs), { padding: [40, 40] })
     }
 
-    // ✅ Fix: usar L.Control.extend em vez de L.control()
-    const LegendControl = L.Control.extend({
-      onAdd() {
-        const div = L.DomUtil.create('div')
-        div.style.cssText =
-          'background:white;padding:10px 14px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-family:system-ui;font-size:12px;'
-        div.innerHTML = `
-          <div style="font-weight:700;margin-bottom:8px;color:#1a1a1a;">Legenda</div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <div style="width:14px;height:14px;background:#00A651;border:2px solid white;border-radius:50%;"></div>
-            <span style="color:#374151;">Seu município</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div style="width:10px;height:10px;background:#6B7280;border:2px solid white;border-radius:50%;"></div>
-            <span style="color:#374151;">Outros municípios</span>
-          </div>
-        `
-        return div
-      },
-    })
-
-    new LegendControl({ position: 'bottomright' }).addTo(map)
-
     return () => {
       map.remove()
       mapRef.current = null
     }
   }, [municipalities, userMunicipality])
 
-  return <div ref={containerRef} style={{ height: '100%', width: '100%' }} />
+  return (
+    <div style={{ position: 'relative', height: '100%', width: '100%' }}>
+      {/* Mapa */}
+      <div ref={containerRef} style={{ height: '100%', width: '100%' }} />
+
+      {/* Legenda — div HTML puro, sem L.control */}
+      <div style={{
+        position: 'absolute',
+        bottom: '24px',
+        right: '10px',
+        zIndex: 1000,
+        background: 'white',
+        padding: '10px 14px',
+        borderRadius: '8px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        fontFamily: 'system-ui',
+        fontSize: '12px',
+        pointerEvents: 'none',
+      }}>
+        <div style={{ fontWeight: 700, marginBottom: '8px', color: '#1a1a1a' }}>Legenda</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+          <div style={{ width: 14, height: 14, background: '#00A651', border: '2px solid white', borderRadius: '50%' }} />
+          <span style={{ color: '#374151' }}>Seu município</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ width: 10, height: 10, background: '#6B7280', border: '2px solid white', borderRadius: '50%' }} />
+          <span style={{ color: '#374151' }}>Outros municípios</span>
+        </div>
+        <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #e5e7eb', color: '#9ca3af', fontSize: '11px' }}>
+          Área de Concessão EDP
+        </div>
+      </div>
+    </div>
+  )
 }
