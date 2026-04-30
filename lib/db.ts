@@ -1,18 +1,14 @@
 import { neon } from '@neondatabase/serverless'
 
-const sql = neon(process.env.DATABASE_URL!)
-
-export default sql
-
-export async function query(text: string, params?: unknown[]) {
-  try {
-    const result = await sql(text, params)
-    return result
-  } catch (error) {
-    console.error('Database query error:', error)
-    throw error
+if (!process.env.DATABASE_URL) {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('DATABASE_URL não configurada. Adicione nas variáveis de ambiente do Vercel.')
   }
 }
+
+const sql = neon(process.env.DATABASE_URL ?? 'postgresql://placeholder:placeholder@localhost/placeholder')
+
+export default sql
 
 export interface User {
   id: number
