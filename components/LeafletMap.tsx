@@ -21,8 +21,8 @@ interface Props {
 delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl:       'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl:     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 })
 
 const createIcon = (color: string, size = 12) =>
@@ -34,7 +34,7 @@ const createIcon = (color: string, size = 12) =>
   })
 
 export default function LeafletMap({ municipalities, userMunicipality }: Props) {
-  const mapRef       = useRef<L.Map | null>(null)
+  const mapRef = useRef<L.Map | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function LeafletMap({ municipalities, userMunicipality }: Props) 
 
     municipalities.forEach(mun => {
       const isUser = mun.name === userMunicipality
-      const icon   = createIcon(isUser ? '#00A651' : '#6B7280', isUser ? 16 : 10)
+      const icon = createIcon(isUser ? '#00A651' : '#6B7280', isUser ? 16 : 10)
       const marker = L.marker([mun.latitude, mun.longitude] as L.LatLngTuple, { icon }).addTo(map)
 
       marker.bindPopup(`
@@ -87,10 +87,7 @@ export default function LeafletMap({ municipalities, userMunicipality }: Props) 
 
   return (
     <div style={{ position: 'relative', height: '100%', width: '100%' }}>
-      {/* Mapa */}
       <div ref={containerRef} style={{ height: '100%', width: '100%' }} />
-
-      {/* Legenda — div HTML puro, sem L.control */}
       <div style={{
         position: 'absolute',
         bottom: '24px',
