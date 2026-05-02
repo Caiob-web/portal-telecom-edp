@@ -8,17 +8,16 @@ import { FileText, MapPin, Clock, ArrowLeft, CheckCircle2, AlertTriangle } from 
 import Link from 'next/link'
 import NotificationResponseForm from '@/components/NotificationResponseForm'
 
-const PRIORITY_CONFIG = {
-  urgent: { label: 'Urgente', class: 'bg-red-100 text-red-700 border-red-200' },
-  high:   { label: 'Alta',    class: 'bg-orange-100 text-orange-700 border-orange-200' },
-  normal: { label: 'Normal',  class: 'bg-blue-100 text-blue-700 border-blue-200' },
-  low:    { label: 'Baixa',   class: 'bg-gray-100 text-gray-700 border-gray-200' },
+const P = {
+  urgent: { label: 'Urgente', cls: 'bg-red-500/20 text-red-400 border-red-500/30', bar: 'bg-red-500' },
+  high:   { label: 'Alta',    cls: 'bg-orange-500/20 text-orange-400 border-orange-500/30', bar: 'bg-orange-500' },
+  normal: { label: 'Normal',  cls: 'bg-blue-500/20 text-blue-400 border-blue-500/30', bar: 'bg-blue-500' },
+  low:    { label: 'Baixa',   cls: 'bg-white/10 text-white/40 border-white/10', bar: 'bg-white/20' },
 }
 
 export default async function NotificationDetailPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) return null
-
   const userId = parseInt(session.user.id)
   const notificationId = parseInt(params.id)
   if (isNaN(notificationId)) notFound()
@@ -29,101 +28,96 @@ export default async function NotificationDetailPage({ params }: { params: { id:
     LEFT JOIN notification_responses nr ON n.id = nr.notification_id AND nr.user_id = ${userId}
     WHERE n.id = ${notificationId} LIMIT 1
   `
-  const notification = rows[0]
-  if (!notification) notFound()
+  const n = rows[0]
+  if (!n) notFound()
 
-  const priority = PRIORITY_CONFIG[notification.priority as keyof typeof PRIORITY_CONFIG] || PRIORITY_CONFIG.normal
-  const isResponded = !!notification.response_id
+  const p = P[n.priority as keyof typeof P] || P.normal
+  const isResponded = !!n.response_id
 
   return (
     <div className="p-4 lg:p-6 max-w-4xl animate-fade-in">
-      <Link href="/dashboard/notifications" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Voltar às notificações
+      <Link href="/dashboard/notifications" className="inline-flex items-center gap-2 text-white/40 hover:text-white text-sm mb-6 transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Voltar
       </Link>
 
       <div className="space-y-6">
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className={`h-2 ${notification.priority === 'urgent' ? 'bg-red-500' : notification.priority === 'high' ? 'bg-orange-500' : notification.priority === 'normal' ? 'bg-blue-500' : 'bg-gray-300'}`} />
+        {/* Header */}
+        <div className="bg-edp-card rounded-xl border border-white/5 overflow-hidden">
+          <div className={`h-1 ${p.bar}`} />
           <div className="p-6">
-            <div className="flex items-center gap-3 flex-wrap mb-2">
-              <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium border ${priority.class}`}>{priority.label}</span>
-              {isResponded ? (
-                <span className="text-xs bg-green-50 text-green-700 border border-green-100 px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3" />Respondida</span>
-              ) : (
-                <span className="text-xs bg-amber-50 text-amber-700 border border-amber-100 px-2.5 py-0.5 rounded-full font-medium">⏳ Aguardando resposta</span>
-              )}
+            <div className="flex items-center gap-3 flex-wrap mb-3">
+              <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium border ${p.cls}`}>{p.label}</span>
+              {isResponded
+                ? <span className="text-xs bg-edp-green/10 text-edp-green border border-edp-green/20 px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1"><CheckCircle2 className="w-3 h-3"/>Respondida</span>
+                : <span className="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full">⏳ Aguardando</span>
+              }
             </div>
-            <h1 className="font-display font-bold text-xl text-gray-800">{notification.title}</h1>
-            <div className="flex items-center gap-6 mt-4 text-sm text-gray-500 flex-wrap">
-              <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{format(new Date(notification.created_at), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}</span>
-              {notification.municipality && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" />{notification.municipality}</span>}
-              {notification.base44_id && <span className="text-xs text-gray-400 font-mono">ID: {notification.base44_id}</span>}
+            <h1 className="font-display font-bold text-xl text-white">{n.title}</h1>
+            <div className="flex items-center gap-6 mt-4 text-sm text-white/40 flex-wrap">
+              <span className="flex items-center gap-1.5"><Clock className="w-4 h-4"/>{format(new Date(n.created_at),"dd 'de' MMMM 'de' yyyy 'às' HH:mm",{locale:ptBR})}</span>
+              {n.municipality && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-edp-green"/>{n.municipality}</span>}
+              {n.base44_id && <span className="text-xs font-mono text-white/20">ID: {n.base44_id}</span>}
             </div>
           </div>
         </div>
 
-        {notification.description && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="font-display font-semibold text-gray-800 mb-3">Descrição</h2>
-            <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">{notification.description}</p>
+        {/* Description */}
+        {n.description && (
+          <div className="bg-edp-card rounded-xl border border-white/5 p-6">
+            <h2 className="font-display font-semibold text-white mb-3 text-sm uppercase tracking-widest text-white/40">Descrição</h2>
+            <p className="text-white/70 whitespace-pre-wrap leading-relaxed">{n.description}</p>
           </div>
         )}
 
-        {notification.pdf_url && (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h2 className="font-display font-semibold text-gray-800 mb-4">Documento Anexo (Base44)</h2>
-            <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
-              <div className="flex items-center gap-3 p-4 border-b border-gray-200">
-                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-red-600" />
+        {/* PDF */}
+        {n.pdf_url && (
+          <div className="bg-edp-card rounded-xl border border-white/5 p-6">
+            <h2 className="font-display font-semibold text-white mb-4 text-sm uppercase tracking-widest text-white/40">Documento Base44</h2>
+            <div className="bg-black/30 rounded-xl border border-white/5 overflow-hidden">
+              <div className="flex items-center gap-3 p-4 border-b border-white/5">
+                <div className="w-10 h-10 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-red-400" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-gray-800 text-sm">Notificação PDF</p>
-                  <p className="text-gray-500 text-xs">Documento oficial EDP</p>
+                  <p className="font-medium text-white text-sm">Notificação PDF</p>
+                  <p className="text-white/30 text-xs">Documento oficial EDP</p>
                 </div>
-                <a href={notification.pdf_url} target="_blank" rel="noopener noreferrer"
-                  className="bg-edp-green text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-edp-dark transition-colors">
+                <a href={n.pdf_url} target="_blank" rel="noopener noreferrer"
+                  className="btn-glow text-white text-sm font-medium px-4 py-2 rounded-xl">
                   Abrir PDF
                 </a>
               </div>
-              <div className="h-[500px]">
-                <iframe src={`${notification.pdf_url}#toolbar=0`} className="w-full h-full" title="PDF da notificação" />
+              <div className="h-[480px]">
+                <iframe src={`${n.pdf_url}#toolbar=0`} className="w-full h-full" title="PDF" />
               </div>
             </div>
           </div>
         )}
 
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="font-display font-semibold text-gray-800">{isResponded ? '✅ Sua Resposta' : '📋 Responder Notificação'}</h2>
-            {!isResponded && <p className="text-gray-500 text-sm mt-1">Anexe uma foto comprovando o atendimento e adicione suas observações.</p>}
+        {/* Response */}
+        <div className="bg-edp-card rounded-xl border border-white/5">
+          <div className="p-6 border-b border-white/5">
+            <h2 className="font-display font-semibold text-white">{isResponded ? '✅ Sua Resposta' : '📋 Responder Notificação'}</h2>
+            {!isResponded && <p className="text-white/40 text-sm mt-1">Anexe uma foto e adicione observações.</p>}
           </div>
           <div className="p-6">
             {isResponded ? (
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-green-600 text-sm">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Respondida em {format(new Date(notification.responded_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</span>
-                </div>
-                {notification.image_url && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 mb-2">Foto enviada:</p>
-                    <img src={notification.image_url} alt="Comprovante" className="rounded-lg border border-gray-200 max-h-64 object-cover" />
-                  </div>
+                <p className="text-edp-green text-sm flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4"/>
+                  Respondida em {format(new Date(n.responded_at),"dd/MM/yyyy 'às' HH:mm",{locale:ptBR})}
+                </p>
+                {n.image_url && <img src={n.image_url} alt="Comprovante" className="rounded-xl border border-white/10 max-h-64 object-cover"/>}
+                {n.observation && (
+                  <div className="bg-black/20 rounded-xl p-4 border border-white/5 text-white/70 text-sm whitespace-pre-wrap">{n.observation}</div>
                 )}
-                {notification.observation && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 mb-2">Observações:</p>
-                    <div className="bg-gray-50 rounded-lg p-4 text-gray-700 text-sm whitespace-pre-wrap border border-gray-100">{notification.observation}</div>
-                  </div>
-                )}
-                <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 text-sm text-amber-700 flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-amber-400 text-sm">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0"/>
                   Notificação já respondida. Entre em contato com a EDP para alterações.
                 </div>
               </div>
             ) : (
-              <NotificationResponseForm notificationId={notification.id} userId={userId} />
+              <NotificationResponseForm notificationId={n.id} userId={userId} />
             )}
           </div>
         </div>
