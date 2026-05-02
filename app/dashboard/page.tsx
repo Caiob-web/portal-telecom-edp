@@ -13,34 +13,25 @@ export default async function DashboardPage() {
 
   const userId = parseInt(session.user.id)
 
-  const [
-    total,
-    pending,
-    responded,
-    urgent,
-    municipalities,
-    recentNotifications,
-  ] = await Promise.all([
-    sql`SELECT COUNT(*) FROM notifications`,
-    sql`SELECT COUNT(*) FROM notifications WHERE status = 'pending'`,
-    sql`SELECT COUNT(*) FROM notification_responses WHERE user_id = ${userId}`,
-    sql`SELECT COUNT(*) FROM notifications WHERE priority = 'urgent' AND status = 'pending'`,
-    sql`SELECT * FROM municipalities WHERE is_active = true ORDER BY name`,
-    sql`
-      SELECT n.*, nr.id as response_id
-      FROM notifications n
-      LEFT JOIN notification_responses nr
-        ON n.id = nr.notification_id
-        AND nr.user_id = ${userId}
-      ORDER BY n.created_at DESC
-      LIMIT 5
-    `,
-  ])
+  const totalResult = await sql`SELECT COUNT(*) FROM notifications`
+  const pendingResult = await sql`SELECT COUNT(*) FROM notifications WHERE status = 'pending'`
+  const respondedResult = await sql`SELECT COUNT(*) FROM notification_responses WHERE user_id = ${userId}`
+  const urgentResult = await sql`SELECT COUNT(*) FROM notifications WHERE priority = 'urgent' AND status = 'pending'`
+  const municipalities = await sql`SELECT * FROM municipalities WHERE is_active = true ORDER BY name`
+  const recentNotifications = await sql`
+    SELECT n.*, nr.id as response_id
+    FROM notifications n
+    LEFT JOIN notification_responses nr
+      ON n.id = nr.notification_id
+      AND nr.user_id = ${userId}
+    ORDER BY n.created_at DESC
+    LIMIT 5
+  `
 
   const stats = [
     {
       label: 'Total Notificações',
-      value: Number(total[0].count),
+      value: Number(totalResult[0].count),
       icon: Bell,
       color: 'text-blue-400',
       bg: 'bg-blue-500/10',
@@ -49,7 +40,7 @@ export default async function DashboardPage() {
     },
     {
       label: 'Pendentes',
-      value: Number(pending[0].count),
+      value: Number(pendingResult[0].count),
       icon: Clock,
       color: 'text-amber-400',
       bg: 'bg-amber-500/10',
@@ -58,7 +49,7 @@ export default async function DashboardPage() {
     },
     {
       label: 'Respondidas por Você',
-      value: Number(responded[0].count),
+      value: Number(respondedResult[0].count),
       icon: CheckCircle2,
       color: 'text-edp-green',
       bg: 'bg-edp-green/10',
@@ -67,7 +58,7 @@ export default async function DashboardPage() {
     },
     {
       label: 'Urgentes',
-      value: Number(urgent[0].count),
+      value: Number(urgentResult[0].count),
       icon: AlertTriangle,
       color: 'text-red-400',
       bg: 'bg-red-500/10',
@@ -79,7 +70,6 @@ export default async function DashboardPage() {
   return (
     <div className="p-4 lg:p-6 space-y-6">
 
-      {/* Greeting + Weather */}
       <div className="animate-slide-up">
         <WeatherGreeting
           userName={session.user.name || ''}
@@ -88,7 +78,6 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger">
         {stats.map(card => (
           <div
@@ -106,10 +95,8 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* Mapa + Notificações Recentes */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-        {/* Mapa */}
         <div className="xl:col-span-2 animate-slide-up">
           <div className="bg-edp-card rounded-xl border border-white/5 overflow-hidden">
             <div className="p-4 border-b border-white/5 flex items-center justify-between">
@@ -135,7 +122,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Notificações Recentes */}
         <div className="bg-edp-card rounded-xl border border-white/5 animate-slide-up">
           <div className="p-4 border-b border-white/5 flex items-center justify-between">
             <h2 className="font-display font-semibold text-white">
@@ -162,9 +148,11 @@ export default async function DashboardPage() {
                   className="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-white/8 group"
                 >
                   <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
-                    n.priority === 'urgent' ? 'bg-red-500' :
-                    n.priority === 'high'   ? 'bg-orange-500' :
-                    'bg-blue-500'
+                    n.priority === 'urgent'
+                      ? 'bg-red-500'
+                      : n.priority === 'high'
+                      ? 'bg-orange-500'
+                      : 'bg-blue-500'
                   }`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-white/80 group-hover:text-white truncate transition-colors">
@@ -172,11 +160,13 @@ export default async function DashboardPage() {
                     </p>
                     {n.response_id ? (
                       <span className="text-xs text-edp-green flex items-center gap-1 mt-0.5">
-                        <CheckCircle2 className="w-3 h-3" /> Respondida
+                        <CheckCircle2 className="w-3 h-3" />
+                        Respondida
                       </span>
                     ) : (
                       <span className="text-xs text-amber-400 flex items-center gap-1 mt-0.5">
-                        <Clock className="w-3 h-3" /> Pendente
+                        <Clock className="w-3 h-3" />
+                        Pendente
                       </span>
                     )}
                   </div>
@@ -187,7 +177,6 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Grid de Municípios */}
       <div className="bg-edp-card rounded-xl border border-white/5 animate-slide-up">
         <div className="p-4 border-b border-white/5">
           <h2 className="font-display font-semibold text-white">
