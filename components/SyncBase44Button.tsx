@@ -13,13 +13,13 @@ export default function SyncBase44Button() {
       const res  = await fetch('/api/notifications', { method: 'PUT' })
       const data = await res.json()
       if (res.ok) {
-        toast.success(`✅ ${data.synced} notificações sincronizadas do Base44`)
+        toast.success(`✅ ${data.synced} notificações sincronizadas`)
         setTimeout(() => window.location.reload(), 1000)
       } else {
         toast.error(`Erro: ${data.error}`)
       }
     } catch {
-      toast.error('Erro ao sincronizar com Base44')
+      toast.error('Erro ao sincronizar')
     } finally {
       setLoading(false)
     }
@@ -27,9 +27,9 @@ export default function SyncBase44Button() {
 
   return (
     <button onClick={handleSync} disabled={loading}
-      className="flex items-center gap-2 text-sm text-gray-500 hover:text-edp-green transition-colors disabled:opacity-50 px-3 py-1.5 rounded-lg hover:bg-gray-50 border border-gray-200">
-      <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-      <span className="hidden sm:inline">{loading ? 'Sincronizando...' : 'Sincronizar Base44'}</span>
+      className="flex items-center gap-2 text-sm text-white/30 hover:text-edp-green transition-colors disabled:opacity-50 px-3 py-1.5 rounded-xl hover:bg-edp-green/5 border border-white/5">
+      <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-edp-green' : ''}`} />
+      <span className="hidden sm:inline">{loading ? 'Sincronizando...' : 'Base44'}</span>
     </button>
   )
 }
