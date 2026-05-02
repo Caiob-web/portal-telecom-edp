@@ -12,7 +12,15 @@ export default async function DashboardPage() {
   if (!session?.user?.id) return null
 
   const userId = parseInt(session.user.id)
-  const [total, pending, responded, urgent, municipalities, recentNotifications] = await Promise.all([
+
+  const [
+    total,
+    pending,
+    responded,
+    urgent,
+    municipalities,
+    recentNotifications,
+  ] = await Promise.all([
     sql`SELECT COUNT(*) FROM notifications`,
     sql`SELECT COUNT(*) FROM notifications WHERE status = 'pending'`,
     sql`SELECT COUNT(*) FROM notification_responses WHERE user_id = ${userId}`,
@@ -21,7 +29,9 @@ export default async function DashboardPage() {
     sql`
       SELECT n.*, nr.id as response_id
       FROM notifications n
-      LEFT JOIN notification_responses nr ON n.id = nr.notification_id AND nr.user_id = ${userId}
+      LEFT JOIN notification_responses nr
+        ON n.id = nr.notification_id
+        AND nr.user_id = ${userId}
       ORDER BY n.created_at DESC
       LIMIT 5
     `,
@@ -88,7 +98,9 @@ export default async function DashboardPage() {
             <div className={`w-10 h-10 ${card.bg} rounded-xl flex items-center justify-center mb-3 border ${card.border}`}>
               <card.icon className={`w-5 h-5 ${card.color}`} />
             </div>
-            <p className={`text-3xl font-display font-bold ${card.color}`}>{card.value}</p>
+            <p className={`text-3xl font-display font-bold ${card.color}`}>
+              {card.value}
+            </p>
             <p className="text-white/40 text-xs mt-1">{card.label}</p>
           </div>
         ))}
@@ -102,8 +114,12 @@ export default async function DashboardPage() {
           <div className="bg-edp-card rounded-xl border border-white/5 overflow-hidden">
             <div className="p-4 border-b border-white/5 flex items-center justify-between">
               <div>
-                <h2 className="font-display font-semibold text-white">Área de Concessão EDP</h2>
-                <p className="text-white/40 text-sm">{municipalities.length} municípios</p>
+                <h2 className="font-display font-semibold text-white">
+                  Área de Concessão EDP
+                </h2>
+                <p className="text-white/40 text-sm">
+                  {municipalities.length} municípios
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-edp-green animate-pulse inline-block" />
@@ -122,7 +138,9 @@ export default async function DashboardPage() {
         {/* Notificações Recentes */}
         <div className="bg-edp-card rounded-xl border border-white/5 animate-slide-up">
           <div className="p-4 border-b border-white/5 flex items-center justify-between">
-            <h2 className="font-display font-semibold text-white">Últimas Notificações</h2>
+            <h2 className="font-display font-semibold text-white">
+              Últimas Notificações
+            </h2>
             
               href="/dashboard/notifications"
               className="text-edp-green text-xs hover:text-edp-light transition-colors"
@@ -145,7 +163,8 @@ export default async function DashboardPage() {
                 >
                   <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
                     n.priority === 'urgent' ? 'bg-red-500' :
-                    n.priority === 'high'   ? 'bg-orange-500' : 'bg-blue-500'
+                    n.priority === 'high'   ? 'bg-orange-500' :
+                    'bg-blue-500'
                   }`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-white/80 group-hover:text-white truncate transition-colors">
@@ -171,7 +190,9 @@ export default async function DashboardPage() {
       {/* Grid de Municípios */}
       <div className="bg-edp-card rounded-xl border border-white/5 animate-slide-up">
         <div className="p-4 border-b border-white/5">
-          <h2 className="font-display font-semibold text-white">28 Municípios — Vale do Paraíba</h2>
+          <h2 className="font-display font-semibold text-white">
+            28 Municípios — Vale do Paraíba
+          </h2>
           <p className="text-white/30 text-xs mt-0.5">Área de Concessão EDP</p>
         </div>
         <div className="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
