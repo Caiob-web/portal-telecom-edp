@@ -1,43 +1,75 @@
 import type { Metadata } from 'next'
-import { Inter, Outfit } from 'next/font/google'
-import './globals.css'
-import { Providers } from './providers'
 import { Toaster } from 'react-hot-toast'
-
-const inter  = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
+import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Portal Telecom | EDP',
-  description: 'Portal de Telecomunicações - EDP Concessão',
+  title: 'Portal Telecom EDP',
+  description:
+    'Portal Telecom EDP - Área de Concessão: Vale do Paraíba, Alto Tietê e Vale Histórico',
+  icons: {
+    icon: [
+      {
+        url: '/favicon.ico',
+        sizes: 'any',
+      },
+      {
+        url: '/favicon.png',
+        type: 'image/png',
+        sizes: '512x512',
+      },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      {
+        url: '/favicon.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+    ],
+  },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#0f172a',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${outfit.variable}`}>
-      <head>
-        <link
-          rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          crossOrigin=""
-        />
-      </head>
-      <body className="font-sans antialiased bg-edp-bg text-white">
-        <Providers>
-          {children}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#131929',
-                color: '#fff',
-                border: '1px solid rgba(0,166,81,0.3)',
-                borderLeft: '4px solid #00A651',
+    <html lang="pt-BR">
+      <body>
+        {children}
+
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#0f172a',
+              color: '#ffffff',
+              borderRadius: '12px',
+              fontSize: '14px',
+              padding: '12px 16px',
+            },
+            success: {
+              iconTheme: {
+                primary: '#00A651',
+                secondary: '#ffffff',
               },
-            }}
-          />
-        </Providers>
+            },
+            error: {
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#ffffff',
+              },
+            },
+          }}
+        />
       </body>
     </html>
   )
