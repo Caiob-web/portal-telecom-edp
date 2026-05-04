@@ -13,20 +13,11 @@ export default function EdpLogo({
   dark = false,
   className = '',
 }: Props) {
-  /*
-    Coloque o logo oficial dentro da pasta public:
-
-    public/edp-logo.svg
-
-    Se estiver usando PNG, troque o src para:
-    /edp-logo.png
-  */
-
   const finalWidth = width || size || 80
 
   return (
     <img
-      src="/edp-logo.svg"
+      src="/edp-logo.png"
       alt="EDP"
       width={finalWidth}
       className={className}
