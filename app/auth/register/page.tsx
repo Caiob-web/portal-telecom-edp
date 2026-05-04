@@ -73,7 +73,12 @@ const MUNICIPALITIES = [
 ]
 
 function normalizeText(value: string) {
-  return value.trim().replace(/\s+/g, ' ').toUpperCase()
+  return value
+    .trim()
+    .replace(/\s+/g, ' ')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
 }
 
 export default function RegisterPage() {
@@ -81,14 +86,18 @@ export default function RegisterPage() {
 
   const [companyName, setCompanyName] = useState('')
   const [companyNotListed, setCompanyNotListed] = useState(false)
+  const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false)
+
   const [cnpj, setCnpj] = useState('')
   const [phone, setPhone] = useState('')
   const [municipality, setMunicipality] = useState('')
   const [regions, setRegions] = useState<string[]>([])
+
   const [responsibleName, setResponsibleName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -102,6 +111,20 @@ export default function RegisterPage() {
     )
   }, [companyName])
 
+  const filteredCompanies = useMemo(() => {
+    const search = normalizeText(companyName)
+
+    if (companyNotListed) return []
+
+    if (!search) {
+      return CONTRACTED_COMPANIES.slice(0, 12)
+    }
+
+    return CONTRACTED_COMPANIES.filter((company) =>
+      normalizeText(company).includes(search)
+    ).slice(0, 15)
+  }, [companyName, companyNotListed])
+
   const toggleRegion = (regionId: string) => {
     setRegions((current) =>
       current.includes(regionId)
@@ -111,8 +134,19 @@ export default function RegisterPage() {
   }
 
   const handleCompanyNotListedChange = () => {
-    setCompanyNotListed((current) => !current)
-    setCompanyName('')
+    setCompanyNotListed((current) => {
+      const nextValue = !current
+
+      setCompanyName('')
+      setCompanyDropdownOpen(false)
+
+      return nextValue
+    })
+  }
+
+  const selectCompany = (company: string) => {
+    setCompanyName(company)
+    setCompanyDropdownOpen(false)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -135,13 +169,13 @@ export default function RegisterPage() {
       return
     }
 
-    if (regions.length === 0) {
-      toast.error('Selecione pelo menos uma região de atuação.')
+    if (!municipality.trim()) {
+      toast.error('Informe o município sede.')
       return
     }
 
-    if (!municipality.trim()) {
-      toast.error('Informe o município sede.')
+    if (regions.length === 0) {
+      toast.error('Selecione pelo menos uma região de atuação.')
       return
     }
 
@@ -213,7 +247,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex bg-white">
       {/* ======================== */}
-      {/* LADO ESQUERDO — Foto */}
+      {/* LADO ESQUERDO — FOTO */}
       {/* ======================== */}
       <div className="hidden lg:flex lg:w-[44%] relative overflow-hidden flex-col">
         <div
@@ -278,7 +312,7 @@ export default function RegisterPage() {
       </div>
 
       {/* ======================== */}
-      {/* LADO DIREITO — Cadastro */}
+      {/* LADO DIREITO — FORMULÁRIO */}
       {/* ======================== */}
       <div className="flex-1 min-h-screen overflow-y-auto bg-white relative">
         <div className="absolute top-0 right-0 w-72 h-72 bg-edp-green/5 rounded-full blur-3xl" />
@@ -320,6 +354,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-5">
+                {/* EMPRESA */}
                 <div>
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
@@ -338,17 +373,33 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="relative">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
 
                     <input
-                      list={companyNotListed ? undefined : 'contracted-companies'}
+                      type="text"
                       value={companyName}
-                      onChange={(e) => setCompanyName(e.target.value)}
+                      onFocus={() => {
+                        if (!companyNotListed) {
+                          setCompanyDropdownOpen(true)
+                        }
+                      }}
+                      onBlur={() => {
+                        setTimeout(() => {
+                          setCompanyDropdownOpen(false)
+                        }, 180)
+                      }}
+                      onChange={(e) => {
+                        setCompanyName(e.target.value)
+
+                        if (!companyNotListed) {
+                          setCompanyDropdownOpen(true)
+                        }
+                      }}
                       required
                       placeholder={
                         companyNotListed
                           ? 'Digite o nome completo da empresa'
-                          : 'Digite ou selecione a empresa contratada'
+                          : 'Pesquise e selecione a empresa contratada'
                       }
                       className="w-full pl-10 pr-10 py-3 bg-white border border-slate-300 rounded-xl text-slate-950 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all shadow-sm"
                     />
@@ -361,17 +412,117 @@ export default function RegisterPage() {
                       <AlertCircle className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-500" />
                     )}
 
-                    <datalist id="contracted-companies">
-                      {CONTRACTED_COMPANIES.map((company) => (
-                        <option key={company} value={company} />
-                      ))}
-                    </datalist>
+                    {!companyNotListed && companyDropdownOpen && (
+                      <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/15">
+                        <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-4 py-3">
+                          <div>
+                            <p className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                              Empresas contratadas
+                            </p>
+                            <p className="text-[11px] text-slate-500">
+                              Pesquise e selecione uma empresa da lista
+                            </p>
+                          </div>
+
+                          <span className="rounded-full bg-edp-green/10 px-2.5 py-1 text-[11px] font-bold text-edp-green">
+                            {filteredCompanies.length}
+                          </span>
+                        </div>
+
+                        {filteredCompanies.length > 0 ? (
+                          <div className="max-h-72 overflow-y-auto p-2">
+                            {filteredCompanies.map((company) => {
+                              const isSelected =
+                                normalizeText(companyName) === normalizeText(company)
+
+                              return (
+                                <button
+                                  key={company}
+                                  type="button"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault()
+                                    selectCompany(company)
+                                  }}
+                                  className={`w-full rounded-xl px-3 py-3 text-left transition-all ${
+                                    isSelected
+                                      ? 'bg-edp-green/10 text-edp-green'
+                                      : 'text-slate-700 hover:bg-slate-50 hover:text-slate-950'
+                                  }`}
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <div
+                                      className={`mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg ${
+                                        isSelected
+                                          ? 'bg-edp-green text-white'
+                                          : 'bg-slate-100 text-slate-500'
+                                      }`}
+                                    >
+                                      <Building2 className="h-3.5 w-3.5" />
+                                    </div>
+
+                                    <div className="min-w-0 flex-1">
+                                      <p className="truncate text-sm font-semibold">
+                                        {company}
+                                      </p>
+                                      <p className="text-xs text-slate-400">
+                                        Empresa com contrato cadastrado
+                                      </p>
+                                    </div>
+
+                                    {isSelected && (
+                                      <CheckCircle2 className="mt-1 h-4 w-4 flex-shrink-0 text-edp-green" />
+                                    )}
+                                  </div>
+                                </button>
+                              )
+                            })}
+                          </div>
+                        ) : (
+                          <div className="p-4">
+                            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                              <div className="flex gap-3">
+                                <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
+
+                                <div>
+                                  <p className="text-sm font-bold text-amber-900">
+                                    Empresa não encontrada
+                                  </p>
+
+                                  <p className="mt-1 text-xs leading-relaxed text-amber-800">
+                                    Caso a empresa não esteja na lista, marque
+                                    a opção “Empresa não está na lista” e digite
+                                    o nome completo para cadastrar uma nova
+                                    solicitação no Neon.
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="border-t border-slate-100 bg-slate-50 px-4 py-3">
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault()
+                              setCompanyNotListed(true)
+                              setCompanyDropdownOpen(false)
+                              setCompanyName('')
+                            }}
+                            className="inline-flex items-center gap-2 text-xs font-semibold text-edp-green hover:text-green-700 transition-colors"
+                          >
+                            <ArrowRight className="h-3.5 w-3.5" />
+                            Minha empresa não está na lista
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {!companyNotListed ? (
                     <p className="text-xs text-slate-500 mt-2">
-                      Se a empresa já possuir contrato, selecione o nome na
-                      lista cadastrada.
+                      Pesquise pelo nome e selecione uma empresa contratada
+                      cadastrada.
                     </p>
                   ) : (
                     <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
@@ -383,6 +534,7 @@ export default function RegisterPage() {
                   )}
                 </div>
 
+                {/* CNPJ E TELEFONE */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
@@ -421,6 +573,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
+                {/* MUNICÍPIO */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                     Município sede *
@@ -446,6 +599,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
+                {/* REGIÕES */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                     Regiões de atuação *
@@ -513,6 +667,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-5">
+                {/* NOME */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                     Nome completo *
@@ -532,6 +687,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
+                {/* EMAIL */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                     E-mail *
@@ -551,6 +707,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
+                {/* SENHAS */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
@@ -573,7 +730,9 @@ export default function RegisterPage() {
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                        aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                        aria-label={
+                          showPassword ? 'Ocultar senha' : 'Mostrar senha'
+                        }
                       >
                         {showPassword ? (
                           <EyeOff className="w-4 h-4" />
@@ -606,6 +765,7 @@ export default function RegisterPage() {
               </div>
             </section>
 
+            {/* BOTÃO */}
             <button
               type="submit"
               disabled={loading}
