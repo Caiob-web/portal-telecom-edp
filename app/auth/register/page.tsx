@@ -1,185 +1,274 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
-  Eye, EyeOff, Building2, Mail, Phone,
-  Lock, MapPin, User, ArrowLeft, ArrowRight, Check
+  ArrowLeft,
+  ArrowRight,
+  Building2,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  MapPin,
+  Phone,
+  Search,
+  User,
+  AlertCircle,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import EdpLogo from '@/components/EdpLogo'
+import { CONTRACTED_COMPANIES } from '@/lib/contractedCompanies'
+
+const REGIONS = [
+  {
+    id: 'vale-do-paraiba',
+    title: 'Vale do Paraíba',
+    description: 'São José dos Campos, Taubaté, Jacareí e região',
+  },
+  {
+    id: 'alto-tiete',
+    title: 'Alto Tietê',
+    description: 'Mogi das Cruzes, Suzano, Guarulhos e região',
+  },
+  {
+    id: 'vale-historico',
+    title: 'Vale Histórico',
+    description: 'Lorena, Cruzeiro, Guaratinguetá e região',
+  },
+]
 
 const MUNICIPALITIES = [
   'Aparecida',
-  'Biritiba Mirim',
+  'Areias',
+  'Bananal',
   'Caçapava',
   'Cachoeira Paulista',
   'Canas',
-  'Caraguatatuba',
   'Cruzeiro',
-  'Ferraz de Vasconcelos',
-  'Guararema',
   'Guaratinguetá',
   'Guarulhos',
   'Itaquaquecetuba',
   'Jacareí',
   'Jambeiro',
+  'Lavrinhas',
   'Lorena',
   'Mogi das Cruzes',
   'Monteiro Lobato',
+  'Paraibuna',
   'Pindamonhangaba',
   'Poá',
   'Potim',
+  'Queluz',
   'Roseira',
-  'Salesópolis',
   'Santa Branca',
+  'São José do Barreiro',
   'São José dos Campos',
-  'São Sebastião',
+  'Silveiras',
   'Suzano',
   'Taubaté',
   'Tremembé',
 ]
 
-const REGIONS = [
-  { id: 'vale-paraiba',  label: 'Vale do Paraíba',  desc: 'São José dos Campos, Taubaté, Jacareí e região' },
-  { id: 'alto-tiete',   label: 'Alto Tietê',        desc: 'Mogi das Cruzes, Suzano, Guarulhos e região' },
-  { id: 'vale-historico',label: 'Vale Histórico',   desc: 'Lorena, Cruzeiro, Guaratinguetá e região' },
-]
+function normalizeText(value: string) {
+  return value.trim().replace(/\s+/g, ' ').toUpperCase()
+}
 
 export default function RegisterPage() {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([])
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    company_name: '',
-    cnpj: '',
-    phone: '',
-    municipality: '',
-    password: '',
-    confirmPassword: '',
-  })
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
-  }
+  const [companyName, setCompanyName] = useState('')
+  const [companyNotListed, setCompanyNotListed] = useState(false)
+  const [cnpj, setCnpj] = useState('')
+  const [phone, setPhone] = useState('')
+  const [municipality, setMunicipality] = useState('')
+  const [regions, setRegions] = useState<string[]>([])
+  const [responsibleName, setResponsibleName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const selectedCompanyIsValid = useMemo(() => {
+    const typed = normalizeText(companyName)
+
+    if (!typed) return false
+
+    return CONTRACTED_COMPANIES.some(
+      (company) => normalizeText(company) === typed
+    )
+  }, [companyName])
 
   const toggleRegion = (regionId: string) => {
-    setSelectedRegions(prev =>
-      prev.includes(regionId)
-        ? prev.filter(r => r !== regionId)
-        : [...prev, regionId]
+    setRegions((current) =>
+      current.includes(regionId)
+        ? current.filter((item) => item !== regionId)
+        : [...current, regionId]
     )
   }
 
-  const formatCNPJ = (v: string) =>
-    v.replace(/\D/g, '')
-      .replace(/^(\d{2})(\d)/, '$1.$2')
-      .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-      .replace(/\.(\d{3})(\d)/, '.$1/$2')
-      .replace(/(\d{4})(\d)/, '$1-$2')
-      .slice(0, 18)
-
-  const formatPhone = (v: string) =>
-    v.replace(/\D/g, '')
-      .replace(/^(\d{2})(\d)/, '($1) $2')
-      .replace(/(\d{5})(\d)/, '$1-$2')
-      .slice(0, 15)
+  const handleCompanyNotListedChange = () => {
+    setCompanyNotListed((current) => !current)
+    setCompanyName('')
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (form.password !== form.confirmPassword) {
-      return toast.error('As senhas não conferem')
+    const cleanCompanyName = companyName.trim()
+
+    if (!cleanCompanyName) {
+      toast.error('Informe o nome da empresa.')
+      return
     }
-    if (form.password.length < 8) {
-      return toast.error('Senha mínima: 8 caracteres')
+
+    if (!companyNotListed && !selectedCompanyIsValid) {
+      toast.error('Selecione uma empresa contratada válida da lista.')
+      return
     }
-    if (selectedRegions.length === 0) {
-      return toast.error('Selecione ao menos uma região de atuação')
+
+    if (companyNotListed && cleanCompanyName.length < 3) {
+      toast.error('Digite o nome completo da empresa.')
+      return
+    }
+
+    if (regions.length === 0) {
+      toast.error('Selecione pelo menos uma região de atuação.')
+      return
+    }
+
+    if (!municipality.trim()) {
+      toast.error('Informe o município sede.')
+      return
+    }
+
+    if (!responsibleName.trim()) {
+      toast.error('Informe o nome do responsável.')
+      return
+    }
+
+    if (!email.trim()) {
+      toast.error('Informe o e-mail do responsável.')
+      return
+    }
+
+    if (password.length < 8) {
+      toast.error('A senha precisa ter no mínimo 8 caracteres.')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      toast.error('As senhas não conferem.')
+      return
     }
 
     setLoading(true)
+
     try {
-      const res = await fetch('/api/register', {
+      const payload = {
+        companyName: cleanCompanyName,
+        company_name: cleanCompanyName,
+        razao_social: cleanCompanyName,
+        companyNotListed,
+        cnpj: cnpj.trim(),
+        phone: phone.trim(),
+        municipality: municipality.trim(),
+        regions,
+        region: regions.join(', '),
+        responsibleName: responsibleName.trim(),
+        name: responsibleName.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+      }
+
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name:          form.name,
-          email:         form.email,
-          company_name:  form.company_name,
-          cnpj:          form.cnpj,
-          phone:         form.phone,
-          municipality:  form.municipality,
-          region:        selectedRegions.join(', '),
-          password:      form.password,
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
-      toast.success('Cadastro realizado! Faça login.')
+
+      const data = await response.json().catch(() => null)
+
+      if (!response.ok) {
+        throw new Error(data?.error || 'Não foi possível finalizar o cadastro.')
+      }
+
+      toast.success('Cadastro realizado com sucesso!')
       router.push('/auth/login')
-    } catch (err: any) {
-      toast.error(err.message || 'Erro ao cadastrar')
+      router.refresh()
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao realizar cadastro.'
+      )
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex">
-
-      {/* ============================== */}
-      {/* LADO ESQUERDO — Foto pôr do sol */}
-      {/* ============================== */}
-      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden flex-col">
-        {/* Foto do pôr do sol com postes */}
+    <div className="min-h-screen flex bg-white">
+      {/* ======================== */}
+      {/* LADO ESQUERDO — Foto */}
+      {/* ======================== */}
+      <div className="hidden lg:flex lg:w-[44%] relative overflow-hidden flex-col">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/poste-sunset.jpg')" }}
         />
-        {/* Overlay escuro */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
-        {/* Conteúdo */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/35 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
+
         <div className="relative z-10 flex flex-col h-full p-10">
           <EdpLogo size={44} showText={true} dark={false} />
 
-          <div className="flex-1 flex flex-col justify-end pb-10 animate-slide-up">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 rounded-full px-4 py-1.5 mb-6 w-fit">
-              <div className="w-2 h-2 bg-edp-green rounded-full animate-pulse" />
-              <span className="text-white/80 text-xs font-semibold uppercase tracking-widest">
+          <div className="flex-1 flex flex-col justify-end pb-12">
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-6 backdrop-blur-md w-fit">
+              <span className="w-2 h-2 bg-edp-green rounded-full animate-pulse" />
+              <span className="text-white text-xs font-semibold uppercase tracking-widest">
                 Cadastro de Empresa
               </span>
             </div>
 
-            <h1 className="font-display font-bold text-4xl text-white leading-tight mb-4">
-              Inclua sua empresa no sistema de Notificações da<br />
-              <span className="text-transparent bg-clip-text"
-                style={{ backgroundImage: 'linear-gradient(90deg, #00A651, #7DC242)' }}>
-                rede EDP-SP
+            <h1 className="font-display font-bold text-5xl text-white leading-tight mb-4">
+              Faça parte da<br />
+              <span
+                className="text-transparent bg-clip-text"
+                style={{
+                  backgroundImage: 'linear-gradient(90deg, #00A651, #7DC242)',
+                }}
+              >
+                rede EDP
               </span>
             </h1>
 
-            <p className="text-white/60 text-base max-w-xs leading-relaxed">
-              Registre sua empresa e acesse notificações, alertas e informações da área de concessão EDP em tempo real.
+            <p className="text-white/80 text-lg max-w-md leading-relaxed mb-8">
+              Cadastre sua empresa e acompanhe notificações, retornos e
+              informações da área de concessão em tempo real.
             </p>
 
-            <div className="mt-8 space-y-3">
-              {REGIONS.map(r => (
-                <div key={r.id} className="flex items-start gap-3 bg-white/8 backdrop-blur border border-white/10 rounded-xl p-3">
-                  <div className="w-8 h-8 bg-edp-green/20 border border-edp-green/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <MapPin className="w-4 h-4 text-edp-green" />
+            <div className="space-y-3 max-w-xl">
+              {REGIONS.map((region) => (
+                <div
+                  key={region.id}
+                  className="flex items-center gap-3 rounded-xl border border-white/15 bg-black/25 backdrop-blur-md p-4"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-edp-green/15 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-edp-green" />
                   </div>
+
                   <div>
-                    <p className="text-white text-sm font-semibold">{r.label}</p>
-                    <p className="text-white/40 text-xs">{r.desc}</p>
+                    <p className="text-white font-semibold text-sm">
+                      {region.title}
+                    </p>
+                    <p className="text-white/70 text-xs">
+                      {region.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -188,159 +277,220 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* ============================== */}
-      {/* LADO DIREITO — Formulário       */}
-      {/* ============================== */}
-      <div className="flex-1 overflow-y-auto bg-white">
-        <div className="min-h-full flex flex-col justify-center py-10 px-6 lg:px-10 max-w-xl mx-auto">
+      {/* ======================== */}
+      {/* LADO DIREITO — Cadastro */}
+      {/* ======================== */}
+      <div className="flex-1 min-h-screen overflow-y-auto bg-white relative">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-edp-green/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-56 h-56 bg-blue-500/5 rounded-full blur-3xl" />
 
-          {/* Mobile logo */}
-          <div className="lg:hidden flex justify-center mb-8">
-            <EdpLogo size={40} showText={true} dark={true} />
-          </div>
-
-          {/* Voltar */}
+        <main className="relative w-full max-w-xl mx-auto px-6 sm:px-10 py-10">
           <Link
             href="/auth/login"
-            className="hidden lg:inline-flex items-center gap-2 text-gray-400 hover:text-gray-600 text-sm transition-colors mb-8 w-fit"
+            className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 text-sm font-medium mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Voltar para o login
           </Link>
 
-          {/* Header */}
           <div className="mb-8">
-            <div className="hidden lg:block mb-6">
-              <EdpLogo size={36} showText={true} dark={true} />
-            </div>
-            <h2 className="font-display font-bold text-2xl text-gray-900">
+            <EdpLogo size={38} showText={true} dark={true} className="mb-6" />
+
+            <h1 className="font-display font-bold text-3xl text-slate-950">
               Cadastro de Empresa
-            </h2>
-            <p className="text-gray-400 text-sm mt-1">
-              Registre sua empresa para acessar o Portal Telecom EDP
+            </h1>
+
+            <p className="text-slate-600 text-sm mt-1">
+              Selecione sua empresa ou cadastre uma nova solicitação de acesso
+              ao Portal Telecom EDP.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-7">
-
-            {/* ---- DADOS DA EMPRESA ---- */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 bg-edp-green rounded-full flex items-center justify-center">
-                  <Building2 className="w-3.5 h-3.5 text-white" />
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* DADOS DA EMPRESA */}
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-8 h-8 rounded-full bg-edp-green/10 flex items-center justify-center">
+                  <Building2 className="w-4 h-4 text-edp-green" />
                 </div>
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+
+                <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
                   Dados da Empresa
-                </h3>
+                </h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Razão Social */}
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                    Razão Social *
-                  </label>
-                  <div className="relative">
-                    <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
-                    <input
-                      name="company_name"
-                      value={form.company_name}
-                      onChange={handleChange}
-                      required
-                      placeholder="Telecom Exemplo Ltda"
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* CNPJ */}
+              <div className="space-y-5">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                    CNPJ
-                  </label>
-                  <input
-                    value={form.cnpj}
-                    onChange={e => setForm(p => ({ ...p, cnpj: formatCNPJ(e.target.value) }))}
-                    placeholder="00.000.000/0001-00"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all"
-                  />
-                </div>
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                      Empresa *
+                    </label>
 
-                {/* Telefone */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                    Telefone
-                  </label>
-                  <div className="relative">
-                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
-                    <input
-                      value={form.phone}
-                      onChange={e => setForm(p => ({ ...p, phone: formatPhone(e.target.value) }))}
-                      placeholder="(12) 99999-9999"
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all"
-                    />
+                    <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={companyNotListed}
+                        onChange={handleCompanyNotListedChange}
+                        className="w-4 h-4 rounded border-slate-300 text-edp-green focus:ring-edp-green"
+                      />
+                      Empresa não está na lista
+                    </label>
                   </div>
-                </div>
 
-                {/* Município sede */}
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                    Município Sede *
-                  </label>
                   <div className="relative">
-                    <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 z-10" />
-                    <select
-                      name="municipality"
-                      value={form.municipality}
-                      onChange={handleChange}
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+
+                    <input
+                      list={companyNotListed ? undefined : 'contracted-companies'}
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
                       required
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all appearance-none"
-                    >
-                      <option value="">Selecione o município</option>
-                      {MUNICIPALITIES.map(m => (
-                        <option key={m} value={m}>{m}</option>
+                      placeholder={
+                        companyNotListed
+                          ? 'Digite o nome completo da empresa'
+                          : 'Digite ou selecione a empresa contratada'
+                      }
+                      className="w-full pl-10 pr-10 py-3 bg-white border border-slate-300 rounded-xl text-slate-950 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all shadow-sm"
+                    />
+
+                    {!companyNotListed && selectedCompanyIsValid && (
+                      <CheckCircle2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-edp-green" />
+                    )}
+
+                    {companyNotListed && companyName.trim().length >= 3 && (
+                      <AlertCircle className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-500" />
+                    )}
+
+                    <datalist id="contracted-companies">
+                      {CONTRACTED_COMPANIES.map((company) => (
+                        <option key={company} value={company} />
                       ))}
-                    </select>
+                    </datalist>
+                  </div>
+
+                  {!companyNotListed ? (
+                    <p className="text-xs text-slate-500 mt-2">
+                      Se a empresa já possuir contrato, selecione o nome na
+                      lista cadastrada.
+                    </p>
+                  ) : (
+                    <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
+                      <p className="text-xs text-amber-800 leading-relaxed">
+                        A empresa será cadastrada como nova solicitação no Neon.
+                        Depois, poderá ser conferida pela administração.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                      CNPJ
+                    </label>
+
+                    <div className="relative">
+                      <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+
+                      <input
+                        type="text"
+                        value={cnpj}
+                        onChange={(e) => setCnpj(e.target.value)}
+                        placeholder="00.000.000/0001-00"
+                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-950 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all shadow-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                      Telefone
+                    </label>
+
+                    <div className="relative">
+                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="(12) 99999-9999"
+                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-950 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all shadow-sm"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Regiões de atuação */}
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Regiões de Atuação *{' '}
-                    <span className="text-gray-300 font-normal normal-case">(selecione uma ou mais)</span>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                    Município sede *
                   </label>
+
+                  <div className="relative">
+                    <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+
+                    <input
+                      list="municipalities"
+                      value={municipality}
+                      onChange={(e) => setMunicipality(e.target.value)}
+                      required
+                      placeholder="Selecione ou digite o município"
+                      className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-950 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all shadow-sm"
+                    />
+
+                    <datalist id="municipalities">
+                      {MUNICIPALITIES.map((city) => (
+                        <option key={city} value={city} />
+                      ))}
+                    </datalist>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                    Regiões de atuação *
+                    <span className="ml-1 normal-case tracking-normal font-medium text-slate-500">
+                      selecione uma ou mais
+                    </span>
+                  </label>
+
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {REGIONS.map(region => {
-                      const isSelected = selectedRegions.includes(region.id)
+                    {REGIONS.map((region) => {
+                      const selected = regions.includes(region.id)
+
                       return (
                         <button
                           key={region.id}
                           type="button"
                           onClick={() => toggleRegion(region.id)}
-                          className={`relative flex items-start gap-3 p-3.5 rounded-xl border-2 text-left transition-all ${
-                            isSelected
-                              ? 'border-edp-green bg-edp-green/5'
-                              : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                          className={`text-left rounded-xl border p-4 transition-all ${
+                            selected
+                              ? 'border-edp-green bg-edp-green/10 shadow-sm'
+                              : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                           }`}
                         >
-                          {/* Checkbox visual */}
-                          <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
-                            isSelected
-                              ? 'bg-edp-green border-edp-green'
-                              : 'border-gray-300 bg-white'
-                          }`}>
-                            {isSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
-                          </div>
-                          <div>
-                            <p className={`text-sm font-semibold transition-colors ${
-                              isSelected ? 'text-edp-dark' : 'text-gray-700'
-                            }`}>
-                              {region.label}
-                            </p>
-                            <p className="text-xs text-gray-400 mt-0.5 leading-tight">
-                              {region.desc}
-                            </p>
+                          <div className="flex items-start gap-3">
+                            <span
+                              className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center flex-shrink-0 ${
+                                selected
+                                  ? 'border-edp-green bg-edp-green text-white'
+                                  : 'border-slate-300 bg-white'
+                              }`}
+                            >
+                              {selected && (
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                              )}
+                            </span>
+
+                            <span>
+                              <span className="block text-sm font-bold text-slate-800 leading-snug">
+                                {region.title}
+                              </span>
+
+                              <span className="block text-xs text-slate-500 leading-snug mt-1">
+                                {region.description}
+                              </span>
+                            </span>
                           </div>
                         </button>
                       )
@@ -348,149 +498,136 @@ export default function RegisterPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Divisor */}
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-gray-100" />
-              <span className="text-gray-300 text-xs">dados do responsável</span>
-              <div className="flex-1 h-px bg-gray-100" />
-            </div>
-
-            {/* ---- DADOS DO RESPONSÁVEL ---- */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 bg-edp-green rounded-full flex items-center justify-center">
-                  <User className="w-3.5 h-3.5 text-white" />
+            {/* DADOS DO RESPONSÁVEL */}
+            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-8 h-8 rounded-full bg-edp-green/10 flex items-center justify-center">
+                  <User className="w-4 h-4 text-edp-green" />
                 </div>
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+
+                <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
                   Dados do Responsável
-                </h3>
+                </h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Nome */}
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                    Nome Completo *
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                    Nome completo *
                   </label>
+
                   <div className="relative">
-                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+
                     <input
-                      name="name"
-                      value={form.name}
-                      onChange={handleChange}
+                      type="text"
+                      value={responsibleName}
+                      onChange={(e) => setResponsibleName(e.target.value)}
                       required
                       placeholder="João da Silva"
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all"
+                      className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-950 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all shadow-sm"
                     />
                   </div>
                 </div>
 
-                {/* E-mail */}
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                     E-mail *
                   </label>
+
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+
                     <input
-                      name="email"
                       type="email"
-                      value={form.email}
-                      onChange={handleChange}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                       placeholder="responsavel@empresa.com.br"
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all"
+                      className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-950 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all shadow-sm"
                     />
                   </div>
                 </div>
 
-                {/* Senha */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                    Senha *
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
-                    <input
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={form.password}
-                      onChange={handleChange}
-                      required
-                      placeholder="Mínimo 8 caracteres"
-                      className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                      Senha *
+                    </label>
 
-                {/* Confirmar Senha */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                    Confirmar Senha *
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
-                    <input
-                      name="confirmPassword"
-                      type={showPassword ? 'text' : 'password'}
-                      value={form.confirmPassword}
-                      onChange={handleChange}
-                      required
-                      placeholder="Repita a senha"
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all"
-                    />
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        placeholder="Mínimo 8 caracteres"
+                        className="w-full pl-10 pr-11 py-3 bg-white border border-slate-300 rounded-xl text-slate-950 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all shadow-sm"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                        aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                      Confirmar senha *
+                    </label>
+
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        placeholder="Repita a senha"
+                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-950 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-edp-green/20 focus:border-edp-green transition-all shadow-sm"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Botão submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 btn-glow"
+              className="w-full text-white font-semibold py-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 btn-glow shadow-lg shadow-edp-green/20"
             >
-              {loading ? (
-                <>
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Cadastrando...
-                </>
-              ) : (
-                <>
-                  Finalizar Cadastro
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
+              {loading ? 'Finalizando cadastro...' : 'Finalizar Cadastro'}
+              {!loading && <ArrowRight className="w-4 h-4" />}
             </button>
+          </form>
 
-            {/* Link login */}
-            <p className="text-center text-gray-400 text-sm">
+          <div className="mt-8 text-center border-t border-slate-200 pt-6">
+            <p className="text-slate-500 text-sm">
               Já tem uma conta?{' '}
-              <Link href="/auth/login" className="text-edp-green hover:text-edp-dark font-semibold transition-colors">
+              <Link
+                href="/auth/login"
+                className="text-edp-green hover:text-green-700 font-semibold"
+              >
                 Fazer login
               </Link>
             </p>
-          </form>
-
-          {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-            <p className="text-gray-300 text-xs">
-              © {new Date().getFullYear()} EDP · Área de Concessão Vale do Paraíba
-            </p>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   )
