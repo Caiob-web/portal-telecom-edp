@@ -94,14 +94,14 @@ export default function LoginPage() {
               </div>
 
               <h1 className="font-display font-bold text-5xl text-white leading-tight mb-4">
-                Portal de<br />
+                Portal de Notificações<br />
                 <span
                   className="text-transparent bg-clip-text"
                   style={{
                     backgroundImage: 'linear-gradient(90deg, #00A651, #7DC242)',
                   }}
                 >
-                  Telecom
+                  Telecom - EDP/SP.
                 </span>
               </h1>
 
