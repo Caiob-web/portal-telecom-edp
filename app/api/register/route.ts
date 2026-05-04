@@ -1,71 +1,132 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import sql from '@/lib/db'
 
-export async function POST(req: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const {
-      name,
-      email,
-      company_name,
-      cnpj,
-      phone,
-      municipality,
-      region,
-      password,
-    } = await req.json()
+    const body = await request.json()
 
-    if (!name || !email || !company_name || !password) {
+    const companyName =
+      body.companyName ||
+      body.company_name ||
+      body.razao_social ||
+      ''
+
+    const name =
+      body.responsibleName ||
+      body.name ||
+      ''
+
+    const email = String(body.email || '').trim().toLowerCase()
+    const password = String(body.password || '')
+    const cnpj = String(body.cnpj || '').trim()
+    const phone = String(body.phone || '').trim()
+    const municipality = String(body.municipality || '').trim()
+
+    const region = Array.isArray(body.regions)
+      ? body.regions.join(', ')
+      : String(body.region || '').trim()
+
+    if (!companyName || !name || !email || !password) {
       return NextResponse.json(
-        { error: 'Campos obrigatórios não preenchidos' },
-        { status: 400 }
+        {
+          error: 'Preencha empresa, responsável, e-mail e senha.',
+        },
+        {
+          status: 400,
+        }
       )
     }
 
     if (password.length < 8) {
       return NextResponse.json(
-        { error: 'A senha deve ter pelo menos 8 caracteres' },
-        { status: 400 }
+        {
+          error: 'A senha precisa ter no mínimo 8 caracteres.',
+        },
+        {
+          status: 400,
+        }
       )
     }
 
-    const existing = await sql`
-      SELECT id FROM users WHERE email = ${email} LIMIT 1
+    const existingUser = await sql`
+      SELECT id 
+      FROM users 
+      WHERE email = ${email}
+      LIMIT 1
     `
-    if (existing.length > 0) {
+
+    if (existingUser.length > 0) {
       return NextResponse.json(
-        { error: 'Este e-mail já está cadastrado' },
-        { status: 409 }
+        {
+          error: 'Já existe um usuário cadastrado com este e-mail.',
+        },
+        {
+          status: 409,
+        }
       )
     }
 
-    const passwordHash = await bcrypt.hash(password, 12)
+    const passwordHash = await bcrypt.hash(password, 10)
 
-    const newUser = await sql`
-      INSERT INTO users (name, email, company_name, cnpj, phone, municipality, region, password_hash, role)
+    const insertedUser = await sql`
+      INSERT INTO users (
+        name,
+        email,
+        password_hash,
+        company_name,
+        cnpj,
+        phone,
+        role,
+        municipality,
+        region,
+        is_active
+      )
       VALUES (
-        ${name},
+        ${name.trim()},
         ${email},
-        ${company_name},
+        ${passwordHash},
+        ${String(companyName).trim()},
         ${cnpj || null},
         ${phone || null},
+        'company',
         ${municipality || null},
         ${region || null},
-        ${passwordHash},
-        'telecom'
+        true
       )
-      RETURNING id, name, email, company_name, created_at
+      RETURNING 
+        id,
+        name,
+        email,
+        company_name,
+        cnpj,
+        phone,
+        role,
+        municipality,
+        region,
+        is_active,
+        created_at
     `
 
     return NextResponse.json(
-      { success: true, user: newUser[0] },
-      { status: 201 }
+      {
+        ok: true,
+        user: insertedUser[0],
+      },
+      {
+        status: 201,
+      }
     )
-  } catch (error: any) {
-    console.error('Register error:', error)
+  } catch (error) {
+    console.error('Erro ao cadastrar usuário:', error)
+
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
+      {
+        error: 'Erro interno ao realizar cadastro.',
+      },
+      {
+        status: 500,
+      }
     )
   }
 }
