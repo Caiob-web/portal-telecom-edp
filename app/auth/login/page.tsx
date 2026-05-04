@@ -91,7 +91,7 @@ export default function LoginPage() {
               <div className="grid grid-cols-3 gap-3 mt-8">
                 {[
                   { icon: Bell,   label: 'Notificações', desc: 'Em tempo real' },
-                  { icon: MapPin, label: '28 Municípios', desc: 'Vale do Paraíba' },
+                  { icon: MapPin, label: '28 Municípios na Área de Concessão', desc: 'Vale do Paraíba, Alto Tietê e Vale Histórico' },
                   { icon: Shield, label: 'Seguro',        desc: 'Acesso protegido' },
                 ].map(item => (
                   <div key={item.label} className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-3">
