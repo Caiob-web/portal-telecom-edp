@@ -7,26 +7,46 @@ interface Props {
 }
 
 export default function EdpLogo({
-  size,
+  size = 40,
   width,
   showText = true,
   dark = false,
   className = '',
 }: Props) {
-  const finalWidth = width || size || 80
+  /*
+    Logo EDP oficial em PNG.
+
+    Caminho esperado:
+    public/edp-logo.png
+
+    Este componente mantém compatibilidade com:
+    <EdpLogo size={44} showText={true} dark={false} />
+    <EdpLogo width={120} />
+  */
+
+  const finalWidth = width || (showText ? size * 2.4 : size * 1.7)
 
   return (
-    <img
-      src="/edp-logo.png"
-      alt="EDP"
-      width={finalWidth}
-      className={className}
-      draggable={false}
+    <div
+      className={`inline-flex items-center justify-center ${className}`}
       style={{
-        height: 'auto',
-        display: 'block',
+        width: finalWidth,
+        minWidth: finalWidth,
         userSelect: 'none',
+        flexShrink: 0,
       }}
-    />
+    >
+      <img
+        src="/edp-logo.png"
+        alt="EDP"
+        draggable={false}
+        style={{
+          width: '100%',
+          height: 'auto',
+          display: 'block',
+          objectFit: 'contain',
+        }}
+      />
+    </div>
   )
 }
