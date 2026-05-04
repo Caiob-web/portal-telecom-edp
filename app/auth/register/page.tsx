@@ -160,10 +160,10 @@ export default function RegisterPage() {
             </div>
 
             <h1 className="font-display font-bold text-4xl text-white leading-tight mb-4">
-              Inclua sua empresa no sistema de Notificações da da<br />
+              Inclua sua empresa no sistema de Notificações da<br />
               <span className="text-transparent bg-clip-text"
                 style={{ backgroundImage: 'linear-gradient(90deg, #00A651, #7DC242)' }}>
-                rede EDP
+                rede EDP-SP
               </span>
             </h1>
 
