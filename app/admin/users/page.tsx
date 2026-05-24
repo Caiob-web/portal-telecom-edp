@@ -15,7 +15,7 @@ export default function AdminUsersPage() {
             <div>
               <CardTitle>Usuarios do portal</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                Dados mockados para futura autenticacao e permissoes no Neon.
+                Estrutura preparada para autenticacao, permissoes e status no Neon Database.
               </p>
             </div>
             <Input className="max-w-sm" placeholder="Buscar usuario ou e-mail" />

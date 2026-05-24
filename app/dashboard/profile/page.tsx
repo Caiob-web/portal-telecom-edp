@@ -5,22 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 const profileItems = [
   {
     label: "Empresa",
-    value: "TELEFONICA BRASIL S.A.",
+    value: "Aguardando vinculo no Neon",
     icon: Building2
   },
   {
     label: "E-mail principal",
-    value: "gestao.postes@telefonica.com",
+    value: "Sera carregado pela autenticacao real",
     icon: Mail
   },
   {
     label: "Telefone",
-    value: "(11) 4000-0000",
+    value: "Pendente de cadastro administrativo",
     icon: Phone
   },
   {
     label: "Municipio principal",
-    value: "SAO JOSE DOS CAMPOS",
+    value: "Pendente de cadastro administrativo",
     icon: MapPin
   }
 ];
@@ -29,14 +29,13 @@ export default function CompanyProfilePage() {
   return (
     <DashboardShell
       title="Perfil da empresa"
-      subtitle="Dados cadastrais mockados para futura persistencia no Neon."
+      subtitle="Dados cadastrais preparados para futura persistencia no Neon."
     >
       <Card>
         <CardHeader>
           <CardTitle>Dados cadastrais</CardTitle>
           <p className="mt-1 text-sm text-graphite-500">
-            Perfil visual da empresa logada. Edicao real sera vinculada a
-            permissoes e auditoria.
+            Este painel exibira dados reais da empresa apos login, permissao e vinculo administrativo.
           </p>
         </CardHeader>
         <CardContent>

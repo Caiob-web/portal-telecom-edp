@@ -6,13 +6,13 @@ export default function CompanyDocumentsPage() {
   return (
     <DashboardShell
       title="Documentos"
-      subtitle="PDFs e anexos disponiveis para a empresa."
+      subtitle="PDFs e anexos vinculados as notificacoes."
     >
       <Card>
         <CardHeader>
           <CardTitle>Documentos da empresa</CardTitle>
           <p className="mt-1 text-sm text-graphite-500">
-            Lista mockada preparada para Base44, Vercel Blob e Neon Database.
+            Os documentos vinculados as notificacoes serao exibidos aqui quando forem recebidos pela integracao.
           </p>
         </CardHeader>
         <CardContent>

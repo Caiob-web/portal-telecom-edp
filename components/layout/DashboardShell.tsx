@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { AppHeader } from "@/components/layout/AppHeader";
-import { AppSidebar } from "@/components/layout/AppSidebar";
+import { DashboardSidebar } from "@/components/layout/DashboardSidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
 
 export function DashboardShell({
@@ -15,7 +15,7 @@ export function DashboardShell({
   return (
     <div className="min-h-screen bg-graphite-50">
       <div className="flex min-h-screen">
-        <AppSidebar />
+        <DashboardSidebar />
         <div className="min-w-0 flex-1">
           <AppHeader title={title} subtitle={subtitle} area="Empresa" />
           <MobileNav variant="dashboard" />

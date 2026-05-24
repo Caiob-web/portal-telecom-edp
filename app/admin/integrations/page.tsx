@@ -1,11 +1,11 @@
 import { IntegrationStatusCard } from "@/components/admin/IntegrationStatusCard";
 import { AdminShell } from "@/components/layout/AdminShell";
 
-export default function AdminBase44Page() {
+export default function AdminIntegrationsPage() {
   return (
     <AdminShell
-      title="Integracao Base44"
-      subtitle="Estrutura visual preparada. Nenhuma integracao real foi criada nesta etapa."
+      title="Integracoes"
+      subtitle="Configuracao das origens externas responsaveis pelo envio de notificacoes e documentos ao portal."
     >
       <IntegrationStatusCard />
     </AdminShell>

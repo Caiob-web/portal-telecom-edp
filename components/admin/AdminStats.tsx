@@ -1,44 +1,51 @@
-import { Building2, CheckCircle2, FileStack, Radio, UserRoundCog } from "lucide-react";
+import { Building2, Clock3, FileStack, PlugZap, Radio, UserRoundCog } from "lucide-react";
 import { StatCard } from "@/components/ui/StatCard";
 import { mockAdminStats } from "@/data/mock-admin-stats";
 
 export function AdminStats() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
       <StatCard
-        title="Empresas"
+        title="Empresas cadastradas"
         value={mockAdminStats.totals.companies}
-        detail="6 ativas ou pendentes"
+        detail="Aguardando Neon"
         icon={Building2}
         tone="blue"
       />
       <StatCard
-        title="Usuarios"
-        value={mockAdminStats.totals.users}
-        detail="RBAC preparado"
+        title="Usuarios pendentes"
+        value={mockAdminStats.totals.pendingUsers}
+        detail="Fluxo preparado"
         icon={UserRoundCog}
         tone="gray"
       />
       <StatCard
-        title="Notificacoes"
+        title="Notificacoes recebidas"
         value={mockAdminStats.totals.notifications}
-        detail="Recebidas no portal"
+        detail="Origem nao configurada"
         icon={Radio}
         tone="green"
       />
       <StatCard
-        title="Documentos"
+        title="Documentos disponiveis"
         value={mockAdminStats.totals.documents}
-        detail="PDFs e anexos"
+        detail="Aguardando recebimento"
         icon={FileStack}
         tone="blue"
       />
       <StatCard
-        title="Finalizadas"
-        value={mockAdminStats.totals.closedNotifications}
-        detail="Fluxo administrativo"
-        icon={CheckCircle2}
+        title="Integracoes ativas"
+        value={mockAdminStats.totals.activeIntegrations}
+        detail="Nao configurada"
+        icon={PlugZap}
         tone="green"
+      />
+      <StatCard
+        title="Ultimos acessos"
+        value={mockAdminStats.totals.lastAccesses}
+        detail="Auditoria futura"
+        icon={Clock3}
+        tone="amber"
       />
     </div>
   );

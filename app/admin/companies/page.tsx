@@ -15,7 +15,7 @@ export default function AdminCompaniesPage() {
             <div>
               <CardTitle>Empresas cadastradas</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                Tabela mockada com drawer visual de detalhes.
+                Tabela preparada para cadastro real, status e acompanhamento administrativo.
               </p>
             </div>
             <Input className="max-w-sm" placeholder="Buscar empresa ou CNPJ" />

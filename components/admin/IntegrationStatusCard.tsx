@@ -1,25 +1,24 @@
-import { AlertCircle, CheckCircle2, Clock3, DatabaseZap, FileText } from "lucide-react";
+import { AlertCircle, Clock3, FileText, Inbox, PlugZap } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { StatCard } from "@/components/ui/StatCard";
-import { mockAdminStats } from "@/data/mock-admin-stats";
-import { formatDateTime } from "@/lib/utils";
 
 export function IntegrationStatusCard() {
   return (
     <div className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          title="Recebidas via Base44"
+          title="Notificacoes recebidas"
           value={0}
-          detail="Aguardando configuracao"
-          icon={DatabaseZap}
+          detail="Origem nao configurada"
+          icon={Inbox}
           tone="blue"
         />
         <StatCard
           title="PDFs processados"
           value={0}
-          detail="Mock estrutural"
+          detail="Aguardando storage"
           icon={FileText}
           tone="green"
         />
@@ -33,7 +32,7 @@ export function IntegrationStatusCard() {
         <StatCard
           title="Ultima sincronizacao"
           value="--"
-          detail="Nao configurada"
+          detail="Nenhuma"
           icon={Clock3}
           tone="gray"
         />
@@ -43,9 +42,9 @@ export function IntegrationStatusCard() {
         <CardHeader>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <CardTitle>Status da integracao</CardTitle>
+              <CardTitle>Origem das notificacoes</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                Estrutura visual pronta para receber endpoint, token e logs reais.
+                Configuracao tecnica das origens externas responsaveis pelo envio de notificacoes e documentos.
               </p>
             </div>
             <Badge variant="amber">Nao configurada</Badge>
@@ -58,7 +57,7 @@ export function IntegrationStatusCard() {
                 Endpoint futuro
               </p>
               <p className="mt-2 font-mono text-sm text-graphite-700">
-                BASE44_API_URL
+                NOTIFICATION_API_URL
               </p>
             </div>
             <div className="rounded-lg border border-graphite-200 bg-graphite-50 p-4">
@@ -66,27 +65,26 @@ export function IntegrationStatusCard() {
                 Token futuro
               </p>
               <p className="mt-2 font-mono text-sm text-graphite-700">
-                BASE44_API_TOKEN
+                NOTIFICATION_API_TOKEN
               </p>
             </div>
           </div>
 
-          <div className="mt-5 space-y-3">
-            {mockAdminStats.base44Logs.map((log) => (
-              <div
-                key={log.id}
-                className="flex flex-col gap-2 rounded-md border border-graphite-200 p-4 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 text-edp-600" aria-hidden="true" />
-                  <div>
-                    <p className="font-semibold text-graphite-950">{log.event}</p>
-                    <p className="text-sm text-graphite-500">{formatDateTime(log.at)}</p>
-                  </div>
-                </div>
-                <Badge variant="outline">{log.status}</Badge>
-              </div>
-            ))}
+          <div className="mt-5 rounded-lg border border-brand-100 bg-brand-50 p-5">
+            <div className="flex items-start gap-3">
+              <PlugZap className="mt-1 h-5 w-5 shrink-0 text-brand-700" aria-hidden="true" />
+              <p className="text-sm leading-6 text-brand-900">
+                As notificacoes serao recebidas por uma API externa e vinculadas automaticamente a empresa correspondente apos a configuracao da integracao.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <EmptyState
+              icon={Clock3}
+              title="Nenhum log de integracao"
+              description="Assim que a origem externa for configurada, os eventos de sincronizacao e falhas aparecerao aqui."
+            />
           </div>
         </CardContent>
       </Card>

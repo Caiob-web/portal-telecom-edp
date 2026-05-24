@@ -10,7 +10,7 @@ export default function DashboardPage() {
   return (
     <DashboardShell
       title="Dashboard da empresa"
-      subtitle="Bem-vindo, Maria Operacoes | TELEFONICA BRASIL S.A."
+      subtitle="Visao geral da area da empresa compartilhante."
     >
       <div className="space-y-6">
         <CompanySummaryCards />
@@ -22,7 +22,7 @@ export default function DashboardPage() {
                 <div>
                   <CardTitle>Ultimas notificacoes</CardTitle>
                   <p className="mt-1 text-sm text-graphite-500">
-                    Acompanhe recebimentos, prazos e status operacionais.
+                    As comunicacoes reais aparecerao automaticamente apos a integracao da origem externa.
                   </p>
                 </div>
                 <Link
@@ -43,7 +43,7 @@ export default function DashboardPage() {
             {[
               {
                 title: "Documentos",
-                text: "PDFs e anexos mockados para futura integracao com Base44.",
+                text: "PDFs e anexos vinculados as notificacoes serao exibidos aqui quando recebidos.",
                 href: "/dashboard/documents",
                 icon: FileText
               },
@@ -55,7 +55,7 @@ export default function DashboardPage() {
               },
               {
                 title: "Perfil",
-                text: "Dados da empresa e contatos administrativos.",
+                text: "Dados cadastrais serao carregados pela autenticacao real.",
                 href: "/dashboard/profile",
                 icon: ClipboardList
               }

@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, Send } from "lucide-react";
+import { EDPLogo } from "@/components/brand/EDPLogo";
 import { Button, buttonStyles } from "@/components/ui/Button";
 import { Input, Label, Select } from "@/components/ui/Input";
 import { registrationCompanies } from "@/data/mock-companies";
@@ -22,15 +23,14 @@ export default function RegisterPage() {
       <section className="mx-auto max-w-5xl rounded-lg border border-graphite-200 bg-white p-6 shadow-panel sm:p-8">
         <div className="flex flex-col gap-4 border-b border-graphite-200 pb-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <Link href="/" className="text-sm font-semibold text-brand-700">
-              Portal Telecom EDP
+            <Link href="/" className="inline-flex">
+              <EDPLogo showPortalName />
             </Link>
-            <h1 className="mt-3 text-3xl font-black text-graphite-950">
+            <h1 className="mt-6 text-3xl font-black text-graphite-950">
               Solicitar acesso
             </h1>
             <p className="mt-2 max-w-2xl text-graphite-600">
-              Cadastro visual mockado para empresas compartilhantes. Na proxima
-              etapa, este fluxo gravara solicitacoes no Neon Database.
+              Preencha os dados para analise administrativa. O fluxo ainda nao salva informacoes no Neon, mas ja esta preparado para validacao, vinculo de empresa e status de aprovacao.
             </p>
           </div>
           <Link href="/auth/login" className={buttonStyles("outline")}>
@@ -44,10 +44,10 @@ export default function RegisterPage() {
               <CheckCircle2 className="h-7 w-7 shrink-0 text-edp-700" aria-hidden="true" />
               <div>
                 <h2 className="text-xl font-bold text-edp-900">
-                  Solicitacao enviada
+                  Solicitacao enviada com sucesso
                 </h2>
                 <p className="mt-2 text-edp-800">
-                  Solicitacao de acesso enviada para analise administrativa.
+                  Solicitacao enviada com sucesso. O acesso sera analisado pela administracao do portal.
                 </p>
               </div>
             </div>
@@ -59,7 +59,7 @@ export default function RegisterPage() {
               <Input id="name" required placeholder="Nome e sobrenome" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
+              <Label htmlFor="email">E-mail corporativo</Label>
               <Input id="email" type="email" required placeholder="nome@empresa.com" />
             </div>
             <div className="space-y-2">

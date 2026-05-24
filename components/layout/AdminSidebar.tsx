@@ -2,13 +2,13 @@ import Link from "next/link";
 import {
   BellDot,
   Building2,
-  DatabaseZap,
   FileStack,
   LayoutDashboard,
+  PlugZap,
   Settings,
-  ShieldCheck,
   UsersRound
 } from "lucide-react";
+import { EDPLogo } from "@/components/brand/EDPLogo";
 import { cn } from "@/lib/utils";
 
 const navigation = [
@@ -17,21 +17,15 @@ const navigation = [
   { label: "Usuarios", href: "/admin/users", icon: UsersRound },
   { label: "Notificacoes", href: "/admin/notifications", icon: BellDot },
   { label: "Documentos", href: "/admin/documents", icon: FileStack },
-  { label: "Base44", href: "/admin/base44", icon: DatabaseZap },
+  { label: "Integracoes", href: "/admin/integrations", icon: PlugZap },
   { label: "Configuracoes", href: "/admin/settings", icon: Settings }
 ];
 
 export function AdminSidebar() {
   return (
     <aside className="hidden w-72 shrink-0 border-r border-graphite-200 bg-graphite-950 text-white md:flex md:flex-col">
-      <div className="flex h-20 items-center gap-3 border-b border-white/10 px-6">
-        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-edp-500 text-white shadow-sm">
-          <ShieldCheck className="h-6 w-6" aria-hidden="true" />
-        </div>
-        <div>
-          <p className="text-sm font-bold">Portal Telecom EDP</p>
-          <p className="text-xs font-semibold text-edp-200">Administracao</p>
-        </div>
+      <div className="flex h-24 items-center border-b border-white/10 px-6">
+        <EDPLogo showPortalName inverted />
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-5">

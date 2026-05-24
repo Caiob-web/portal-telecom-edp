@@ -41,7 +41,7 @@ export default function AdminSettingsPage() {
               <CardContent>
                 <p className="leading-6 text-graphite-600">{setting.description}</p>
                 <Badge variant="outline" className="mt-4">
-                  Mock estrutural
+                  Preparado
                 </Badge>
               </CardContent>
             </Card>

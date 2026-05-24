@@ -1,8 +1,12 @@
 # Portal Telecom EDP
 
-Primeira versao estrutural de um portal web profissional para gestao de telecom, notificacoes, empresas compartilhantes, documentos e area administrativa.
+Portal web corporativo para gestao centralizada de notificacoes, documentos, empresas compartilhantes e area administrativa da operacao de telecom.
 
-Esta etapa nao integra Base44, Neon Database ou Vercel Blob em producao. O projeto esta preparado para receber essas integracoes nas proximas fases, com dados mockados e placeholders explicitos.
+## Fase atual
+
+Estrutura visual e navegacao preparada.
+
+Nesta etapa o portal nao possui dados reais, nao possui integracao ativa e nao conecta ao Neon Database. As telas exibem estados vazios profissionais enquanto aguardam as proximas integracoes.
 
 ## Stack
 
@@ -33,99 +37,102 @@ npm run build
 npm run start
 ```
 
-## Login mockado
+## Autenticacao temporaria
 
-Nesta versao nao existe autenticacao real. O arquivo `lib/auth-mock.ts` simula o login:
+Ainda nao existe autenticacao real. O arquivo `lib/auth-mock.ts` permite apenas navegacao local:
 
 ```text
 admin@edp.com / admin123 -> /admin
 empresa@teste.com / empresa123 -> /dashboard
 ```
 
+Na proxima fase, esse fluxo deve ser substituido por login real com Neon Database, senhas criptografadas, sessoes e RBAC.
+
 ## Variaveis de ambiente
 
-Copie `.env.example` para `.env.local` apenas quando for iniciar integracoes reais:
+Use `.env.example` como referencia quando as integracoes reais forem iniciadas:
 
 ```env
 DATABASE_URL=
 AUTH_SECRET=
-BASE44_API_URL=
-BASE44_API_TOKEN=
-BLOB_READ_WRITE_TOKEN=
 NEXT_PUBLIC_APP_URL=
+NOTIFICATION_API_URL=
+NOTIFICATION_API_TOKEN=
+BLOB_READ_WRITE_TOKEN=
 ```
 
-Nao inclua credenciais reais no repositorio.
+Nao inclua credenciais, tokens ou connection strings reais no repositorio.
 
 ## Rotas principais
 
-- `/` Landing page
-- `/auth/login` Login mockado
-- `/auth/register` Cadastro visual de empresa/usuario
+- `/` Landing page institucional
+- `/auth/login` Login temporario para navegacao
+- `/auth/register` Solicitacao visual de acesso
 - `/dashboard` Dashboard da empresa
 - `/dashboard/notifications` Notificacoes da empresa
-- `/dashboard/notifications/[id]` Detalhes da notificacao
+- `/dashboard/notifications/[id]` Estado de detalhe preparado
 - `/dashboard/documents` Documentos da empresa
-- `/dashboard/map` Mapa visual mockado da area de concessao
+- `/dashboard/map` Area de concessao
 - `/dashboard/profile` Perfil da empresa
 - `/admin` Painel administrativo
 - `/admin/companies` Empresas
 - `/admin/users` Usuarios
 - `/admin/notifications` Notificacoes administrativas
 - `/admin/documents` Documentos administrativos
-- `/admin/base44` Preparacao Base44
+- `/admin/integrations` Integracoes e origem das notificacoes
 - `/admin/settings` Configuracoes
 
 ## Estrutura
 
 ```text
-app/                 Rotas do App Router
-components/layout/   Shells, headers e navegacao
-components/ui/       Design system reutilizavel
-components/dashboard Componentes da area da empresa
-components/admin     Componentes administrativos
-data/                Dados mockados
-lib/                 Auth mock, Base44 placeholder, DB placeholder e utils
-types/               Contratos TypeScript para Neon/RBAC/documentos
-public/              Assets visuais estaticos
+app/                  Rotas do App Router
+components/brand/     Logo e componentes de marca
+components/layout/    Shells, headers e navegacao
+components/ui/        Design system reutilizavel
+components/dashboard/ Componentes da area da empresa
+components/admin/     Componentes administrativos
+data/                 Listas estruturais e colecoes vazias
+lib/                  Auth temporario, DB placeholder, notificacoes e utils
+types/                Contratos TypeScript para Neon, RBAC e notificacoes
+public/               Assets visuais, favicon e logo EDP
 ```
 
-## Preparacao Base44
+## Arquitetura de notificacoes
 
-`lib/base44.ts` contem placeholders:
+Arquivos preparados:
 
-- `receiveBase44Notification()`
-- `validateBase44Token()`
-- `mapNotificationToCompany()`
-- `processBase44Pdf()`
+- `types/notification.ts`
+- `lib/notifications.ts`
+- `lib/integrations/notification-source.ts`
 
-Essas funcoes retornam mocks e documentam onde a integracao real sera implementada.
+Esses arquivos deixam o contrato pronto para receber notificacoes por API externa, validar payload, mapear para o modelo interno e vincular cada registro a uma empresa. A origem inicial prevista para etapa futura e a API Base44, mas ela nao e uma pagina ou modulo do usuario final.
 
 ## Preparacao Neon Database
 
-`lib/db.ts` contem a estrutura inicial para futura conexao via `DATABASE_URL`.
+`lib/db.ts` contem apenas o placeholder de conexao futura via `DATABASE_URL`.
 
-`types/database.ts` ja modela:
+`types/database.ts` modela:
 
 - `User`
 - `Company`
+- `UserRole`
+- `UserStatus`
 - `Notification`
+- `NotificationStatus`
 - `Document`
 - `AuditLog`
-- `UserRole`
-- `NotificationStatus`
 
-## Proximas integracoes
+## Proximas fases
 
-1. Autenticacao real com Neon Database.
-2. RBAC para perfis `ADMIN`, `EMPRESA` e `VISUALIZADOR`.
-3. Recebimento/envio de notificacoes e PDFs via Base44.
-4. Armazenamento de PDFs com Vercel Blob.
-5. Deploy na Vercel com variaveis de ambiente.
-6. Mapa real com Leaflet ou Mapbox.
+1. Integracao com Neon Database para autenticacao.
+2. Integracao com API externa de notificacoes.
+3. Persistencia de notificacoes e documentos.
+4. Upload e armazenamento de PDFs.
+5. Auditoria, rastreabilidade e permissoes reais.
+6. Deploy final na Vercel com variaveis de ambiente.
 
-## Observacoes de seguranca
+## Seguranca
 
 - Nao ha secrets no codigo.
 - `.env` e `.env*.local` estao ignorados pelo Git.
-- Credenciais do login atual sao apenas mocks para navegacao.
+- O portal exibe estados vazios enquanto nao houver integracao ativa.

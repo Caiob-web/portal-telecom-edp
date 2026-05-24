@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Bell, Building2, Menu, Search } from "lucide-react";
+import { Bell, Menu, Search } from "lucide-react";
+import { EDPLogo } from "@/components/brand/EDPLogo";
 import { Button } from "@/components/ui/Button";
 
 export function AppHeader({
@@ -18,9 +19,11 @@ export function AppHeader({
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu">
             <Menu className="h-5 w-5" aria-hidden="true" />
           </Button>
+          <div className="hidden lg:block">
+            <EDPLogo />
+          </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-brand-700">
-              <Building2 className="h-3.5 w-3.5" aria-hidden="true" />
               Portal Telecom EDP | {area}
             </div>
             <h1 className="truncate text-lg font-bold text-graphite-950 md:text-xl">

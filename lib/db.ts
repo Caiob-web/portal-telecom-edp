@@ -4,7 +4,7 @@ export const databaseConfig = {
 } as const;
 
 export async function getDatabaseConnection() {
-  // Placeholder: na próxima etapa, inicializar cliente Neon usando process.env.DATABASE_URL.
-  // Nenhuma conexão real e nenhum secret são usados nesta versão estrutural.
+  // Conexao futura com Neon Database via DATABASE_URL.
+  // Nesta etapa estrutural nao ha cliente, query real ou secret carregado.
   return null;
 }

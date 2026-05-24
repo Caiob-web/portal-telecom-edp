@@ -1,14 +1,15 @@
+import type {
+  Notification,
+  NotificationAttachment,
+  NotificationStatus
+} from "@/types/notification";
+
+export type { Notification, NotificationAttachment, NotificationStatus };
+
 export type UserRole = "ADMIN" | "EMPRESA" | "VISUALIZADOR";
-
-export type NotificationStatus =
-  | "NOVA"
-  | "EM_ANALISE"
-  | "RESPONDIDA"
-  | "FINALIZADA";
-
+export type UserStatus = "PENDENTE" | "APROVADO" | "BLOQUEADO" | "ATIVO" | "INATIVO";
 export type CompanyStatus = "ATIVA" | "PENDENTE" | "INATIVA";
-
-export type DocumentStatus = "DISPONIVEL" | "PROCESSANDO" | "ARQUIVADO";
+export type DocumentStatus = "DISPONIVEL" | "PROCESSANDO" | "ARQUIVADO" | "PENDENTE";
 
 export interface Company {
   id: string;
@@ -30,32 +31,8 @@ export interface User {
   companyId?: string;
   companyName?: string;
   role: UserRole;
-  status: "ATIVO" | "PENDENTE" | "INATIVO";
+  status: UserStatus;
   lastAccess: string;
-}
-
-export interface NotificationAttachment {
-  id: string;
-  name: string;
-  type: "PDF" | "IMAGEM" | "PLANILHA";
-  size: string;
-  url: string;
-}
-
-export interface Notification {
-  id: string;
-  title: string;
-  companyId: string;
-  companyName: string;
-  municipality: string;
-  receivedAt: string;
-  type: string;
-  status: NotificationStatus;
-  description: string;
-  viewed: boolean;
-  answered: boolean;
-  pdfLinked: boolean;
-  attachments: NotificationAttachment[];
 }
 
 export interface Document {
@@ -66,7 +43,7 @@ export interface Document {
   municipality: string;
   companyId: string;
   companyName: string;
-  origin: "Upload manual" | "Base44" | "Sistema interno";
+  origin: "UPLOAD_MANUAL" | "EXTERNAL_API" | "INTERNAL_SYSTEM";
   status: DocumentStatus;
   size: string;
   url: string;

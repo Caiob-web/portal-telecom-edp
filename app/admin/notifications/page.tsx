@@ -12,8 +12,7 @@ export default function AdminNotificationsPage() {
         <CardHeader>
           <CardTitle>Central de notificacoes</CardTitle>
           <p className="mt-1 text-sm text-graphite-500">
-            Visual profissional com indicadores de visualizacao, resposta e PDF
-            vinculado.
+            Filtros e indicadores preparados para notificacoes reais enviadas pela origem externa.
           </p>
         </CardHeader>
         <CardContent>

@@ -15,7 +15,7 @@ export default function AdminDocumentsPage() {
             <div>
               <CardTitle>Repositorio de documentos</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                Origem mockada: Upload manual, Base44 e Sistema interno.
+                Estrutura preparada para PDFs recebidos por API, upload manual e armazenamento futuro.
               </p>
             </div>
             <Input className="max-w-sm" placeholder="Buscar documento" />

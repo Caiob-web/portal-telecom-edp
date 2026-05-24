@@ -2,11 +2,11 @@ import Link from "next/link";
 import {
   BellDot,
   Building2,
-  DatabaseZap,
   FileStack,
   FileText,
   LayoutDashboard,
   Map,
+  PlugZap,
   Radio,
   Settings,
   UserCircle,
@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 const dashboardItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Inicio", href: "/dashboard", icon: LayoutDashboard },
   { label: "Notificacoes", href: "/dashboard/notifications", icon: Radio },
   { label: "Documentos", href: "/dashboard/documents", icon: FileText },
   { label: "Mapa", href: "/dashboard/map", icon: Map },
@@ -27,7 +27,7 @@ const adminItems = [
   { label: "Usuarios", href: "/admin/users", icon: UsersRound },
   { label: "Notificacoes", href: "/admin/notifications", icon: BellDot },
   { label: "Documentos", href: "/admin/documents", icon: FileStack },
-  { label: "Base44", href: "/admin/base44", icon: DatabaseZap },
+  { label: "Integracoes", href: "/admin/integrations", icon: PlugZap },
   { label: "Config", href: "/admin/settings", icon: Settings }
 ];
 
