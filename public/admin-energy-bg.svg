@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 820" role="img" aria-label="Linhas de energia em paisagem institucional">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f5ecd4"/>
+      <stop offset="0.42" stop-color="#b9bea8"/>
+      <stop offset="1" stop-color="#1d2c3c"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="36%" cy="26%" r="60%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.42" stop-color="#e7d99e" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#1d2c3c" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="20"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="820" fill="url(#sky)"/>
+  <rect width="1440" height="820" fill="url(#glow)"/>
+  <path d="M0 604C155 555 265 626 402 579C561 525 634 574 763 553C923 527 1035 574 1161 548C1276 524 1359 554 1440 540V820H0Z" fill="#172434" opacity="0.92"/>
+  <path d="M0 658C206 626 310 674 488 646C653 620 752 652 889 633C1076 608 1238 640 1440 612V820H0Z" fill="#111b29" opacity="0.86"/>
+  <g stroke="#0a111b" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke-width="11">
+      <path d="M210 220V706"/>
+      <path d="M627 335V696"/>
+      <path d="M940 427V692"/>
+      <path d="M1138 480V690"/>
+      <path d="M1284 520V690"/>
+    </g>
+    <g stroke-width="9">
+      <path d="M141 218H277"/>
+      <path d="M584 333H670"/>
+      <path d="M910 425H968"/>
+      <path d="M1120 478H1157"/>
+      <path d="M1271 518H1296"/>
+    </g>
+    <g stroke-width="4">
+      <path d="M151 218C349 238 476 276 594 333C742 404 831 414 914 425C1016 438 1075 466 1121 478C1176 492 1234 510 1272 518"/>
+      <path d="M210 218C388 246 507 289 627 333C749 378 844 412 940 425C1034 438 1093 466 1138 478C1194 493 1243 510 1284 518"/>
+      <path d="M269 218C431 255 540 296 661 333C784 371 858 414 968 425C1046 433 1108 465 1157 478C1202 490 1256 509 1296 518"/>
+    </g>
+  </g>
+  <g fill="#0a111b">
+    <circle cx="151" cy="218" r="12"/>
+    <circle cx="210" cy="218" r="12"/>
+    <circle cx="269" cy="218" r="12"/>
+    <circle cx="594" cy="333" r="9"/>
+    <circle cx="627" cy="333" r="9"/>
+    <circle cx="661" cy="333" r="9"/>
+    <circle cx="914" cy="425" r="7"/>
+    <circle cx="940" cy="425" r="7"/>
+    <circle cx="968" cy="425" r="7"/>
+  </g>
+  <circle cx="1010" cy="170" r="110" fill="#fff7d7" opacity="0.18" filter="url(#soft)"/>
+  <rect width="1440" height="820" fill="#1f2e3e" opacity="0.18"/>
+</svg>

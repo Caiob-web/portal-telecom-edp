@@ -10,7 +10,7 @@ const variants: Record<ButtonVariant, string> = {
   secondary:
     "bg-edp-600 text-white shadow-sm hover:bg-edp-700 focus-visible:ring-edp-600",
   outline:
-    "border border-graphite-200 bg-white text-graphite-800 hover:border-brand-300 hover:bg-brand-50 focus-visible:ring-brand-600",
+    "border border-brand-200 bg-transparent text-graphite-800 hover:border-brand-300 hover:bg-brand-50 focus-visible:ring-brand-600",
   ghost:
     "text-graphite-700 hover:bg-graphite-100 hover:text-graphite-950 focus-visible:ring-brand-600",
   danger:

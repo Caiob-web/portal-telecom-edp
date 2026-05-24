@@ -40,28 +40,8 @@ export default function LoginPage() {
 
   return (
     <main className="portal-grid flex min-h-screen items-center justify-center bg-graphite-50 px-4 py-10">
-      <section className="grid w-full max-w-5xl overflow-hidden rounded-lg border border-graphite-200 bg-white shadow-panel lg:grid-cols-[0.92fr_1.08fr]">
-        <div className="hidden bg-graphite-950 p-8 text-white lg:block">
-          <div className="flex h-full flex-col justify-between">
-            <div>
-              <EDPLogo showPortalName inverted />
-              <h1 className="mt-10 text-3xl font-black">Portal Telecom EDP</h1>
-              <p className="mt-4 leading-7 text-white/70">
-                Acesso exclusivo para empresas autorizadas e administradores do portal.
-              </p>
-            </div>
-            <div className="rounded-lg border border-white/10 bg-white/10 p-4">
-              <div className="flex items-start gap-3">
-                <ShieldCheck className="mt-0.5 h-5 w-5 text-edp-300" aria-hidden="true" />
-                <p className="text-sm leading-6 text-white/75">
-                  A autenticacao definitiva sera conectada ao Neon Database em fase posterior, com controle de sessao e permissoes reais.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-6 sm:p-8 lg:p-10">
+      <section className="grid w-full max-w-6xl overflow-hidden rounded-lg border border-brand-200 bg-white shadow-panel lg:min-h-[620px] lg:grid-cols-[0.86fr_1.14fr]">
+        <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
           <Link href="/" className="inline-flex">
             <EDPLogo showPortalName />
           </Link>
@@ -132,6 +112,30 @@ export default function LoginPage() {
             <button className="text-sm font-semibold text-brand-700 hover:text-brand-900">
               Esqueci minha senha
             </button>
+          </div>
+        </div>
+
+        <div className="login-energy-visual relative hidden p-8 text-white lg:block">
+          <div className="relative z-10 flex h-full flex-col justify-between">
+            <div className="flex justify-end">
+              <div className="rounded-full border border-brand-200 bg-[#1f2e3e]/70 px-4 py-2 text-sm font-semibold text-white/78 backdrop-blur">
+                Ambiente corporativo EDP
+              </div>
+            </div>
+            <div className="max-w-lg">
+              <h1 className="text-4xl font-black leading-tight">Portal Telecom EDP</h1>
+              <p className="mt-4 leading-7 text-white/74">
+                Acesso exclusivo para empresas autorizadas e administradores do portal.
+              </p>
+              <div className="mt-6 rounded-lg border border-white/15 bg-[#1f2e3e]/70 p-4 backdrop-blur">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="mt-0.5 h-5 w-5 text-edp-300" aria-hidden="true" />
+                  <p className="text-sm leading-6 text-white/75">
+                    A autenticacao definitiva sera conectada ao Neon Database em fase posterior, com controle de sessao e permissoes reais.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

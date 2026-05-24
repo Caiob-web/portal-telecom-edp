@@ -4,8 +4,15 @@
 
 :root {
   color-scheme: light;
-  --background: #f7f8fa;
-  --foreground: #242a32;
+  --background: #1f2e3e;
+  --foreground: #ffffff;
+  --edp-navy: #1f2e3e;
+  --edp-navy-soft: #26384a;
+  --edp-navy-deep: #172434;
+  --edp-line: rgba(255, 255, 255, 0.14);
+  --edp-green: #21ff72;
+  --edp-green-soft: rgba(33, 255, 114, 0.12);
+  --edp-cyan: #00b7ff;
 }
 
 * {
@@ -24,6 +31,144 @@ body {
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+}
+
+.theme-edp {
+  background:
+    radial-gradient(circle at 78% 8%, rgba(0, 183, 255, 0.12), transparent 32%),
+    linear-gradient(180deg, #213244 0%, #1f2e3e 52%, #1a2838 100%);
+  color: var(--foreground);
+}
+
+.theme-edp .portal-grid {
+  background-color: var(--edp-navy);
+  background-image:
+    linear-gradient(rgba(33, 255, 114, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    radial-gradient(circle at 50% 0%, rgba(0, 183, 255, 0.08), transparent 38%);
+}
+
+.theme-edp .edp-logo-surface {
+  background: #ffffff !important;
+  color: #1f2e3e !important;
+}
+
+.theme-edp .bg-white,
+.theme-edp .bg-graphite-50,
+.theme-edp .bg-graphite-100 {
+  background-color: var(--edp-navy-soft) !important;
+}
+
+.theme-edp .bg-white\/90,
+.theme-edp .bg-white\/85,
+.theme-edp .bg-white\/80,
+.theme-edp .bg-white\/95 {
+  background-color: rgba(31, 46, 62, 0.9) !important;
+}
+
+.theme-edp .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.theme-edp .bg-graphite-950 {
+  background-color: var(--edp-navy-deep) !important;
+}
+
+.theme-edp .bg-brand-50,
+.theme-edp .bg-edp-50,
+.theme-edp .bg-brand-100,
+.theme-edp .bg-edp-100 {
+  background-color: var(--edp-green-soft) !important;
+}
+
+.theme-edp .bg-brand-700,
+.theme-edp .bg-brand-800,
+.theme-edp .bg-edp-500,
+.theme-edp .bg-edp-600 {
+  background-color: var(--edp-green) !important;
+  color: #102233 !important;
+}
+
+.theme-edp .text-graphite-950,
+.theme-edp .text-graphite-900,
+.theme-edp .text-graphite-800,
+.theme-edp .text-graphite-700 {
+  color: #ffffff !important;
+}
+
+.theme-edp .text-graphite-600,
+.theme-edp .text-graphite-500,
+.theme-edp .text-graphite-400 {
+  color: rgba(255, 255, 255, 0.68) !important;
+}
+
+.theme-edp .text-brand-700,
+.theme-edp .text-brand-800,
+.theme-edp .text-brand-900,
+.theme-edp .text-edp-700,
+.theme-edp .text-edp-800,
+.theme-edp .text-edp-900 {
+  color: var(--edp-green) !important;
+}
+
+.theme-edp .border-graphite-100,
+.theme-edp .border-graphite-200,
+.theme-edp .border-graphite-300,
+.theme-edp .border-white\/10 {
+  border-color: var(--edp-line) !important;
+}
+
+.theme-edp .border-brand-100,
+.theme-edp .border-brand-200,
+.theme-edp .border-brand-300,
+.theme-edp .border-edp-200 {
+  border-color: rgba(33, 255, 114, 0.64) !important;
+}
+
+.theme-edp .shadow-card,
+.theme-edp .shadow-panel {
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22) !important;
+}
+
+.theme-edp input,
+.theme-edp select {
+  background-color: rgba(16, 34, 51, 0.72) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+}
+
+.theme-edp input::placeholder {
+  color: rgba(255, 255, 255, 0.48) !important;
+}
+
+.theme-edp table,
+.theme-edp thead,
+.theme-edp tbody {
+  background-color: transparent !important;
+}
+
+.theme-edp tr:hover {
+  background-color: rgba(33, 255, 114, 0.08) !important;
+}
+
+.theme-edp .admin-energy-hero,
+.theme-edp .login-energy-visual {
+  background-image:
+    linear-gradient(90deg, rgba(23, 36, 52, 0.12), rgba(23, 36, 52, 0.72)),
+    url("/admin-energy-bg.svg");
+  background-position: center;
+  background-size: cover;
+}
+
+.theme-edp .admin-energy-hero::after,
+.theme-edp .login-energy-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(33, 255, 114, 0.16), transparent 28%),
+    linear-gradient(180deg, transparent, rgba(23, 36, 52, 0.78));
+  pointer-events: none;
 }
 
 a {

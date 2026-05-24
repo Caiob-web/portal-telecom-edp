@@ -13,7 +13,7 @@ export function AppHeader({
   area?: "Empresa" | "Admin";
 }) {
   return (
-    <header className="sticky top-0 z-20 border-b border-graphite-200 bg-white/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-20 border-b border-white/15 bg-[#1f2e3e]/94 backdrop-blur-xl">
       <div className="flex min-h-16 items-center justify-between gap-3 px-4 py-3 md:px-6">
         <div className="flex min-w-0 items-center gap-3">
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu">
