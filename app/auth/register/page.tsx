@@ -30,7 +30,7 @@ export default function RegisterPage() {
               Solicitar acesso
             </h1>
             <p className="mt-2 max-w-2xl text-graphite-600">
-              Preencha os dados para analise administrativa. O fluxo ainda nao salva informacoes no Neon, mas ja esta preparado para validacao, vinculo de empresa e status de aprovacao.
+              Preencha os dados para analise administrativa. O fluxo esta preparado para validacao, vinculo de empresa e status de aprovacao.
             </p>
           </div>
           <Link href="/auth/login" className={buttonStyles("outline")}>

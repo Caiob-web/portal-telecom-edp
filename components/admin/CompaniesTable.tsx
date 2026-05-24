@@ -24,7 +24,7 @@ export function CompaniesTable() {
               <EmptyState
                 icon={Building2}
                 title="Nenhuma empresa cadastrada"
-                description="As empresas reais serao exibidas aqui quando o cadastro administrativo for conectado ao Neon Database."
+                description="As empresas reais serao exibidas aqui quando o cadastro administrativo estiver ativo."
               />
             </TD>
           </TR>

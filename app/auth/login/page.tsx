@@ -25,7 +25,7 @@ export default function LoginPage() {
     const submittedEmail = String(formData.get("email") ?? email);
     const submittedPassword = String(formData.get("password") ?? password);
 
-    // Mock temporario: substituir por autenticacao real com Neon Database.
+    // Mock temporario: substituir por autenticacao real do portal.
     const session = await mockLogin(submittedEmail, submittedPassword);
     setLoading(false);
 
@@ -131,7 +131,7 @@ export default function LoginPage() {
                 <div className="flex items-start gap-3">
                   <ShieldCheck className="mt-0.5 h-5 w-5 text-edp-300" aria-hidden="true" />
                   <p className="text-sm leading-6 text-white/75">
-                    A autenticacao definitiva sera conectada ao Neon Database em fase posterior, com controle de sessao e permissoes reais.
+                    A autenticacao definitiva tera controle de sessao, perfis de acesso e permissoes por empresa.
                   </p>
                 </div>
               </div>

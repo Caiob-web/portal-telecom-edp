@@ -152,7 +152,8 @@ body {
 }
 
 .theme-edp .admin-energy-hero,
-.theme-edp .login-energy-visual {
+.theme-edp .login-energy-visual,
+.theme-edp .landing-pole-visual {
   background-image:
     linear-gradient(90deg, rgba(23, 36, 52, 0.12), rgba(23, 36, 52, 0.72)),
     url("/admin-energy-bg.svg");
@@ -161,7 +162,8 @@ body {
 }
 
 .theme-edp .admin-energy-hero::after,
-.theme-edp .login-energy-visual::after {
+.theme-edp .login-energy-visual::after,
+.theme-edp .landing-pole-visual::after {
   content: "";
   position: absolute;
   inset: 0;

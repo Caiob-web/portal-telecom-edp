@@ -21,7 +21,7 @@ export function UsersTable() {
             <EmptyState
               icon={UserRoundCog}
               title="Nenhum usuario cadastrado"
-              description="Solicitacoes, usuarios e perfis RBAC aparecerao aqui apos a autenticacao real ser integrada ao Neon Database."
+              description="Solicitacoes, usuarios e perfis de acesso aparecerao aqui apos a ativacao do cadastro administrativo."
             />
           </TD>
         </TR>

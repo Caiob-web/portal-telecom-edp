@@ -53,7 +53,7 @@ export function AdminSidebar() {
             Governanca
           </p>
           <p className="mt-2 text-sm font-semibold text-white">
-            Auditoria e rastreabilidade prontas para Neon
+            Auditoria e rastreabilidade operacional
           </p>
         </div>
       </div>

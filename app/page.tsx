@@ -35,7 +35,7 @@ const features = [
     id: "empresas",
     title: "Empresas compartilhantes",
     description:
-      "Cadastro, vinculo de usuarios, perfis e permissoes modelados para persistencia futura no Neon Database.",
+      "Cadastro, vinculo de usuarios, perfis e permissoes preparados para controle administrativo do portal.",
     icon: Building2
   },
   {
@@ -68,36 +68,51 @@ export default function HomePage() {
 
       <section className="portal-grid relative border-b border-graphite-200">
         <div className="mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl flex-col justify-center px-4 py-16 md:px-6 lg:py-20">
-          <div className="max-w-4xl animate-fade-up">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/90 px-3 py-1.5 text-sm font-semibold text-brand-800 shadow-sm">
-              <LockKeyhole className="h-4 w-4" aria-hidden="true" />
-              Acesso empresarial autorizado
+          <div className="grid items-center gap-10 lg:grid-cols-[0.92fr_1.08fr]">
+            <div className="max-w-4xl animate-fade-up">
+              <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/90 px-3 py-1.5 text-sm font-semibold text-brand-800 shadow-sm">
+                <LockKeyhole className="h-4 w-4" aria-hidden="true" />
+                Acesso empresarial autorizado
+              </div>
+              <h1 className="mt-8 max-w-4xl text-4xl font-black tracking-normal text-graphite-950 sm:text-5xl lg:text-6xl">
+                Portal Telecom EDP
+              </h1>
+              <p className="mt-5 max-w-3xl text-xl font-semibold leading-8 text-brand-800 md:text-2xl">
+                Gestao centralizada de notificacoes, documentos e relacionamento com empresas compartilhantes.
+              </p>
+              <p className="mt-5 max-w-3xl text-base leading-7 text-graphite-600 sm:text-lg">
+                Uma plataforma digital para organizar comunicacoes, documentos, pendencias, notificacoes e acompanhamento administrativo relacionado as empresas de telecomunicacoes que utilizam infraestrutura compartilhada.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link href="/auth/login" className={buttonStyles("primary", "lg")}>
+                  Acessar portal
+                  <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                </Link>
+                <Link href="/auth/register" className={buttonStyles("outline", "lg")}>
+                  Solicitar acesso
+                </Link>
+              </div>
             </div>
-            <h1 className="mt-8 max-w-4xl text-4xl font-black tracking-normal text-graphite-950 sm:text-5xl lg:text-6xl">
-              Portal Telecom EDP
-            </h1>
-            <p className="mt-5 max-w-3xl text-xl font-semibold leading-8 text-brand-800 md:text-2xl">
-              Gestao centralizada de notificacoes, documentos e relacionamento com empresas compartilhantes.
-            </p>
-            <p className="mt-5 max-w-3xl text-base leading-7 text-graphite-600 sm:text-lg">
-              Uma plataforma digital para organizar comunicacoes, documentos, pendencias, notificacoes e acompanhamento administrativo relacionado as empresas de telecomunicacoes que utilizam infraestrutura compartilhada.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/auth/login" className={buttonStyles("primary", "lg")}>
-                Acessar portal
-                <ArrowRight className="h-5 w-5" aria-hidden="true" />
-              </Link>
-              <Link href="/auth/register" className={buttonStyles("outline", "lg")}>
-                Solicitar acesso
-              </Link>
+
+            <div className="landing-pole-visual relative min-h-[360px] overflow-hidden rounded-lg border border-brand-200 shadow-panel md:min-h-[460px]">
+              <div className="relative z-10 flex h-full min-h-[360px] flex-col justify-end p-6 md:min-h-[460px] md:p-8">
+                <div className="max-w-sm rounded-lg border border-white/15 bg-[#1f2e3e]/72 p-5 backdrop-blur">
+                  <p className="text-sm font-bold uppercase tracking-wide text-edp-300">
+                    Infraestrutura compartilhada
+                  </p>
+                  <p className="mt-3 text-2xl font-black leading-tight text-white">
+                    Gestao de comunicacoes vinculadas a ocupacoes em postes.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
           <div className="mt-12 grid gap-3 md:grid-cols-3">
             {[
-              ["Origem externa", "Recebimento futuro por API segura"],
-              ["Neon Database", "Usuarios, empresas, permissoes e auditoria"],
-              ["Vercel", "Estrutura pronta para deploy continuo"]
+              ["Comunicacoes oficiais", "Centralizacao de notificacoes e pendencias"],
+              ["Controle de acesso", "Perfis administrativos e empresariais"],
+              ["Gestao documental", "Documentos vinculados ao fluxo operacional"]
             ].map(([title, text]) => (
               <div
                 key={title}
@@ -181,8 +196,8 @@ export default function HomePage() {
             </h2>
           </div>
           <div className="grid gap-3">
-            {[
-              "Login real futuro com Neon Database e AUTH_SECRET.",
+            {[ 
+              "Autenticacao corporativa com controle de sessao e permissoes.",
               "Permissoes ADMIN, EMPRESA e VISUALIZADOR preparadas para RBAC.",
               "Registros de auditoria e logs de integracao planejados desde a arquitetura."
             ].map((item) => (

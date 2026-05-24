@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 const settings = [
   {
     title: "Autenticacao",
-    description: "Preparado para AUTH_SECRET, sessoes reais e Neon Database.",
+    description: "Preparado para sessoes reais, perfis de acesso e politicas administrativas.",
     icon: KeyRound
   },
   {

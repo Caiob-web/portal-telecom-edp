@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 const profileItems = [
   {
     label: "Empresa",
-    value: "Aguardando vinculo no Neon",
+    value: "Aguardando vinculo administrativo",
     icon: Building2
   },
   {
@@ -29,7 +29,7 @@ export default function CompanyProfilePage() {
   return (
     <DashboardShell
       title="Perfil da empresa"
-      subtitle="Dados cadastrais preparados para futura persistencia no Neon."
+      subtitle="Dados cadastrais preparados para administracao do portal."
     >
       <Card>
         <CardHeader>

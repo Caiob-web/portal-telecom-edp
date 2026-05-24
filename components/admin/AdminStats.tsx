@@ -8,7 +8,7 @@ export function AdminStats() {
       <StatCard
         title="Empresas cadastradas"
         value={mockAdminStats.totals.companies}
-        detail="Aguardando Neon"
+        detail="Aguardando cadastro"
         icon={Building2}
         tone="blue"
       />
