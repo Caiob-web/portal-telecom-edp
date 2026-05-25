@@ -204,3 +204,166 @@ a {
   background: #b7c2cd;
   border-radius: 999px;
 }
+
+.auth-screen {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(33, 255, 114, 0.16), transparent 26%),
+    radial-gradient(circle at 16% 88%, rgba(0, 183, 255, 0.12), transparent 32%),
+    linear-gradient(135deg, #0e1b29 0%, #132334 44%, #1b2d3f 100%);
+}
+
+.auth-visual-panel {
+  background:
+    linear-gradient(rgba(33, 255, 114, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 18% 22%, rgba(33, 255, 114, 0.18), transparent 27%),
+    radial-gradient(circle at 85% 16%, rgba(0, 183, 255, 0.16), transparent 28%),
+    linear-gradient(145deg, #132334 0%, #1b2d3f 55%, #0d1927 100%);
+  background-size:
+    44px 44px,
+    44px 44px,
+    auto,
+    auto,
+    auto;
+}
+
+.auth-visual-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(115deg, transparent 0 41%, rgba(33, 255, 114, 0.24) 41.1%, transparent 41.45%),
+    linear-gradient(32deg, transparent 0 54%, rgba(0, 183, 255, 0.16) 54.1%, transparent 54.42%),
+    linear-gradient(156deg, transparent 0 66%, rgba(255, 255, 255, 0.11) 66.1%, transparent 66.35%);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.auth-visual-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 72% 68%, rgba(33, 255, 114, 0.14), transparent 22%),
+    linear-gradient(180deg, transparent 0%, rgba(9, 18, 29, 0.42) 100%);
+  pointer-events: none;
+}
+
+.auth-network-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.auth-network-lines::before,
+.auth-network-lines::after {
+  content: "";
+  position: absolute;
+  height: 1px;
+  width: 58%;
+  background: linear-gradient(90deg, transparent, rgba(33, 255, 114, 0.52), transparent);
+  transform-origin: left center;
+}
+
+.auth-network-lines::before {
+  left: 12%;
+  top: 34%;
+  transform: rotate(-13deg);
+}
+
+.auth-network-lines::after {
+  bottom: 30%;
+  right: 8%;
+  transform: rotate(17deg);
+}
+
+.auth-node {
+  position: absolute;
+  display: block;
+  height: 12px;
+  width: 12px;
+  border-radius: 999px;
+  border: 2px solid rgba(33, 255, 114, 0.88);
+  background: #132334;
+  box-shadow: 0 0 26px rgba(33, 255, 114, 0.55);
+}
+
+.auth-node-one {
+  left: 16%;
+  top: 31%;
+}
+
+.auth-node-two {
+  right: 26%;
+  top: 25%;
+}
+
+.auth-node-three {
+  left: 36%;
+  bottom: 27%;
+}
+
+.auth-node-four {
+  right: 15%;
+  bottom: 36%;
+}
+
+.auth-floating-card {
+  box-shadow:
+    0 18px 45px rgba(2, 12, 22, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.auth-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 251, 0.96)) !important;
+  color: #132334 !important;
+}
+
+.theme-edp .auth-card .edp-logo-surface {
+  background: #ffffff !important;
+  color: #132334 !important;
+  box-shadow: 0 12px 28px rgba(19, 35, 52, 0.1);
+}
+
+.theme-edp .auth-card .text-graphite-950,
+.theme-edp .auth-card .text-graphite-900,
+.theme-edp .auth-card .text-graphite-800,
+.theme-edp .auth-card .text-graphite-700 {
+  color: #132334 !important;
+}
+
+.theme-edp .auth-card .text-graphite-600,
+.theme-edp .auth-card .text-graphite-500,
+.theme-edp .auth-card .text-graphite-400 {
+  color: #52616f !important;
+}
+
+.theme-edp .auth-card input,
+.theme-edp .auth-card select,
+.theme-edp .auth-card .auth-input {
+  background-color: #f7fafb !important;
+  border-color: #cfdbe5 !important;
+  color: #132334 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+.theme-edp .auth-card input::placeholder {
+  color: #8a96a3 !important;
+}
+
+.theme-edp .auth-card input:focus,
+.theme-edp .auth-card select:focus,
+.theme-edp .auth-card .auth-input:focus {
+  border-color: #21c866 !important;
+  box-shadow:
+    0 0 0 4px rgba(33, 255, 114, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
+}
+
+.theme-edp .auth-card input[type="checkbox"] {
+  background-color: #ffffff !important;
+  border-color: #aebdca !important;
+  color: #127a45 !important;
+  box-shadow: none !important;
+}
