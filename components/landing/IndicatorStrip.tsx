@@ -1,10 +1,10 @@
 import { Building2, FileText, MapPinned, RadioTower, ShieldCheck } from "lucide-react";
 
 const indicators = [
-  { label: "28 municipios atendidos", icon: MapPinned },
-  { label: "3 regioes operacionais", icon: Building2 },
-  { label: "Notificacoes centralizadas", icon: RadioTower },
-  { label: "Documentos vinculados", icon: FileText },
+  { label: "Area de concessao protegida", icon: MapPinned },
+  { label: "Empresas autorizadas", icon: Building2 },
+  { label: "Comunicacoes oficiais", icon: RadioTower },
+  { label: "Documentos autenticados", icon: FileText },
   { label: "Acesso empresarial controlado", icon: ShieldCheck }
 ];
 

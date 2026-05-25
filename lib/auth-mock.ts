@@ -24,7 +24,7 @@ const mockUsers: Array<MockSession["user"] & { password: string }> = [
     name: "Maria Operacoes",
     email: "empresa@teste.com",
     password: "empresa123",
-    role: "EMPRESA",
+    role: "COMPANY_USER",
     companyName: "TELEFONICA BRASIL S.A."
   }
 ];

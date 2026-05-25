@@ -1,12 +1,26 @@
 # Portal Telecom EDP
 
-Portal web corporativo para gestao centralizada de notificacoes, documentos, empresas compartilhantes e area administrativa da operacao de telecom.
+Portal web corporativo para gestao centralizada de empresas compartilhantes, solicitacoes de acesso, notificacoes, documentos e area administrativa da operacao de telecom.
 
 ## Fase atual
 
-Estrutura visual e navegacao preparada.
+Estrutura visual, navegacao e primeira integracao real com Neon Database para solicitacoes de acesso.
 
-Nesta etapa o portal nao possui dados reais, nao possui integracao ativa e nao conecta ao Neon Database. As telas exibem estados vazios profissionais enquanto aguardam as proximas integracoes.
+Nesta etapa ja esta funcional:
+
+- Cadastro de empresa e usuario em `/auth/register`
+- Gravacao em `companies`, `users`, `access_requests` e `audit_logs`
+- Hash de senha com `bcryptjs`
+- Listagem administrativa de empresas em `/admin/companies`
+- Listagem administrativa de solicitacoes em `/admin/users`
+- Estados vazios quando `DATABASE_URL` nao estiver configurada
+
+Ainda nao esta implementado:
+
+- Login real com usuarios do Neon
+- Aprovacao/reprovacao administrativa
+- Integracao com origem externa de notificacoes
+- Upload, leitura ou armazenamento real de PDFs
 
 ## Stack
 
@@ -14,13 +28,17 @@ Nesta etapa o portal nao possui dados reais, nao possui integracao ativa e nao c
 - TypeScript
 - React
 - Tailwind CSS
+- Neon Database/PostgreSQL
+- `@neondatabase/serverless`
+- `bcryptjs`
 - lucide-react
-- Estrutura pronta para deploy na Vercel
+- Deploy preparado para Vercel
 
 ## Como rodar localmente
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
@@ -37,20 +55,9 @@ npm run build
 npm run start
 ```
 
-## Autenticacao temporaria
-
-Ainda nao existe autenticacao real. O arquivo `lib/auth-mock.ts` permite apenas navegacao local:
-
-```text
-admin@edp.com / admin123 -> /admin
-empresa@teste.com / empresa123 -> /dashboard
-```
-
-Na proxima fase, esse fluxo deve ser substituido por login real com Neon Database, senhas criptografadas, sessoes e RBAC.
-
 ## Variaveis de ambiente
 
-Use `.env.example` como referencia quando as integracoes reais forem iniciadas:
+Use `.env.example` como referencia:
 
 ```env
 DATABASE_URL=
@@ -63,11 +70,72 @@ BLOB_READ_WRITE_TOKEN=
 
 Nao inclua credenciais, tokens ou connection strings reais no repositorio.
 
+## Banco de dados
+
+Para usar Neon localmente:
+
+1. Crie um banco no Neon.
+2. Copie a `DATABASE_URL` do projeto Neon.
+3. Crie `.env.local` na raiz do projeto.
+4. Insira `DATABASE_URL=` com a connection string real.
+5. Abra o SQL Editor do Neon.
+6. Execute o conteudo de [db/schema.sql](./db/schema.sql).
+7. Rode `npm run dev`.
+8. Teste o cadastro em `/auth/register`.
+
+Para Vercel:
+
+1. Acesse o projeto na Vercel.
+2. Abra `Project Settings`.
+3. Entre em `Environment Variables`.
+4. Adicione `DATABASE_URL`.
+5. Faca um novo deploy.
+
+## Cadastro de acesso
+
+O formulario em `/auth/register` envia os dados para:
+
+```text
+POST /api/auth/register
+```
+
+O endpoint:
+
+- Valida campos obrigatorios
+- Normaliza e-mail
+- Remove mascara do CNPJ
+- Verifica CNPJ duplicado
+- Verifica e-mail duplicado
+- Gera hash da senha
+- Cria empresa
+- Cria usuario pendente
+- Cria solicitacao de acesso pendente
+- Registra auditoria com `ACCESS_REQUEST_CREATED`
+
+Respostas principais:
+
+- `201`: solicitacao criada
+- `400`: erro de validacao
+- `409`: CNPJ ou e-mail duplicado
+- `500`: erro interno ou banco indisponivel
+
+## Autenticacao temporaria
+
+O login real ainda nao foi conectado aos usuarios do Neon. O arquivo `lib/auth-mock.ts` segue apenas para navegacao local:
+
+```text
+admin@edp.com / admin123 -> /admin
+empresa@teste.com / empresa123 -> /dashboard
+```
+
+Esse fluxo sera substituido por autenticacao real em fase posterior.
+
 ## Rotas principais
 
-- `/` Landing page institucional
+- `/` Landing page institucional sem dados operacionais publicos
 - `/auth/login` Login temporario para navegacao
-- `/auth/register` Solicitacao visual de acesso
+- `/auth/register` Solicitacao real de acesso
+- `/api/auth/register` API server-side de cadastro
 - `/dashboard` Dashboard da empresa
 - `/dashboard/notifications` Notificacoes da empresa
 - `/dashboard/notifications/[id]` Estado de detalhe preparado
@@ -75,8 +143,8 @@ Nao inclua credenciais, tokens ou connection strings reais no repositorio.
 - `/dashboard/map` Area de concessao
 - `/dashboard/profile` Perfil da empresa
 - `/admin` Painel administrativo
-- `/admin/companies` Empresas
-- `/admin/users` Usuarios
+- `/admin/companies` Empresas reais do Neon
+- `/admin/users` Solicitacoes reais de acesso
 - `/admin/notifications` Notificacoes administrativas
 - `/admin/documents` Documentos administrativos
 - `/admin/integrations` Integracoes e origem das notificacoes
@@ -85,54 +153,36 @@ Nao inclua credenciais, tokens ou connection strings reais no repositorio.
 ## Estrutura
 
 ```text
-app/                  Rotas do App Router
+app/                  Rotas do App Router e route handlers
+components/auth/      Telas e formularios de autenticacao
 components/brand/     Logo e componentes de marca
 components/layout/    Shells, headers e navegacao
+components/landing/   Landing page institucional
 components/ui/        Design system reutilizavel
 components/dashboard/ Componentes da area da empresa
 components/admin/     Componentes administrativos
 data/                 Listas estruturais e colecoes vazias
-lib/                  Auth temporario, DB placeholder, notificacoes e utils
-types/                Contratos TypeScript para Neon, RBAC e notificacoes
+db/                   Schema SQL para Neon/PostgreSQL
+lib/                  DB, auth temporario, notificacoes e utils
+types/                Contratos TypeScript para banco, RBAC e notificacoes
 public/               Assets visuais, favicon e logo EDP
 ```
 
-## Arquitetura de notificacoes
+## Seguranca
 
-Arquivos preparados:
-
-- `types/notification.ts`
-- `lib/notifications.ts`
-- `lib/integrations/notification-source.ts`
-
-Esses arquivos deixam o contrato pronto para receber notificacoes por API externa, validar payload, mapear para o modelo interno e vincular cada registro a uma empresa. A origem inicial prevista para etapa futura e a API Base44, mas ela nao e uma pagina ou modulo do usuario final.
-
-## Preparacao Neon Database
-
-`lib/db.ts` contem apenas o placeholder de conexao futura via `DATABASE_URL`.
-
-`types/database.ts` modela:
-
-- `User`
-- `Company`
-- `UserRole`
-- `UserStatus`
-- `Notification`
-- `NotificationStatus`
-- `Document`
-- `AuditLog`
+- `DATABASE_URL` e secrets ficam apenas em variaveis de ambiente.
+- `.env` e `.env*.local` estao ignorados pelo Git.
+- Queries usam parametros.
+- Senhas sao persistidas somente como hash.
+- `password_hash` nao e retornado por APIs.
+- Consultas ao banco rodam somente server-side.
+- A landing publica nao exibe painel operacional, metricas internas ou dados administrativos.
 
 ## Proximas fases
 
-1. Integracao com Neon Database para autenticacao.
-2. Integracao com API externa de notificacoes.
-3. Persistencia de notificacoes e documentos.
-4. Upload e armazenamento de PDFs.
-5. Auditoria, rastreabilidade e permissoes reais.
-6. Deploy final na Vercel com variaveis de ambiente.
-
-## Seguranca
-
-- Nao ha secrets no codigo.
-- `.env` e `.env*.local` estao ignorados pelo Git.
-- O portal exibe estados vazios enquanto nao houver integracao ativa.
+1. Autenticacao real com usuarios aprovados.
+2. Fluxo administrativo de aprovacao/rejeicao de solicitacoes.
+3. Integracao com origem externa de notificacoes.
+4. Persistencia de notificacoes e documentos.
+5. Upload e armazenamento de PDFs.
+6. Auditoria, rastreabilidade e permissoes reais.

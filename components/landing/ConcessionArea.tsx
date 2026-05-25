@@ -59,7 +59,7 @@ export function ConcessionArea() {
               Area de concessao EDP
             </h2>
             <p className="mt-4 text-lg leading-8 text-[#4b5b66]">
-              28 municipios da area de concessao — Vale do Paraiba, Alto Tiete e Vale Historico.
+              Municipios da area de concessao - Vale do Paraiba, Alto Tiete e Vale Historico.
             </p>
 
             <div className="concession-abstract-map relative mt-8 min-h-[300px] overflow-hidden rounded-[28px] border border-[#dde6ea] bg-[#f5f8fa] p-6">
@@ -87,7 +87,7 @@ export function ConcessionArea() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-xl font-black text-[#142638]">{region.name}</h3>
                   <span className="w-fit rounded-full border border-[#d4eee0] bg-white px-3 py-1 text-xs font-black uppercase tracking-wide text-[#128746]">
-                    {region.municipalities.length} municipios
+                    Regiao operacional
                   </span>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">

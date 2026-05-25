@@ -2,8 +2,11 @@ import { CompaniesTable } from "@/components/admin/CompaniesTable";
 import { AdminShell } from "@/components/layout/AdminShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { getCompaniesForAdmin } from "@/lib/admin-data";
 
-export default function AdminCompaniesPage() {
+export default async function AdminCompaniesPage() {
+  const companiesResult = await getCompaniesForAdmin();
+
   return (
     <AdminShell
       title="Empresas"
@@ -22,7 +25,11 @@ export default function AdminCompaniesPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <CompaniesTable />
+          <CompaniesTable
+            companies={companiesResult.rows}
+            configured={companiesResult.configured}
+            error={companiesResult.error}
+          />
         </CardContent>
       </Card>
     </AdminShell>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, LockKeyhole } from "lucide-react";
-import { PortalPreview } from "@/components/landing/PortalPreview";
+import { SecureAccessPanel } from "@/components/landing/SecureAccessPanel";
 
 const trustItems = [
   "Acesso restrito",
@@ -51,7 +51,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <PortalPreview />
+        <SecureAccessPanel />
       </div>
     </section>
   );

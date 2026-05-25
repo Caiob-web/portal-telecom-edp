@@ -1,35 +1,88 @@
-import { Building2 } from "lucide-react";
+import { Building2, Database } from "lucide-react";
+import type { AdminCompanyRow } from "@/lib/admin-data";
+import { formatDate } from "@/lib/utils";
+import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/Table";
 
-export function CompaniesTable() {
+const statusLabel: Record<AdminCompanyRow["status"], string> = {
+  PENDING: "Pendente",
+  APPROVED: "Aprovada",
+  BLOCKED: "Bloqueada",
+  INACTIVE: "Inativa"
+};
+
+export function CompaniesTable({
+  companies,
+  configured,
+  error
+}: {
+  companies: AdminCompanyRow[];
+  configured: boolean;
+  error?: string;
+}) {
+  if (!configured) {
+    return (
+      <EmptyState
+        icon={Database}
+        title="Banco de dados nao configurado"
+        description="Configure a variavel DATABASE_URL para carregar empresas do Neon."
+      />
+    );
+  }
+
+  if (error) {
+    return (
+      <EmptyState
+        icon={Database}
+        title="Nao foi possivel carregar empresas"
+        description={error}
+      />
+    );
+  }
+
+  if (!companies.length) {
+    return (
+      <EmptyState
+        icon={Building2}
+        title="Nenhuma empresa cadastrada"
+        description="As empresas aparecerao aqui quando solicitacoes reais forem enviadas pelo cadastro."
+      />
+    );
+  }
+
   return (
-    <div className="space-y-4">
-      <Table>
-        <THead>
-          <TR>
-            <TH>Empresa</TH>
-            <TH>CNPJ</TH>
-            <TH>E-mail principal</TH>
-            <TH>Status</TH>
-            <TH>Usuarios</TH>
-            <TH>Notificacoes</TH>
-            <TH>Ultimo acesso</TH>
-            <TH className="text-right">Acoes</TH>
-          </TR>
-        </THead>
-        <TBody>
-          <TR>
-            <TD colSpan={8} className="whitespace-normal p-0">
-              <EmptyState
-                icon={Building2}
-                title="Nenhuma empresa cadastrada"
-                description="As empresas reais serao exibidas aqui quando o cadastro administrativo estiver ativo."
-              />
+    <Table>
+      <THead>
+        <TR>
+          <TH>Razao social</TH>
+          <TH>Nome fantasia</TH>
+          <TH>CNPJ</TH>
+          <TH>E-mail principal</TH>
+          <TH>Telefone</TH>
+          <TH>Municipio principal</TH>
+          <TH>Status</TH>
+          <TH>Data de cadastro</TH>
+        </TR>
+      </THead>
+      <TBody>
+        {companies.map((company) => (
+          <TR key={company.id}>
+            <TD className="font-semibold text-graphite-950">{company.legalName}</TD>
+            <TD>{company.tradeName || "-"}</TD>
+            <TD>{company.cnpj}</TD>
+            <TD>{company.mainEmail}</TD>
+            <TD>{company.phone || "-"}</TD>
+            <TD>{company.mainCity || "-"}</TD>
+            <TD>
+              <Badge variant={company.status === "PENDING" ? "amber" : "gray"}>
+                {statusLabel[company.status]}
+              </Badge>
             </TD>
+            <TD>{formatDate(company.createdAt)}</TD>
           </TR>
-        </TBody>
-      </Table>
-    </div>
+        ))}
+      </TBody>
+    </Table>
   );
 }

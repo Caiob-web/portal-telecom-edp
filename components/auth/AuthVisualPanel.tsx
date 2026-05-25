@@ -83,7 +83,7 @@ export function AuthVisualPanel({
 
       <div className="relative z-10 mt-12 grid gap-3 sm:grid-cols-3">
         {[
-          ["Concessao EDP", "28 municipios"],
+          ["Concessao EDP", "area protegida"],
           ["Comunicacoes", "notificacoes oficiais"],
           ["Controle", "historico previsto"]
         ].map(([label, value]) => (

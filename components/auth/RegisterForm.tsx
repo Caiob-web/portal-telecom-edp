@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import {
+  AlertCircle,
   Building2,
   CheckCircle2,
   FileText,
@@ -23,10 +24,83 @@ import { municipalities } from "@/data/municipalities";
 export function RegisterForm() {
   const [company, setCompany] = useState(registrationCompanies[0]);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    setError("");
+
+    const formData = new FormData(event.currentTarget);
+    const selectedCompany = String(formData.get("company") ?? "");
+    const otherCompany = String(formData.get("otherCompany") ?? "").trim();
+    const companyLegalName =
+      selectedCompany === "OUTRA EMPRESA" ? otherCompany : selectedCompany;
+    const password = String(formData.get("password") ?? "");
+    const confirmPassword = String(formData.get("confirmPassword") ?? "");
+    const cnpj = String(formData.get("cnpj") ?? "");
+    const cnpjDigits = cnpj.replace(/\D/g, "");
+
+    if (!companyLegalName) {
+      setError("Informe a empresa contratante.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("A senha deve ter no minimo 6 caracteres.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("As senhas informadas nao conferem.");
+      return;
+    }
+
+    if (cnpjDigits.length !== 14) {
+      setError("Informe um CNPJ valido com 14 digitos.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          fullName: String(formData.get("name") ?? ""),
+          email: String(formData.get("email") ?? ""),
+          password,
+          confirmPassword,
+          companyLegalName,
+          companyTradeName: String(formData.get("companyTradeName") ?? ""),
+          cnpj,
+          phone: String(formData.get("phone") ?? ""),
+          mainCity: String(formData.get("city") ?? ""),
+          companyType: "TELECOM"
+        })
+      });
+
+      const data = (await response.json().catch(() => null)) as {
+        message?: string;
+      } | null;
+
+      if (!response.ok) {
+        setError(
+          data?.message ??
+            "Nao foi possivel enviar a solicitacao. Tente novamente."
+        );
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError("Nao foi possivel enviar a solicitacao. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {
@@ -164,6 +238,15 @@ export function RegisterForm() {
           />
         </Field>
 
+        <Field icon={Building2} label="Nome fantasia (opcional)" htmlFor="companyTradeName">
+          <Input
+            id="companyTradeName"
+            name="companyTradeName"
+            placeholder="Nome comercial da empresa"
+            className="auth-input h-12 rounded-xl pl-11"
+          />
+        </Field>
+
         <Field icon={Phone} label="Telefone" htmlFor="phone">
           <Input
             id="phone"
@@ -214,14 +297,24 @@ export function RegisterForm() {
           </Field>
         ) : null}
 
+        {error ? (
+          <div className="md:col-span-2">
+            <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+              <p>{error}</p>
+            </div>
+          </div>
+        ) : null}
+
         <div className="md:col-span-2">
           <Button
             type="submit"
             size="lg"
+            disabled={loading}
             className="h-12 rounded-xl bg-[#21ff72] px-6 text-base font-black text-[#102233] shadow-[0_18px_36px_rgba(33,255,114,0.28)] hover:bg-[#12df5f]"
           >
             <Send className="h-5 w-5" aria-hidden="true" />
-            Enviar solicitacao
+            {loading ? "Enviando solicitacao..." : "Enviar solicitacao"}
           </Button>
         </div>
       </form>
