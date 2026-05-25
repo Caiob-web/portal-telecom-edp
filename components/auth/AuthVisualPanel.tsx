@@ -55,10 +55,10 @@ export function AuthVisualPanel({
           Portal Telecom EDP
         </h1>
         <p className="mt-5 max-w-2xl text-lg font-semibold leading-8 text-edp-300 sm:text-xl">
-          Acesso empresarial para gestao de notificacoes, documentos e comunicacoes com empresas compartilhantes.
+          Acesso restrito para empresas compartilhantes autorizadas.
         </p>
         <p className="mt-4 max-w-2xl text-base leading-7 text-white/68">
-          Ambiente corporativo para organizar comunicacoes oficiais, acompanhar pendencias e manter rastreabilidade sobre processos relacionados a ocupacoes em postes.
+          Ambiente corporativo para organizar notificacoes oficiais, documentos, acompanhamento administrativo e rastreabilidade sobre processos relacionados a ocupacoes em postes.
         </p>
       </div>
 
@@ -83,17 +83,17 @@ export function AuthVisualPanel({
 
       <div className="relative z-10 mt-12 grid gap-3 sm:grid-cols-3">
         {[
-          ["28", "municipios atendidos"],
-          ["24h", "canal digital preparado"],
-          ["100%", "fluxo rastreavel"]
-        ].map(([value, label]) => (
+          ["Concessao EDP", "28 municipios"],
+          ["Comunicacoes", "notificacoes oficiais"],
+          ["Controle", "historico previsto"]
+        ].map(([label, value]) => (
           <div
             key={label}
             className="rounded-xl border border-white/10 bg-[#132334]/50 p-4 backdrop-blur"
           >
-            <p className="text-2xl font-black text-edp-300">{value}</p>
+            <p className="text-sm font-black text-edp-300">{label}</p>
             <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-white/55">
-              {label}
+              {value}
             </p>
           </div>
         ))}
