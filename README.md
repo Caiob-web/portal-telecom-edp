@@ -181,7 +181,7 @@ public/               Assets visuais, favicon e logo EDP
 ## Próximas fases
 
 1. Autenticação real com usuários aprovados.
-2. Fluxo administrativo de aprovacao/rejeicao de solicitações.
+2. Fluxo administrativo de aprovação/rejeição de solicitações.
 3. Integração com origem externa de notificações.
 4. Persistência de notificações e documentos.
 5. Upload e armazenamento de PDFs.

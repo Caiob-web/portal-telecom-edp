@@ -25,7 +25,7 @@ export default function AdminSettingsPage() {
   return (
     <AdminShell
       title="Configurações"
-      subtitle="Parametros estruturais do portal para futuras integrações."
+      subtitle="Parâmetros estruturais do portal para futuras integrações."
     >
       <div className="grid gap-4 md:grid-cols-3">
         {settings.map((setting) => {

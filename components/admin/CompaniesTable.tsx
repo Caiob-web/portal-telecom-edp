@@ -26,7 +26,7 @@ export function CompaniesTable({
       <EmptyState
         icon={Database}
         title="Banco de dados não configurado"
-        description="Configure a variavel DATABASE_URL para carregar empresas do Neon."
+        description="Configure a variável DATABASE_URL para carregar empresas do Neon."
       />
     );
   }
@@ -55,7 +55,7 @@ export function CompaniesTable({
     <Table>
       <THead>
         <TR>
-          <TH>Razao social</TH>
+          <TH>Razão social</TH>
           <TH>Nome fantasia</TH>
           <TH>CNPJ</TH>
           <TH>E-mail principal</TH>

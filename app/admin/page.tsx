@@ -42,7 +42,7 @@ export default function AdminPage() {
                 <EmptyState
                   icon={Inbox}
                   title="Sem dados para gráfico"
-                  description="Nenhuma notificação real foi recebida ate o momento."
+                  description="Nenhuma notificação real foi recebida até o momento."
                 />
               </div>
             </CardContent>
@@ -55,7 +55,7 @@ export default function AdminPage() {
             <CardContent>
               <EmptyState
                 icon={Building2}
-                title="Nenhuma pendencia registrada"
+                title="Nenhuma pendência registrada"
                 description="Pendências por empresa serão calculadas após a integração de notificações e cadastro de empresas."
               />
             </CardContent>

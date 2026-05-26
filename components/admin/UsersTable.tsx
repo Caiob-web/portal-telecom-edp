@@ -25,7 +25,7 @@ export function UsersTable({
       <EmptyState
         icon={Database}
         title="Banco de dados não configurado"
-        description="Configure a variavel DATABASE_URL para carregar solicitações de acesso do Neon."
+        description="Configure a variável DATABASE_URL para carregar solicitações de acesso do Neon."
       />
     );
   }
