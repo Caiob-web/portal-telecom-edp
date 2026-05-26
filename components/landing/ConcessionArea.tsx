@@ -2,7 +2,7 @@ import { MapPinned } from "lucide-react";
 
 const regions = [
   {
-    name: "Vale do Paraiba",
+    name: "Vale do Paraíba",
     municipalities: [
       "SAO JOSE DOS CAMPOS",
       "TAUBATE",
@@ -16,7 +16,7 @@ const regions = [
     ]
   },
   {
-    name: "Alto Tiete",
+    name: "Alto Tietê",
     municipalities: [
       "GUARULHOS",
       "MOGI DAS CRUZES",
@@ -30,7 +30,7 @@ const regions = [
     ]
   },
   {
-    name: "Vale Historico",
+    name: "Vale Histórico",
     municipalities: [
       "GUARATINGUETA",
       "CARAGUATATUBA",
@@ -48,18 +48,18 @@ const regions = [
 
 export function ConcessionArea() {
   return (
-    <section id="concessao" className="bg-white px-4 py-16 sm:px-6">
+    <section id="concessão" className="bg-white px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div>
             <p className="text-sm font-black uppercase tracking-wide text-[#128746]">
-              Area de concessao
+              Área de concessão
             </p>
             <h2 className="mt-3 text-3xl font-black leading-tight text-[#142638] sm:text-4xl">
-              Area de concessao EDP
+              Área de concessão EDP
             </h2>
             <p className="mt-4 text-lg leading-8 text-[#4b5b66]">
-              Municipios da area de concessao - Vale do Paraiba, Alto Tiete e Vale Historico.
+              Municípios da área de concessão - Vale do Paraíba, Alto Tietê e Vale Histórico.
             </p>
 
             <div className="concession-abstract-map relative mt-8 min-h-[300px] overflow-hidden rounded-[28px] border border-[#dde6ea] bg-[#f5f8fa] p-6">
@@ -69,10 +69,10 @@ export function ConcessionArea() {
                   <MapPinned className="h-7 w-7" aria-hidden="true" />
                 </div>
                 <p className="mt-20 max-w-sm text-2xl font-black leading-tight text-[#142638]">
-                  Visual leve, preparado para evoluir com camadas geograficas.
+                  Visual leve, preparado para evoluir com camadas geográficas.
                 </p>
                 <p className="mt-3 max-w-sm leading-7 text-[#60717d]">
-                  Nesta etapa, o portal apresenta a abrangencia institucional sem carregar mapa pesado.
+                  Nesta etapa, o portal apresenta a abrangência institucional sem carregar mapa pesado.
                 </p>
               </div>
             </div>
@@ -87,7 +87,7 @@ export function ConcessionArea() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-xl font-black text-[#142638]">{region.name}</h3>
                   <span className="w-fit rounded-full border border-[#d4eee0] bg-white px-3 py-1 text-xs font-black uppercase tracking-wide text-[#128746]">
-                    Regiao operacional
+                    Região operacional
                   </span>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">

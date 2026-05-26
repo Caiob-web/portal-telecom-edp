@@ -10,7 +10,7 @@ export default function DashboardPage() {
   return (
     <DashboardShell
       title="Dashboard da empresa"
-      subtitle="Visao geral da area da empresa compartilhante."
+      subtitle="Visão geral da área da empresa compartilhante."
     >
       <div className="space-y-6">
         <CompanySummaryCards />
@@ -20,9 +20,9 @@ export default function DashboardPage() {
             <CardHeader>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <CardTitle>Ultimas notificacoes</CardTitle>
+                  <CardTitle>Últimas notificações</CardTitle>
                   <p className="mt-1 text-sm text-graphite-500">
-                    As comunicacoes reais aparecerao automaticamente apos a integracao da origem externa.
+                    As comunicações reais aparecerão automaticamente após a integração da origem externa.
                   </p>
                 </div>
                 <Link
@@ -43,19 +43,19 @@ export default function DashboardPage() {
             {[
               {
                 title: "Documentos",
-                text: "PDFs e anexos vinculados as notificacoes serao exibidos aqui quando recebidos.",
+                text: "PDFs e anexos vinculados às notificações serão exibidos aqui quando recebidos.",
                 href: "/dashboard/documents",
                 icon: FileText
               },
               {
                 title: "Mapa",
-                text: "28 municipios da area de concessao preparados para mapa real.",
+                text: "28 municípios da área de concessão preparados para mapa real.",
                 href: "/dashboard/map",
                 icon: MapPinned
               },
               {
                 title: "Perfil",
-                text: "Dados cadastrais serao carregados pela autenticacao real.",
+                text: "Dados cadastrais serão carregados pela autenticação real.",
                 href: "/dashboard/profile",
                 icon: ClipboardList
               }

@@ -25,7 +25,7 @@ export function CompaniesTable({
     return (
       <EmptyState
         icon={Database}
-        title="Banco de dados nao configurado"
+        title="Banco de dados não configurado"
         description="Configure a variavel DATABASE_URL para carregar empresas do Neon."
       />
     );
@@ -35,7 +35,7 @@ export function CompaniesTable({
     return (
       <EmptyState
         icon={Database}
-        title="Nao foi possivel carregar empresas"
+        title="Não foi possível carregar empresas"
         description={error}
       />
     );
@@ -46,7 +46,7 @@ export function CompaniesTable({
       <EmptyState
         icon={Building2}
         title="Nenhuma empresa cadastrada"
-        description="As empresas aparecerao aqui quando solicitacoes reais forem enviadas pelo cadastro."
+        description="As empresas aparecerão aqui quando solicitações reais forem enviadas pelo cadastro."
       />
     );
   }
@@ -60,7 +60,7 @@ export function CompaniesTable({
           <TH>CNPJ</TH>
           <TH>E-mail principal</TH>
           <TH>Telefone</TH>
-          <TH>Municipio principal</TH>
+          <TH>Município principal</TH>
           <TH>Status</TH>
           <TH>Data de cadastro</TH>
         </TR>

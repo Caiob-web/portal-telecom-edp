@@ -9,7 +9,7 @@ export function DocumentsTable() {
         <TR>
           <TH>Documento</TH>
           <TH>Empresa vinculada</TH>
-          <TH>Municipio</TH>
+          <TH>Município</TH>
           <TH>Upload</TH>
           <TH>Origem</TH>
           <TH>Status</TH>
@@ -23,7 +23,7 @@ export function DocumentsTable() {
             <EmptyState
               icon={FileText}
               title="Nenhum documento disponivel"
-              description="PDFs, anexos e uploads administrativos aparecerao aqui quando a integracao e o armazenamento forem configurados."
+              description="PDFs, anexos e uploads administrativos aparecerão aqui quando a integração e o armazenamento forem configurados."
             />
           </TD>
         </TR>

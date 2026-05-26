@@ -34,12 +34,12 @@ export function LoginForm() {
     const submittedEmail = String(formData.get("email") ?? email);
     const submittedPassword = String(formData.get("password") ?? password);
 
-    // Mock temporario para navegacao local. Futuramente sera substituido pela autenticacao real do portal.
+    // Mock temporário para navegação local. Futuramente será substituído pela autenticação real do portal.
     const session = await mockLogin(submittedEmail, submittedPassword);
     setLoading(false);
 
     if (!session) {
-      setError("Nao foi possivel validar as credenciais informadas.");
+      setError("Não foi possível validar as credenciais informadas.");
       return;
     }
 
@@ -67,7 +67,7 @@ export function LoginForm() {
           Acesse sua conta
         </h2>
         <p className="mt-3 text-base leading-7 text-[#52616f]">
-          Portal exclusivo para empresas autorizadas acompanharem notificacoes, documentos e comunicacoes oficiais.
+          Portal exclusivo para empresas autorizadas acompanharem notificações, documentos e comunicações oficiais.
         </p>
         <p className="mt-2 text-sm font-semibold text-[#74818e]">
           Use suas credenciais corporativas para continuar.
@@ -169,7 +169,7 @@ export function LoginForm() {
 
       <div className="mt-8 rounded-2xl border border-[#e3eaf0] bg-[#f7fafb] p-4 text-center">
         <p className="text-sm font-semibold text-[#52616f]">
-          Ainda nao possui acesso?{" "}
+          Ainda não possui acesso?{" "}
           <Link href="/auth/register" className="font-black text-[#127a45] hover:text-[#0d5d35]">
             Solicitar cadastro
           </Link>

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import type { PoolClient } from "@neondatabase/serverless";
-import { withTransaction } from "@/lib/db";
+import { DatabaseConfigurationError, withTransaction } from "@/lib/db";
+
+export const runtime = "nodejs";
 
 interface RegisterPayload {
   fullName: string;
@@ -61,23 +63,23 @@ function validatePayload(input: Record<string, unknown>): RegisterPayload {
     !payload.phone ||
     !payload.mainCity
   ) {
-    throw new RequestError("Preencha todos os campos obrigatorios.", 400);
+    throw new RequestError("Preencha todos os campos obrigatórios.", 400);
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
-    throw new RequestError("Informe um e-mail valido.", 400);
+    throw new RequestError("Informe um e-mail válido.", 400);
   }
 
   if (payload.password.length < 6) {
-    throw new RequestError("A senha deve ter no minimo 6 caracteres.", 400);
+    throw new RequestError("A senha deve ter no mínimo 6 caracteres.", 400);
   }
 
   if (payload.password !== payload.confirmPassword) {
-    throw new RequestError("As senhas informadas nao conferem.", 400);
+    throw new RequestError("As senhas informadas não conferem.", 400);
   }
 
   if (payload.cnpj.length !== 14) {
-    throw new RequestError("Informe um CNPJ valido com 14 digitos.", 400);
+    throw new RequestError("Informe um CNPJ válido com 14 dígitos.", 400);
   }
 
   return payload;
@@ -94,7 +96,7 @@ async function ensureUniqueCompanyAndUser(
   );
 
   if (companyExists.rowCount) {
-    throw new RequestError("Ja existe uma empresa cadastrada com este CNPJ.", 409);
+    throw new RequestError("Já existe uma empresa cadastrada com este CNPJ.", 409);
   }
 
   const userExists = await client.query<{ id: string }>(
@@ -103,7 +105,25 @@ async function ensureUniqueCompanyAndUser(
   );
 
   if (userExists.rowCount) {
-    throw new RequestError("Ja existe um usuario cadastrado com este e-mail.", 409);
+    throw new RequestError("Já existe um usuário cadastrado com este e-mail.", 409);
+  }
+}
+
+function isDatabaseUniqueViolation(
+  error: unknown
+): error is { code: "23505"; constraint?: string } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "23505"
+  );
+}
+
+function logUnexpectedRegisterError(error: unknown) {
+  if (process.env.NODE_ENV !== "production") {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("[register] Unexpected registration error:", message);
   }
 }
 
@@ -114,7 +134,7 @@ export async function POST(request: Request) {
     body = (await request.json()) as Record<string, unknown>;
   } catch {
     return NextResponse.json(
-      { message: "Payload invalido." },
+      { message: "Payload inválido." },
       { status: 400 }
     );
   }
@@ -192,7 +212,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message:
-          "Solicitacao enviada com sucesso. O acesso sera analisado pela administracao do portal."
+          "Solicitação enviada com sucesso. O acesso será analisado pela administração do portal."
       },
       { status: 201 }
     );
@@ -204,20 +224,41 @@ export async function POST(request: Request) {
       );
     }
 
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "23505"
-    ) {
+    if (error instanceof DatabaseConfigurationError) {
       return NextResponse.json(
-        { message: "Ja existe um cadastro com os dados informados." },
+        {
+          message:
+            "Banco de dados não configurado. Verifique a variável DATABASE_URL."
+        },
+        { status: 500 }
+      );
+    }
+
+    if (isDatabaseUniqueViolation(error)) {
+      if (error.constraint === "companies_cnpj_key") {
+        return NextResponse.json(
+          { message: "Já existe uma empresa cadastrada com este CNPJ." },
+          { status: 409 }
+        );
+      }
+
+      if (error.constraint === "users_email_key") {
+        return NextResponse.json(
+          { message: "Já existe um usuário cadastrado com este e-mail." },
+          { status: 409 }
+        );
+      }
+
+      return NextResponse.json(
+        { message: "Já existe um cadastro com os dados informados." },
         { status: 409 }
       );
     }
 
+    logUnexpectedRegisterError(error);
+
     return NextResponse.json(
-      { message: "Nao foi possivel enviar a solicitacao. Tente novamente." },
+      { message: "Erro interno ao processar solicitação." },
       { status: 500 }
     );
   }

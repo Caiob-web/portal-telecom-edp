@@ -12,13 +12,13 @@ import { EDPLogo } from "@/components/brand/EDPLogo";
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { label: "Visao geral", href: "/admin", icon: LayoutDashboard },
+  { label: "Visão geral", href: "/admin", icon: LayoutDashboard },
   { label: "Empresas", href: "/admin/companies", icon: Building2 },
-  { label: "Usuarios", href: "/admin/users", icon: UsersRound },
-  { label: "Notificacoes", href: "/admin/notifications", icon: BellDot },
+  { label: "Usuários", href: "/admin/users", icon: UsersRound },
+  { label: "Notificações", href: "/admin/notifications", icon: BellDot },
   { label: "Documentos", href: "/admin/documents", icon: FileStack },
-  { label: "Integracoes", href: "/admin/integrations", icon: PlugZap },
-  { label: "Configuracoes", href: "/admin/settings", icon: Settings }
+  { label: "Integrações", href: "/admin/integrations", icon: PlugZap },
+  { label: "Configurações", href: "/admin/settings", icon: Settings }
 ];
 
 export function AdminSidebar() {

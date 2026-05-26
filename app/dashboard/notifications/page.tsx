@@ -6,8 +6,8 @@ import { Table, TBody, TD, TH, THead, TR } from "@/components/ui/Table";
 export default function CompanyNotificationsPage() {
   return (
     <DashboardShell
-      title="Notificacoes"
-      subtitle="Notificacoes recebidas pela empresa compartilhante."
+      title="Notificações"
+      subtitle="Notificações recebidas pela empresa compartilhante."
     >
       <Table>
         <THead>
@@ -16,7 +16,7 @@ export default function CompanyNotificationsPage() {
             <TH>Titulo</TH>
             <TH>Data de recebimento</TH>
             <TH>Status</TH>
-            <TH>Municipio</TH>
+            <TH>Município</TH>
             <TH>Tipo</TH>
             <TH className="text-right">Acoes</TH>
           </TR>
@@ -26,8 +26,8 @@ export default function CompanyNotificationsPage() {
             <TD colSpan={7} className="whitespace-normal p-0">
               <EmptyState
                 icon={Inbox}
-                title="Nenhuma notificacao recebida"
-                description="As notificacoes aparecerao aqui assim que forem disponibilizadas para a sua empresa pela integracao configurada."
+                title="Nenhuma notificação recebida"
+                description="As notificações aparecerão aqui assim que forem disponibilizadas para a sua empresa pela integração configurada."
               />
             </TD>
           </TR>

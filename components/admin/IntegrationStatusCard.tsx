@@ -9,9 +9,9 @@ export function IntegrationStatusCard() {
     <div className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          title="Notificacoes recebidas"
+          title="Notificações recebidas"
           value={0}
-          detail="Origem nao configurada"
+          detail="Origem não configurada"
           icon={Inbox}
           tone="blue"
         />
@@ -30,7 +30,7 @@ export function IntegrationStatusCard() {
           tone="amber"
         />
         <StatCard
-          title="Ultima sincronizacao"
+          title="Ultima sincronização"
           value="--"
           detail="Nenhuma"
           icon={Clock3}
@@ -42,12 +42,12 @@ export function IntegrationStatusCard() {
         <CardHeader>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <CardTitle>Origem das notificacoes</CardTitle>
+              <CardTitle>Origem das notificações</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                Configuracao tecnica das origens externas responsaveis pelo envio de notificacoes e documentos.
+                Configuração técnica das origens externas responsáveis pelo envio de notificações e documentos.
               </p>
             </div>
-            <Badge variant="amber">Nao configurada</Badge>
+            <Badge variant="amber">Não configurada</Badge>
           </div>
         </CardHeader>
         <CardContent>
@@ -74,7 +74,7 @@ export function IntegrationStatusCard() {
             <div className="flex items-start gap-3">
               <PlugZap className="mt-1 h-5 w-5 shrink-0 text-brand-700" aria-hidden="true" />
               <p className="text-sm leading-6 text-brand-900">
-                As notificacoes serao recebidas por uma API externa e vinculadas automaticamente a empresa correspondente apos a configuracao da integracao.
+                As notificações serão recebidas por uma API externa e vinculadas automaticamente à empresa correspondente após a configuração da integração.
               </p>
             </div>
           </div>
@@ -82,8 +82,8 @@ export function IntegrationStatusCard() {
           <div className="mt-5">
             <EmptyState
               icon={Clock3}
-              title="Nenhum log de integracao"
-              description="Assim que a origem externa for configurada, os eventos de sincronizacao e falhas aparecerao aqui."
+              title="Nenhum log de integração"
+              description="Assim que a origem externa for configurada, os eventos de sincronização e falhas aparecerão aqui."
             />
           </div>
         </CardContent>

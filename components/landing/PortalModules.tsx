@@ -9,55 +9,55 @@ import {
 
 const modules = [
   {
-    title: "Notificacoes oficiais",
-    description: "Area preparada para comunicacoes administrativas, status e acompanhamento por empresa.",
+    title: "Notificações oficiais",
+    description: "Área preparada para comunicações administrativas, status e acompanhamento por empresa.",
     icon: BellDot
   },
   {
     title: "Documentos e PDFs",
-    description: "Estrutura para centralizar documentos vinculados a notificacoes e processos operacionais.",
+    description: "Estrutura para centralizar documentos vinculados a notificações e processos operacionais.",
     icon: FileText
   },
   {
     title: "Empresas compartilhantes",
-    description: "Cadastro empresarial, usuarios vinculados e perfis de acesso organizados para gestao.",
+    description: "Cadastro empresarial, usuários vinculados e perfis de acesso organizados para gestão.",
     icon: Building2
   },
   {
-    title: "Area administrativa",
-    description: "Painel executivo para acompanhar empresas, documentos, notificacoes e pendencias.",
+    title: "Área administrativa",
+    description: "Painel executivo para acompanhar empresas, documentos, notificações e pendências.",
     icon: ClipboardCheck
   },
   {
     title: "Auditoria de acessos",
-    description: "Ambiente projetado para registrar visualizacoes, acoes e historico operacional.",
+    description: "Ambiente projetado para registrar visualizações, ações e histórico operacional.",
     icon: ShieldCheck
   },
   {
-    title: "Area de concessao",
-    description: "Visual institucional dos municipios atendidos e estrutura futura para camadas geograficas.",
+    title: "Área de concessão",
+    description: "Visual institucional dos municípios atendidos e estrutura futura para camadas geográficas.",
     icon: MapPinned
   }
 ];
 
 export function PortalModules() {
   return (
-    <section id="notificacoes" className="bg-[#f5f8fa] px-4 py-16 sm:px-6">
+    <section id="notificações" className="bg-[#f5f8fa] px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-sm font-black uppercase tracking-wide text-[#128746]">
-              Modulos do portal
+              Módulos do portal
             </p>
             <h2 className="mt-3 text-3xl font-black leading-tight text-[#142638] sm:text-4xl">
-              Recursos desenhados para operacao empresarial.
+              Recursos desenhados para operação empresarial.
             </h2>
             <p className="mt-4 leading-7 text-[#4b5b66]">
-              Cada modulo foi estruturado para receber dados reais em uma etapa posterior, sem simular operacao inexistente.
+              Cada módulo foi estruturado para receber dados reais em uma etapa posterior, sem simular operação inexistente.
             </p>
           </div>
           <span className="inline-flex w-fit rounded-full border border-[#d4eee0] bg-white px-4 py-2 text-sm font-black text-[#128746] shadow-sm">
-            Preparado para integracao
+            Preparado para integração
           </span>
         </div>
 

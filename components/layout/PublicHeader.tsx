@@ -5,10 +5,10 @@ import { buttonStyles } from "@/components/ui/Button";
 
 const navItems = [
   { label: "Portal", href: "#portal" },
-  { label: "Notificacoes", href: "#notificacoes" },
+  { label: "Notificações", href: "#notificações" },
   { label: "Documentos", href: "#documentos" },
-  { label: "Area de concessao", href: "#concessao" },
-  { label: "Seguranca", href: "#seguranca" }
+  { label: "Área de concessão", href: "#concessão" },
+  { label: "Segurança", href: "#segurança" }
 ];
 
 export function PublicHeader() {

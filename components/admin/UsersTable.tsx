@@ -24,8 +24,8 @@ export function UsersTable({
     return (
       <EmptyState
         icon={Database}
-        title="Banco de dados nao configurado"
-        description="Configure a variavel DATABASE_URL para carregar solicitacoes de acesso do Neon."
+        title="Banco de dados não configurado"
+        description="Configure a variavel DATABASE_URL para carregar solicitações de acesso do Neon."
       />
     );
   }
@@ -34,7 +34,7 @@ export function UsersTable({
     return (
       <EmptyState
         icon={Database}
-        title="Nao foi possivel carregar solicitacoes"
+        title="Não foi possível carregar solicitações"
         description={error}
       />
     );
@@ -44,8 +44,8 @@ export function UsersTable({
     return (
       <EmptyState
         icon={UserRoundCog}
-        title="Nao ha solicitacoes pendentes"
-        description="As solicitacoes enviadas pelo cadastro aparecerao aqui para analise administrativa."
+        title="Não há solicitações pendentes"
+        description="As solicitações enviadas pelo cadastro aparecerão aqui para análise administrativa."
       />
     );
   }
@@ -58,9 +58,9 @@ export function UsersTable({
           <TH>E-mail</TH>
           <TH>Empresa</TH>
           <TH>CNPJ</TH>
-          <TH>Municipio</TH>
+          <TH>Município</TH>
           <TH>Status</TH>
-          <TH>Data da solicitacao</TH>
+          <TH>Data da solicitação</TH>
         </TR>
       </THead>
       <TBody>

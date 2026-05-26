@@ -8,17 +8,17 @@ const secureItems = [
   },
   {
     title: "Documentos protegidos",
-    description: "Arquivos e comunicacoes ficam disponiveis apenas apos autenticacao.",
+    description: "Arquivos e comunicações ficam disponíveis apenas após autenticação.",
     icon: FileText
   },
   {
-    title: "Vinculo empresarial",
-    description: "Cada solicitacao e associada a uma empresa para analise administrativa.",
+    title: "Vínculo empresarial",
+    description: "Cada solicitação e associada a uma empresa para análise administrativa.",
     icon: Building2
   },
   {
     title: "Rastreabilidade",
-    description: "Fluxo preparado para controle, historico e auditoria de acesso.",
+    description: "Fluxo preparado para controle, histórico e auditoria de acesso.",
     icon: ShieldCheck
   }
 ];
@@ -38,10 +38,10 @@ export function SecureAccessPanel() {
             Ambiente seguro para empresas autorizadas
           </p>
           <h2 className="mt-3 text-3xl font-black leading-tight text-[#142638] sm:text-4xl">
-            Informacoes operacionais somente apos autenticacao.
+            Informações operacionais somente após autenticação.
           </h2>
           <p className="mt-4 leading-7 text-[#4b5b66]">
-            O acesso ao Portal Telecom EDP e restrito a empresas compartilhantes previamente autorizadas. As informacoes operacionais ficam disponiveis apenas em ambiente autenticado.
+            O acesso ao Portal Telecom EDP é restrito a empresas compartilhantes previamente autorizadas. As informações operacionais ficam disponíveis apenas em ambiente autenticado.
           </p>
         </div>
 

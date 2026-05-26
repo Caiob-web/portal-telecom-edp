@@ -41,7 +41,7 @@ export function NotificationsTable() {
           value={municipality}
           onChange={(event) => setMunicipality(event.target.value)}
         >
-          <option value="TODOS">Todos os municipios</option>
+          <option value="TODOS">Todos os municípios</option>
           {municipalities.map((item) => (
             <option key={item} value={item}>
               {item}
@@ -69,7 +69,7 @@ export function NotificationsTable() {
           <TR>
             <TH>ID</TH>
             <TH>Empresa</TH>
-            <TH>Municipio</TH>
+            <TH>Município</TH>
             <TH>Tipo</TH>
             <TH>Data</TH>
             <TH>Status</TH>
@@ -84,9 +84,9 @@ export function NotificationsTable() {
             <TD colSpan={10} className="whitespace-normal p-0">
               <EmptyState
                 icon={Inbox}
-                title="Nenhuma notificacao recebida"
-                description="As notificacoes serao exibidas automaticamente quando forem enviadas pela integracao configurada com a origem externa."
-                actionLabel="Configurar integracao"
+                title="Nenhuma notificação recebida"
+                description="As notificações serão exibidas automaticamente quando forem enviadas pela integração configurada com a origem externa."
+                actionLabel="Configurar integração"
                 actionHref="/admin/integrations"
               />
             </TD>

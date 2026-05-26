@@ -9,19 +9,19 @@ export default async function AdminUsersPage() {
 
   return (
     <AdminShell
-      title="Usuarios"
-      subtitle="Solicitacoes de acesso e usuarios pendentes para analise administrativa."
+      title="Usuários"
+      subtitle="Solicitações de acesso e usuários pendentes para análise administrativa."
     >
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <CardTitle>Solicitacoes de acesso</CardTitle>
+              <CardTitle>Solicitações de acesso</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                Dados enviados pelo formulario de cadastro e carregados diretamente do Neon.
+                Dados enviados pelo formulário de cadastro e carregados diretamente do Neon.
               </p>
             </div>
-            <Input className="max-w-sm" placeholder="Buscar usuario ou e-mail" />
+            <Input className="max-w-sm" placeholder="Buscar usuário ou e-mail" />
           </div>
         </CardHeader>
         <CardContent>

@@ -6,7 +6,7 @@ import { municipalities } from "@/data/municipalities";
 
 const regions = [
   {
-    name: "Vale do Paraiba",
+    name: "Vale do Paraíba",
     cities: [
       "SAO JOSE DOS CAMPOS",
       "TAUBATE",
@@ -20,7 +20,7 @@ const regions = [
     ]
   },
   {
-    name: "Alto Tiete",
+    name: "Alto Tietê",
     cities: [
       "GUARULHOS",
       "MOGI DAS CRUZES",
@@ -34,7 +34,7 @@ const regions = [
     ]
   },
   {
-    name: "Vale Historico e Litoral Norte",
+    name: "Vale Histórico e Litoral Norte",
     cities: [
       "GUARATINGUETA",
       "CARAGUATATUBA",
@@ -53,8 +53,8 @@ const regions = [
 export default function CompanyMapPage() {
   return (
     <DashboardShell
-      title="Area de concessao"
-      subtitle="28 municipios da area de concessao - Vale do Paraiba, Alto Tiete e Vale Historico."
+      title="Área de concessão"
+      subtitle="28 municípios da área de concessão - Vale do Paraíba, Alto Tietê e Vale Histórico."
     >
       <div className="space-y-6">
         <Card className="overflow-hidden">
@@ -63,9 +63,9 @@ export default function CompanyMapPage() {
               <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-edp-500 text-white">
                 <MapPinned className="h-7 w-7" aria-hidden="true" />
               </div>
-              <h2 className="mt-6 text-3xl font-black">Area de concessao</h2>
+              <h2 className="mt-6 text-3xl font-black">Área de concessão</h2>
               <p className="mt-3 leading-7 text-white/70">
-                28 municipios da area de concessao - Vale do Paraiba, Alto Tiete e Vale Historico.
+                28 municípios da área de concessão - Vale do Paraíba, Alto Tietê e Vale Histórico.
               </p>
               <Badge variant="outline" className="mt-5">
                 Leaflet/Mapbox ready
@@ -79,7 +79,7 @@ export default function CompanyMapPage() {
                     {region.cities.length}
                   </p>
                   <p className="text-xs font-semibold uppercase tracking-wide text-graphite-500">
-                    municipios
+                    municípios
                   </p>
                 </div>
               ))}
@@ -90,9 +90,9 @@ export default function CompanyMapPage() {
         <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
           <Card>
             <CardHeader>
-              <CardTitle>Municipios por regiao</CardTitle>
+              <CardTitle>Municípios por região</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                Organizacao visual leve enquanto o mapa geografico real nao e carregado.
+                Organização visual leve enquanto o mapa geográfico real não é carregado.
               </p>
             </CardHeader>
             <CardContent>
@@ -117,7 +117,7 @@ export default function CompanyMapPage() {
             <CardHeader>
               <CardTitle>Lista completa</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                Base inicial para futura camada geografica.
+                Base inicial para futura camada geográfica.
               </p>
             </CardHeader>
             <CardContent>

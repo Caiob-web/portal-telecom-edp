@@ -25,7 +25,7 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
   return (
     <input
       className={cn(
-        "h-11 w-full rounded-md border border-graphite-200 bg-white px-3 text-sm text-graphite-900 outline-none transition placeholder:text-graphite-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100",
+        "h-11 w-full rounded-xl border border-graphite-200 bg-white px-3 text-sm text-graphite-900 outline-none transition placeholder:text-graphite-400 focus:border-edp-500 focus:ring-4 focus:ring-edp-100",
         className
       )}
       {...props}
@@ -41,7 +41,7 @@ export function Select({
   return (
     <select
       className={cn(
-        "h-11 w-full rounded-md border border-graphite-200 bg-white px-3 text-sm text-graphite-900 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100",
+        "h-11 w-full rounded-xl border border-graphite-200 bg-white px-3 text-sm text-graphite-900 outline-none transition focus:border-edp-500 focus:ring-4 focus:ring-edp-100",
         className
       )}
       {...props}

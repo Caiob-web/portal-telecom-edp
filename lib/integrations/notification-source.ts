@@ -14,11 +14,11 @@ export const notificationSourceConfig = {
 } as const;
 
 export const externalNotificationSource: NotificationSource = {
-  name: "Origem externa de notificacoes",
+  name: "Origem externa de notificações",
   status: "NOT_CONFIGURED",
   async fetchNotifications() {
-    // Implementacao futura: chamar a API externa, inicialmente prevista como Base44.
-    // Nenhum endpoint, token ou dado real e usado nesta versao.
+    // Implementação futura: chamar a API externa, inicialmente prevista como Base44.
+    // Nenhum endpoint, token ou dado real é usado nesta versão.
     return [];
   }
 };

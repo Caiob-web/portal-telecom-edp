@@ -5,7 +5,7 @@ import type {
 } from "@/types/notification";
 
 export async function fetchNotificationsFromSource(): Promise<Notification[]> {
-  // Implementacao futura: consultar a origem externa de notificacoes,
+  // Implementação futura: consultar a origem externa de notificações,
   // inicialmente prevista para a API do Base44, e persistir no Neon Database.
   return [];
 }
@@ -13,14 +13,14 @@ export async function fetchNotificationsFromSource(): Promise<Notification[]> {
 export async function receiveExternalNotification(
   payload: ExternalNotificationPayload
 ): Promise<NotificationValidationResult> {
-  // Implementacao futura: validar assinatura/token, normalizar payload e gravar no Neon.
+  // Implementação futura: validar assinatura/token, normalizar payload e gravar no Neon.
   return validateNotificationPayload(payload);
 }
 
 export function mapExternalNotificationToPortal(
   _payload: ExternalNotificationPayload
 ): Notification | null {
-  // Implementacao futura: transformar o contrato externo no modelo interno do portal.
+  // Implementação futura: transformar o contrato externo no modelo interno do portal.
   return null;
 }
 
@@ -30,7 +30,7 @@ export function validateNotificationPayload(
   const errors: string[] = [];
 
   if (!payload.externalId) {
-    errors.push("externalId e obrigatorio.");
+    errors.push("externalId é obrigatório.");
   }
 
   return {
@@ -42,6 +42,6 @@ export function validateNotificationPayload(
 export async function routeNotificationToCompany(
   _notification: Notification
 ): Promise<{ companyId: string | null }> {
-  // Implementacao futura: localizar empresa pelo CNPJ/contrato e vincular a notificacao.
+  // Implementação futura: localizar empresa pelo CNPJ/contrato e vincular a notificação.
   return { companyId: null };
 }

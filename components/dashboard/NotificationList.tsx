@@ -5,8 +5,8 @@ export function NotificationList({ limit: _limit }: { limit?: number }) {
   return (
     <EmptyState
       icon={Inbox}
-      title="Nenhuma comunicacao disponivel no momento"
-      description="Quando novas notificacoes forem disponibilizadas para sua empresa, elas aparecerao automaticamente neste painel."
+      title="Nenhuma comunicação disponivel no momento"
+      description="Quando novas notificações forem disponibilizadas para sua empresa, elas aparecerão automaticamente neste painel."
     />
   );
 }

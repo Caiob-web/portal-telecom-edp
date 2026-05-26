@@ -11,10 +11,10 @@ export function FinalCTA() {
               Ambiente empresarial
             </p>
             <h2 className="mt-3 max-w-3xl text-3xl font-black leading-tight text-[#142638] sm:text-4xl">
-              Centralize a comunicacao com empresas compartilhantes
+              Centralize a comunicação com empresas compartilhantes
             </h2>
             <p className="mt-4 max-w-2xl leading-7 text-[#4b5b66]">
-              Solicite acesso ao portal para acompanhar notificacoes, documentos e comunicacoes administrativas em um unico ambiente.
+              Solicite acesso ao portal para acompanhar notificações, documentos e comunicações administrativas em um único ambiente.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">

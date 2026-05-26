@@ -13,35 +13,35 @@ export function AdminStats() {
         tone="blue"
       />
       <StatCard
-        title="Usuarios pendentes"
+        title="Usuários pendentes"
         value={mockAdminStats.totals.pendingUsers}
         detail="Fluxo preparado"
         icon={UserRoundCog}
         tone="gray"
       />
       <StatCard
-        title="Notificacoes recebidas"
+        title="Notificações recebidas"
         value={mockAdminStats.totals.notifications}
-        detail="Origem nao configurada"
+        detail="Origem não configurada"
         icon={Radio}
         tone="green"
       />
       <StatCard
-        title="Documentos disponiveis"
+        title="Documentos disponíveis"
         value={mockAdminStats.totals.documents}
         detail="Aguardando recebimento"
         icon={FileStack}
         tone="blue"
       />
       <StatCard
-        title="Integracoes ativas"
+        title="Integrações ativas"
         value={mockAdminStats.totals.activeIntegrations}
-        detail="Nao configurada"
+        detail="Não configurada"
         icon={PlugZap}
         tone="green"
       />
       <StatCard
-        title="Ultimos acessos"
+        title="Últimos acessos"
         value={mockAdminStats.totals.lastAccesses}
         detail="Auditoria futura"
         icon={Clock3}

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const navigation = [
   { label: "Inicio", href: "/dashboard", icon: Home },
-  { label: "Notificacoes", href: "/dashboard/notifications", icon: Radio },
+  { label: "Notificações", href: "/dashboard/notifications", icon: Radio },
   { label: "Documentos", href: "/dashboard/documents", icon: FileText },
   { label: "Mapa", href: "/dashboard/map", icon: Map },
   { label: "Perfil", href: "/dashboard/profile", icon: UserCircle }
@@ -40,13 +40,13 @@ export function DashboardSidebar() {
       <div className="border-t border-graphite-200 p-4">
         <div className="rounded-lg bg-graphite-50 p-4">
           <p className="text-xs font-bold uppercase tracking-wide text-graphite-500">
-            Area da empresa
+            Área da empresa
           </p>
           <p className="mt-2 text-sm font-bold text-graphite-950">
             Aguardando dados reais
           </p>
           <p className="mt-1 text-xs text-graphite-500">
-            Vinculo sera carregado pela autenticacao futura.
+            Vínculo será carregado pela autenticação futura.
           </p>
         </div>
       </div>

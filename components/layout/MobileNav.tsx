@@ -15,7 +15,7 @@ import {
 
 const dashboardItems = [
   { label: "Inicio", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Notificacoes", href: "/dashboard/notifications", icon: Radio },
+  { label: "Notificações", href: "/dashboard/notifications", icon: Radio },
   { label: "Documentos", href: "/dashboard/documents", icon: FileText },
   { label: "Mapa", href: "/dashboard/map", icon: Map },
   { label: "Perfil", href: "/dashboard/profile", icon: UserCircle }
@@ -24,10 +24,10 @@ const dashboardItems = [
 const adminItems = [
   { label: "Geral", href: "/admin", icon: LayoutDashboard },
   { label: "Empresas", href: "/admin/companies", icon: Building2 },
-  { label: "Usuarios", href: "/admin/users", icon: UsersRound },
-  { label: "Notificacoes", href: "/admin/notifications", icon: BellDot },
+  { label: "Usuários", href: "/admin/users", icon: UsersRound },
+  { label: "Notificações", href: "/admin/notifications", icon: BellDot },
   { label: "Documentos", href: "/admin/documents", icon: FileStack },
-  { label: "Integracoes", href: "/admin/integrations", icon: PlugZap },
+  { label: "Integrações", href: "/admin/integrations", icon: PlugZap },
   { label: "Config", href: "/admin/settings", icon: Settings }
 ];
 

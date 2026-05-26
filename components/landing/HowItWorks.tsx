@@ -2,28 +2,28 @@ import { Building2, FileStack, Inbox, LayoutDashboard, Route } from "lucide-reac
 
 const steps = [
   {
-    title: "Origem externa envia notificacao",
-    description: "Fluxo preparado para receber comunicacoes oficiais de uma origem externa configurada.",
+    title: "Origem externa envia notificação",
+    description: "Fluxo preparado para receber comunicações oficiais de uma origem externa configurada.",
     icon: Inbox
   },
   {
     title: "Portal recebe e organiza",
-    description: "A estrutura do portal foi desenhada para classificar status, empresa, municipio e documentos.",
+    description: "A estrutura do portal foi desenhada para classificar status, empresa, município e documentos.",
     icon: Route
   },
   {
-    title: "Empresa acessa sua area",
-    description: "Cada empresa compartilhante acessa apenas sua area de notificacoes, pendencias e arquivos.",
+    title: "Empresa acessa sua área",
+    description: "Cada empresa compartilhante acessa apenas sua área de notificações, pendências e arquivos.",
     icon: Building2
   },
   {
-    title: "Documentos ficam disponiveis",
+    title: "Documentos ficam disponíveis",
     description: "PDFs e anexos vinculados ao fluxo ficam preparados para consulta e rastreabilidade.",
     icon: FileStack
   },
   {
-    title: "Administracao acompanha status",
-    description: "O painel administrativo consolida visao executiva, filtros e acompanhamento operacional.",
+    title: "Administração acompanha status",
+    description: "O painel administrativo consolida visão executiva, filtros e acompanhamento operacional.",
     icon: LayoutDashboard
   }
 ];
@@ -37,10 +37,10 @@ export function HowItWorks() {
             Como o portal funciona
           </p>
           <h2 className="mt-3 text-3xl font-black leading-tight text-[#142638] sm:text-4xl">
-            Um fluxo preparado para comunicacoes oficiais de telecom.
+            Um fluxo preparado para comunicações oficiais de telecom.
           </h2>
           <p className="mt-4 leading-7 text-[#4b5b66]">
-            A integracao real sera ativada em etapa posterior. Nesta fase, a experiencia visual e a arquitetura ja deixam claro como as notificacoes serao recebidas, organizadas e acompanhadas.
+            A integração real será ativada em etapa posterior. Nesta fase, a experiência visual e a arquitetura já deixam claro como as notificações serão recebidas, organizadas e acompanhadas.
           </p>
         </div>
 

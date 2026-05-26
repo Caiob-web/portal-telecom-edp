@@ -13,17 +13,17 @@ export default async function NotificationDetailPage({
 
   return (
     <DashboardShell
-      title="Detalhes da notificacao"
+      title="Detalhes da notificação"
       subtitle={`Registro solicitado: ${id}`}
     >
       <EmptyState
         icon={Inbox}
-        title="Notificacao nao encontrada"
-        description="Nenhum dado real foi recebido para este identificador. Os detalhes, anexos e respostas serao exibidos quando a notificacao for enviada pela origem externa."
+        title="Notificação não encontrada"
+        description="Nenhum dado real foi recebido para este identificador. Os detalhes, anexos e respostas serão exibidos quando a notificação for enviada pela origem externa."
       />
       <div className="mt-5">
         <Link href="/dashboard/notifications" className={buttonStyles("outline")}>
-          Voltar para notificacoes
+          Voltar para notificações
         </Link>
       </div>
     </DashboardShell>

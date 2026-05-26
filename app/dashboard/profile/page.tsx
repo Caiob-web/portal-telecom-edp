@@ -5,12 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 const profileItems = [
   {
     label: "Empresa",
-    value: "Aguardando vinculo administrativo",
+    value: "Aguardando vínculo administrativo",
     icon: Building2
   },
   {
     label: "E-mail principal",
-    value: "Sera carregado pela autenticacao real",
+    value: "Será carregado pela autenticação real",
     icon: Mail
   },
   {
@@ -19,7 +19,7 @@ const profileItems = [
     icon: Phone
   },
   {
-    label: "Municipio principal",
+    label: "Município principal",
     value: "Pendente de cadastro administrativo",
     icon: MapPin
   }
@@ -29,13 +29,13 @@ export default function CompanyProfilePage() {
   return (
     <DashboardShell
       title="Perfil da empresa"
-      subtitle="Dados cadastrais preparados para administracao do portal."
+      subtitle="Dados cadastrais preparados para administração do portal."
     >
       <Card>
         <CardHeader>
           <CardTitle>Dados cadastrais</CardTitle>
           <p className="mt-1 text-sm text-graphite-500">
-            Este painel exibira dados reais da empresa apos login, permissao e vinculo administrativo.
+            Este painel exibirá dados reais da empresa após login, permissão e vínculo administrativo.
           </p>
         </CardHeader>
         <CardContent>

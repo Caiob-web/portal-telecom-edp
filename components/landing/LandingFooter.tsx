@@ -3,9 +3,9 @@ import { EDPLogo } from "@/components/brand/EDPLogo";
 
 const links = [
   { label: "Portal", href: "#portal" },
-  { label: "Notificacoes", href: "#notificacoes" },
+  { label: "Notificações", href: "#notificações" },
   { label: "Documentos", href: "#documentos" },
-  { label: "Seguranca", href: "#seguranca" }
+  { label: "Segurança", href: "#segurança" }
 ];
 
 export function LandingFooter() {
@@ -15,7 +15,7 @@ export function LandingFooter() {
         <div>
           <EDPLogo showPortalName compact />
           <p className="mt-4 max-w-2xl leading-7 text-[#60717d]">
-            Portal corporativo para centralizar comunicacoes oficiais, documentos e acompanhamento administrativo de empresas compartilhantes.
+            Portal corporativo para centralizar comunicações oficiais, documentos e acompanhamento administrativo de empresas compartilhantes.
           </p>
           <p className="mt-3 text-sm font-bold text-[#4b5b66]">
             Ambiente empresarial destinado a empresas compartilhantes autorizadas.

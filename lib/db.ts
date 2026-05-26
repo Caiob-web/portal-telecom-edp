@@ -13,15 +13,22 @@ export const databaseConfig = {
   connectionStringEnv: "DATABASE_URL"
 } as const;
 
+export class DatabaseConfigurationError extends Error {
+  constructor() {
+    super("DATABASE_URL is not configured.");
+    this.name = "DatabaseConfigurationError";
+  }
+}
+
 export function isDatabaseConfigured() {
-  return Boolean(process.env.DATABASE_URL);
+  return typeof process.env.DATABASE_URL === "string" && process.env.DATABASE_URL.trim().length > 0;
 }
 
 export function getDatabasePool() {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = process.env.DATABASE_URL?.trim();
 
   if (!connectionString) {
-    throw new Error("DATABASE_URL is not configured.");
+    throw new DatabaseConfigurationError();
   }
 
   if (!pool) {

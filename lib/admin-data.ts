@@ -97,7 +97,7 @@ export async function getCompaniesForAdmin(): Promise<AdminDataResult<AdminCompa
     return {
       configured: true,
       rows: [],
-      error: "Nao foi possivel carregar empresas do banco de dados."
+      error: "Não foi possível carregar empresas do banco de dados."
     };
   }
 }
@@ -148,7 +148,7 @@ export async function getAccessRequestsForAdmin(): Promise<
     return {
       configured: true,
       rows: [],
-      error: "Nao foi possivel carregar solicitacoes do banco de dados."
+      error: "Não foi possível carregar solicitações do banco de dados."
     };
   }
 }

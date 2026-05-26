@@ -6,7 +6,7 @@ export function DocumentList({ companyOnly: _companyOnly = true }: { companyOnly
     <EmptyState
       icon={FileText}
       title="Nenhum documento disponivel"
-      description="Os documentos vinculados as notificacoes serao exibidos aqui quando forem recebidos pela integracao."
+      description="Os documentos vinculados às notificações serão exibidos aqui quando forem recebidos pela integração."
     />
   );
 }

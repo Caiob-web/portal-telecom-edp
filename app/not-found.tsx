@@ -9,10 +9,10 @@ export default function NotFound() {
           Portal Telecom EDP
         </p>
         <h1 className="mt-3 text-3xl font-black text-graphite-950">
-          Pagina nao encontrada
+          Página não encontrada
         </h1>
         <p className="mt-3 text-graphite-600">
-          A rota solicitada nao existe nesta versao estrutural do portal.
+          A rota solicitada não existe nesta versão estrutural do portal.
         </p>
         <Link href="/" className={buttonStyles("primary", "md", "mt-6")}>
           Voltar ao inicio

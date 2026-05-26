@@ -11,10 +11,10 @@ import { EDPLogo } from "@/components/brand/EDPLogo";
 import { cn } from "@/lib/utils";
 
 const highlights = [
-  { label: "Notificacoes oficiais", icon: BellDot },
+  { label: "Notificações oficiais", icon: BellDot },
   { label: "Documentos centralizados", icon: FileStack },
   { label: "Rastreabilidade de acesso", icon: ShieldCheck },
-  { label: "Area de concessao EDP", icon: MapPinned }
+  { label: "Área de concessão EDP", icon: MapPinned }
 ];
 
 export function AuthVisualPanel({
@@ -58,7 +58,9 @@ export function AuthVisualPanel({
           Acesso restrito para empresas compartilhantes autorizadas.
         </p>
         <p className="mt-4 max-w-2xl text-base leading-7 text-white/68">
-          Ambiente corporativo para organizar notificacoes oficiais, documentos, acompanhamento administrativo e rastreabilidade sobre processos relacionados a ocupacoes em postes.
+          Ambiente corporativo para organizar notificações oficiais, documentos,
+          acompanhamento administrativo e rastreabilidade de processos
+          relacionados a ocupações em postes.
         </p>
       </div>
 
@@ -83,9 +85,9 @@ export function AuthVisualPanel({
 
       <div className="relative z-10 mt-12 grid gap-3 sm:grid-cols-3">
         {[
-          ["Concessao EDP", "area protegida"],
-          ["Comunicacoes", "notificacoes oficiais"],
-          ["Controle", "historico previsto"]
+          ["Concessão EDP", "área protegida"],
+          ["Comunicações", "notificações oficiais"],
+          ["Controle", "histórico previsto"]
         ].map(([label, value]) => (
           <div
             key={label}

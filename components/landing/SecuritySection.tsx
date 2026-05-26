@@ -10,50 +10,50 @@ import {
 const securityItems = [
   {
     title: "Acesso por empresa",
-    description: "Ambiente projetado para separar usuarios, empresas e permissoes.",
+    description: "Ambiente projetado para separar usuários, empresas e permissões.",
     icon: LockKeyhole
   },
   {
     title: "Perfis administrativos",
-    description: "Estrutura preparada para perfis operacionais e gestao de autorizacoes.",
+    description: "Estrutura preparada para perfis operacionais e gestão de autorizações.",
     icon: UserCog
   },
   {
     title: "Registro de visualizacao",
-    description: "Fluxo previsto para registrar leitura e acompanhamento de notificacoes.",
+    description: "Fluxo previsto para registrar leitura e acompanhamento de notificações.",
     icon: Eye
   },
   {
-    title: "Historico de documentos",
-    description: "Estrutura preparada para rastrear documentos vinculados a comunicacoes.",
+    title: "Histórico de documentos",
+    description: "Estrutura preparada para rastrear documentos vinculados a comunicações.",
     icon: FileClock
   },
   {
-    title: "Autenticacao corporativa",
-    description: "Base visual e tecnica preparada para autenticar usuarios em etapa posterior.",
+    title: "Autenticação corporativa",
+    description: "Base visual e técnica preparada para autenticar usuários em etapa posterior.",
     icon: KeyRound
   },
   {
     title: "Auditoria operacional",
-    description: "Ambiente projetado para auditoria, seguranca e rastreabilidade administrativa.",
+    description: "Ambiente projetado para auditoria, segurança e rastreabilidade administrativa.",
     icon: ShieldCheck
   }
 ];
 
 export function SecuritySection() {
   return (
-    <section id="seguranca" className="bg-[#142638] px-4 py-16 text-white sm:px-6">
+    <section id="segurança" className="bg-[#142638] px-4 py-16 text-white sm:px-6">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div>
             <p className="text-sm font-black uppercase tracking-wide text-[#21f36b]">
-              Seguranca e rastreabilidade
+              Segurança e rastreabilidade
             </p>
             <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
-              Controle, historico e governanca para comunicacoes empresariais.
+              Controle, histórico e governança para comunicações empresariais.
             </h2>
             <p className="mt-4 leading-7 text-white/68">
-              O portal foi desenhado para evoluir com autenticacao real, auditoria e registros administrativos sem expor dados sensiveis nesta etapa visual.
+              O portal foi desenhado para evoluir com autenticação real, auditoria e registros administrativos sem expor dados sensíveis nesta etapa visual.
             </p>
           </div>
 

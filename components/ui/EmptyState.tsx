@@ -16,8 +16,8 @@ export function EmptyState({
   actionHref?: string;
 }) {
   return (
-    <div className="rounded-lg border border-dashed border-graphite-300 bg-white p-8 text-center shadow-sm">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-brand-50 text-brand-700">
+    <div className="rounded-2xl border border-dashed border-graphite-300 bg-white p-8 text-center shadow-sm">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-edp-50 text-edp-700">
         <Icon className="h-6 w-6" aria-hidden="true" />
       </div>
       <h3 className="mt-4 text-base font-semibold text-graphite-950">{title}</h3>

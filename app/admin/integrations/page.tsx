@@ -4,8 +4,8 @@ import { AdminShell } from "@/components/layout/AdminShell";
 export default function AdminIntegrationsPage() {
   return (
     <AdminShell
-      title="Integracoes"
-      subtitle="Configuracao das origens externas responsaveis pelo envio de notificacoes e documentos ao portal."
+      title="Integrações"
+      subtitle="Configuração das origens externas responsáveis pelo envio de notificações e documentos ao portal."
     >
       <IntegrationStatusCard />
     </AdminShell>

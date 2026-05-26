@@ -5,18 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 
 const settings = [
   {
-    title: "Autenticacao",
-    description: "Preparado para sessoes reais, perfis de acesso e politicas administrativas.",
+    title: "Autenticação",
+    description: "Preparado para sessões reais, perfis de acesso e políticas administrativas.",
     icon: KeyRound
   },
   {
-    title: "Permissoes",
+    title: "Permissões",
     description: "Perfis ADMIN, EMPRESA e VISUALIZADOR modelados em TypeScript.",
     icon: ShieldCheck
   },
   {
-    title: "Operacao",
-    description: "Espaco para parametros administrativos e regras futuras.",
+    title: "Operação",
+    description: "Espaço para parâmetros administrativos e regras futuras.",
     icon: SlidersHorizontal
   }
 ];
@@ -24,8 +24,8 @@ const settings = [
 export default function AdminSettingsPage() {
   return (
     <AdminShell
-      title="Configuracoes"
-      subtitle="Parametros estruturais do portal para futuras integracoes."
+      title="Configurações"
+      subtitle="Parametros estruturais do portal para futuras integrações."
     >
       <div className="grid gap-4 md:grid-cols-3">
         {settings.map((setting) => {

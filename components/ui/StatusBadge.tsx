@@ -11,7 +11,7 @@ const statusMap: Record<
   }
 > = {
   NOVA: { label: "Nova", variant: "blue", icon: Radio },
-  EM_ANALISE: { label: "Em analise", variant: "amber", icon: Clock3 },
+  EM_ANALISE: { label: "Em análise", variant: "amber", icon: Clock3 },
   RESPONDIDA: { label: "Respondida", variant: "green", icon: Eye },
   FINALIZADA: { label: "Finalizada", variant: "gray", icon: CheckCircle2 }
 };

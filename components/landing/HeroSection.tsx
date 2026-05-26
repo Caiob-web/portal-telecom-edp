@@ -4,7 +4,7 @@ import { SecureAccessPanel } from "@/components/landing/SecureAccessPanel";
 
 const trustItems = [
   "Acesso restrito",
-  "Comunicacao oficial",
+  "Comunicação oficial",
   "Rastreabilidade administrativa"
 ];
 
@@ -19,10 +19,10 @@ export function HeroSection() {
             Portal empresarial para empresas compartilhantes
           </div>
           <h1 className="mt-7 max-w-4xl text-4xl font-black leading-[1.02] tracking-normal text-[#142638] sm:text-5xl lg:text-6xl">
-            Gestao centralizada de notificacoes e documentos de telecom
+            Gestão centralizada de notificações e documentos de telecom
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#4b5b66]">
-            Uma plataforma digital para organizar comunicacoes oficiais, documentos, pendencias e acompanhamento administrativo das empresas que utilizam infraestrutura compartilhada.
+            Uma plataforma digital para organizar comunicações oficiais, documentos, pendências e acompanhamento administrativo das empresas que utilizam infraestrutura compartilhada.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">

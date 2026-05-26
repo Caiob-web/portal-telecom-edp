@@ -44,13 +44,13 @@ export function AppHeader({
             <input
               aria-label="Buscar no portal"
               className="h-10 w-full rounded-md border border-graphite-200 bg-graphite-50 pl-9 pr-3 text-sm outline-none transition focus:border-brand-400 focus:bg-white focus:ring-4 focus:ring-brand-100"
-              placeholder="Buscar notificacoes, documentos ou empresas"
+              placeholder="Buscar notificações, documentos ou empresas"
             />
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" aria-label="Notificacoes">
+          <Button variant="outline" size="icon" aria-label="Notificações">
             <Bell className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Link

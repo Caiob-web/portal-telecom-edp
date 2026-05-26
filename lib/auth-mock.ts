@@ -21,7 +21,7 @@ const mockUsers: Array<MockSession["user"] & { password: string }> = [
   },
   {
     id: "usr-empresa",
-    name: "Maria Operacoes",
+    name: "Maria Operações",
     email: "empresa@teste.com",
     password: "empresa123",
     role: "COMPANY_USER",

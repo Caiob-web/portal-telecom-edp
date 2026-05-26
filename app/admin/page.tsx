@@ -9,7 +9,7 @@ export default function AdminPage() {
   return (
     <AdminShell
       title="Painel administrativo"
-      subtitle="Visao executiva de empresas, usuarios, notificacoes, documentos e integracoes."
+      subtitle="Visão executiva de empresas, usuários, notificações, documentos e integrações."
     >
       <div className="space-y-6">
         <Card className="overflow-hidden border-brand-200">
@@ -17,11 +17,11 @@ export default function AdminPage() {
             <div className="relative z-10 max-w-2xl">
               <Badge variant="outline">Painel executivo</Badge>
               <h2 className="mt-6 text-3xl font-black leading-tight text-white md:text-4xl">
-                Operacao telecom com visao institucional EDP.
+                Operação telecom com visão institucional EDP.
               </h2>
               <p className="mt-4 max-w-xl leading-7 text-white/74">
-                Area administrativa preparada para receber dados reais de empresas,
-                usuarios, documentos e notificacoes assim que as integracoes forem ativadas.
+                Área administrativa preparada para receber dados reais de empresas,
+                usuários, documentos e notificações assim que as integrações forem ativadas.
               </p>
             </div>
           </div>
@@ -32,17 +32,17 @@ export default function AdminPage() {
         <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
           <Card>
             <CardHeader>
-              <CardTitle>Evolucao de notificacoes</CardTitle>
+              <CardTitle>Evolução de notificações</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                O grafico sera alimentado quando a origem externa enviar dados reais ao portal.
+                O gráfico será alimentado quando a origem externa enviar dados reais ao portal.
               </p>
             </CardHeader>
             <CardContent>
               <div className="flex h-72 items-center justify-center rounded-lg border border-dashed border-graphite-300 bg-graphite-50 p-6">
                 <EmptyState
                   icon={Inbox}
-                  title="Sem dados para grafico"
-                  description="Nenhuma notificacao real foi recebida ate o momento."
+                  title="Sem dados para gráfico"
+                  description="Nenhuma notificação real foi recebida ate o momento."
                 />
               </div>
             </CardContent>
@@ -50,13 +50,13 @@ export default function AdminPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Empresas com pendencias</CardTitle>
+              <CardTitle>Empresas com pendências</CardTitle>
             </CardHeader>
             <CardContent>
               <EmptyState
                 icon={Building2}
                 title="Nenhuma pendencia registrada"
-                description="Pendencias por empresa serao calculadas apos a integracao de notificacoes e cadastro de empresas."
+                description="Pendências por empresa serão calculadas após a integração de notificações e cadastro de empresas."
               />
             </CardContent>
           </Card>
@@ -65,27 +65,27 @@ export default function AdminPage() {
         <div className="grid gap-6 xl:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Ultimos acessos</CardTitle>
+              <CardTitle>Últimos acessos</CardTitle>
             </CardHeader>
             <CardContent>
               <EmptyState
                 icon={Clock3}
                 title="Nenhum acesso registrado"
-                description="Os logs de acesso serao exibidos quando a autenticacao real estiver conectada."
+                description="Os logs de acesso serão exibidos quando a autenticação real estiver conectada."
               />
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Ultimas notificacoes recebidas</CardTitle>
+              <CardTitle>Últimas notificações recebidas</CardTitle>
             </CardHeader>
             <CardContent>
               <EmptyState
                 icon={PlugZap}
-                title="Origem de notificacoes nao configurada"
-                description="Assim que a integracao for configurada, os registros aparecerao automaticamente aqui."
-                actionLabel="Ver integracoes"
+                title="Origem de notificações não configurada"
+                description="Assim que a integração for configurada, os registros aparecerão automaticamente aqui."
+                actionLabel="Ver integrações"
                 actionHref="/admin/integrations"
               />
             </CardContent>

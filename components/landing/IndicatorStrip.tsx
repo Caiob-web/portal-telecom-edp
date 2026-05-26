@@ -1,9 +1,9 @@
 import { Building2, FileText, MapPinned, RadioTower, ShieldCheck } from "lucide-react";
 
 const indicators = [
-  { label: "Area de concessao protegida", icon: MapPinned },
+  { label: "Área de concessão protegida", icon: MapPinned },
   { label: "Empresas autorizadas", icon: Building2 },
-  { label: "Comunicacoes oficiais", icon: RadioTower },
+  { label: "Comunicações oficiais", icon: RadioTower },
   { label: "Documentos autenticados", icon: FileText },
   { label: "Acesso empresarial controlado", icon: ShieldCheck }
 ];

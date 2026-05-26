@@ -5,7 +5,7 @@ export function CompanySummaryCards() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
-        title="Notificacoes recebidas"
+        title="Notificações recebidas"
         value={0}
         detail="Aguardando origem externa"
         icon={Inbox}
@@ -14,19 +14,19 @@ export function CompanySummaryCards() {
       <StatCard
         title="Em aberto"
         value={0}
-        detail="Sem pendencias reais"
+        detail="Sem pendências reais"
         icon={AlertTriangle}
         tone="amber"
       />
       <StatCard
-        title="Documentos disponiveis"
+        title="Documentos disponíveis"
         value={0}
         detail="Sem documentos recebidos"
         icon={FileText}
         tone="green"
       />
       <StatCard
-        title="Pendencias"
+        title="Pendências"
         value={0}
         detail="Painel em preparacao"
         icon={CheckCircle2}
