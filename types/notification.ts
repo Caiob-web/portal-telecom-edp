@@ -30,12 +30,15 @@ export interface Notification {
 
 export interface ExternalNotificationPayload {
   externalId: string;
-  source: "EXTERNAL_API";
+  source?: "BASE44" | "EXTERNAL_API";
   companyDocument?: string;
+  companyName?: string;
   municipality?: string;
   title?: string;
   description?: string;
+  type?: string;
   receivedAt?: string;
+  notificationUrl?: string;
   files?: Array<{
     name: string;
     mimeType: string;
@@ -47,4 +50,13 @@ export interface ExternalNotificationPayload {
 export interface NotificationValidationResult {
   valid: boolean;
   errors: string[];
+}
+
+export interface StoredExternalNotification {
+  id: string;
+  externalId: string;
+  externalSource: string;
+  companyId: string | null;
+  documentsSaved: number;
+  routed: boolean;
 }

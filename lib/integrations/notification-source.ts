@@ -17,8 +17,8 @@ export const externalNotificationSource: NotificationSource = {
   name: "Origem externa de notificações",
   status: "NOT_CONFIGURED",
   async fetchNotifications() {
-    // Implementação futura: chamar a API externa, inicialmente prevista como Base44.
-    // Nenhum endpoint, token ou dado real é usado nesta versão.
+    // Implementação futura: chamar a API externa, se o fluxo exigir consulta ativa.
+    // O recebimento principal acontece via POST em /api/integrations/notifications.
     return [];
   }
 };

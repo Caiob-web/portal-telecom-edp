@@ -18,7 +18,7 @@ export default function CompanyNotificationsPage() {
             <TH>Status</TH>
             <TH>Município</TH>
             <TH>Tipo</TH>
-            <TH className="text-right">Acoes</TH>
+            <TH className="text-right">Ações</TH>
           </TR>
         </THead>
         <TBody>

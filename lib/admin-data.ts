@@ -2,6 +2,8 @@ import "server-only";
 import type {
   AccessRequestStatus,
   CompanyStatus,
+  DocumentStatus,
+  NotificationStatus,
   UserRole,
   UserStatus
 } from "@/types/database";
@@ -31,6 +33,33 @@ export interface AdminAccessRequestRow {
   userStatus: UserStatus;
   requestStatus: AccessRequestStatus;
   requestedAt: string;
+}
+
+export interface AdminNotificationRow {
+  id: string;
+  externalId: string;
+  companyName: string | null;
+  companyLegalName: string | null;
+  municipality: string | null;
+  type: string | null;
+  receivedAt: string;
+  status: NotificationStatus;
+  viewed: boolean;
+  answered: boolean;
+  pdfLinked: boolean;
+  sourceUrl: string | null;
+}
+
+export interface AdminDocumentRow {
+  id: string;
+  name: string;
+  companyLegalName: string | null;
+  municipality: string | null;
+  uploadedAt: string;
+  origin: "UPLOAD_MANUAL" | "EXTERNAL_API" | "INTERNAL_SYSTEM";
+  status: DocumentStatus;
+  size: string | null;
+  url: string;
 }
 
 export interface AdminDataResult<T> {
@@ -63,6 +92,34 @@ interface AccessRequestDbRow {
   user_status: UserStatus;
   request_status: AccessRequestStatus;
   requested_at: string;
+}
+
+interface NotificationDbRow {
+  id: string;
+  external_id: string;
+  company_name: string | null;
+  legal_name: string | null;
+  municipality: string | null;
+  notification_type: string | null;
+  received_at: string;
+  status: NotificationStatus;
+  viewed: boolean;
+  answered: boolean;
+  pdf_linked: boolean;
+  source_url: string | null;
+}
+
+interface DocumentDbRow {
+  id: string;
+  name: string;
+  legal_name: string | null;
+  company_name: string | null;
+  municipality: string | null;
+  uploaded_at: string;
+  origin: "UPLOAD_MANUAL" | "EXTERNAL_API" | "INTERNAL_SYSTEM";
+  status: DocumentStatus;
+  size_label: string | null;
+  file_url: string;
 }
 
 export async function getCompaniesForAdmin(): Promise<AdminDataResult<AdminCompanyRow>> {
@@ -98,6 +155,114 @@ export async function getCompaniesForAdmin(): Promise<AdminDataResult<AdminCompa
       configured: true,
       rows: [],
       error: "Não foi possível carregar empresas do banco de dados."
+    };
+  }
+}
+
+export async function getNotificationsForAdmin(): Promise<
+  AdminDataResult<AdminNotificationRow>
+> {
+  if (!isDatabaseConfigured()) {
+    return { configured: false, rows: [] };
+  }
+
+  try {
+    const result = await query<NotificationDbRow>(
+      `SELECT
+         n.id,
+         n.external_id,
+         n.company_name,
+         c.legal_name,
+         n.municipality,
+         n.notification_type,
+         n.received_at,
+         n.status,
+         n.viewed,
+         n.answered,
+         n.source_url,
+         EXISTS (
+           SELECT 1
+           FROM documents d
+           WHERE d.notification_id = n.id
+         ) AS pdf_linked
+       FROM notifications n
+       LEFT JOIN companies c ON c.id = n.company_id
+       ORDER BY n.received_at DESC
+       LIMIT 300`
+    );
+
+    return {
+      configured: true,
+      rows: result.rows.map((row) => ({
+        id: row.id,
+        externalId: row.external_id,
+        companyName: row.company_name,
+        companyLegalName: row.legal_name,
+        municipality: row.municipality,
+        type: row.notification_type,
+        receivedAt: row.received_at,
+        status: row.status,
+        viewed: row.viewed,
+        answered: row.answered,
+        pdfLinked: row.pdf_linked,
+        sourceUrl: row.source_url
+      }))
+    };
+  } catch {
+    return {
+      configured: true,
+      rows: [],
+      error: "Não foi possível carregar notificações do banco de dados."
+    };
+  }
+}
+
+export async function getDocumentsForAdmin(): Promise<
+  AdminDataResult<AdminDocumentRow>
+> {
+  if (!isDatabaseConfigured()) {
+    return { configured: false, rows: [] };
+  }
+
+  try {
+    const result = await query<DocumentDbRow>(
+      `SELECT
+         d.id,
+         d.name,
+         c.legal_name,
+         n.company_name,
+         d.municipality,
+         d.uploaded_at,
+         d.origin,
+         d.status,
+         d.size_label,
+         d.file_url
+       FROM documents d
+       LEFT JOIN companies c ON c.id = d.company_id
+       LEFT JOIN notifications n ON n.id = d.notification_id
+       ORDER BY d.uploaded_at DESC
+       LIMIT 300`
+    );
+
+    return {
+      configured: true,
+      rows: result.rows.map((row) => ({
+        id: row.id,
+        name: row.name,
+        companyLegalName: row.legal_name ?? row.company_name,
+        municipality: row.municipality,
+        uploadedAt: row.uploaded_at,
+        origin: row.origin,
+        status: row.status,
+        size: row.size_label,
+        url: row.file_url
+      }))
+    };
+  } catch {
+    return {
+      configured: true,
+      rows: [],
+      error: "Não foi possível carregar documentos do banco de dados."
     };
   }
 }

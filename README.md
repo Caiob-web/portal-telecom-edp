@@ -20,7 +20,7 @@ Ainda não está implementado:
 - Login real com usuários do Neon
 - Aprovação/reprovação administrativa
 - Integração com origem externa de notificações
-- Upload, leitura ou armazenamento real de PDFs
+- Upload manual, leitura avan?ada ou armazenamento pr?prio de PDFs
 
 ## Stack
 
@@ -136,6 +136,7 @@ Esse fluxo será substituído por autenticação real em fase posterior.
 - `/auth/login` Login temporário para navegação
 - `/auth/register` Solicitação real de acesso
 - `/api/auth/register` API server-side de cadastro
+- `/api/integrations/notifications` API server-side para recebimento de notifica??es externas
 - `/dashboard` Dashboard da empresa
 - `/dashboard/notifications` Notificações da empresa
 - `/dashboard/notifications/[id]` Estado de detalhe preparado

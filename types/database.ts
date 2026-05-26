@@ -71,10 +71,11 @@ export interface Document {
   type: "PDF" | "RELATORIO" | "OFICIO" | "ANEXO";
   uploadedAt: string;
   municipality: string;
-  companyId: string;
-  companyName: string;
+  companyId: string | null;
+  companyName: string | null;
   origin: "UPLOAD_MANUAL" | "EXTERNAL_API" | "INTERNAL_SYSTEM";
   status: DocumentStatus;
-  size: string;
+  size: string | null;
   url: string;
+  notificationId?: string | null;
 }
