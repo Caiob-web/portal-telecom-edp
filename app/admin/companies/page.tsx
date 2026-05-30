@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { getCompaniesForAdmin } from "@/lib/admin-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminCompaniesPage() {
   const companiesResult = await getCompaniesForAdmin();
 

@@ -1,6 +1,8 @@
 import { IntegrationStatusCard } from "@/components/admin/IntegrationStatusCard";
 import { AdminShell } from "@/components/layout/AdminShell";
 
+export const dynamic = "force-dynamic";
+
 export default function AdminIntegrationsPage() {
   return (
     <AdminShell

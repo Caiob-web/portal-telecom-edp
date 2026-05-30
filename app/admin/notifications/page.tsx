@@ -3,6 +3,8 @@ import { AdminShell } from "@/components/layout/AdminShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { getNotificationsForAdmin } from "@/lib/admin-data";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminNotificationsPage() {
   const notificationsResult = await getNotificationsForAdmin();
 

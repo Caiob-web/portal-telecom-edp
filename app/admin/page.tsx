@@ -18,6 +18,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { getAdminDashboardStats } from "@/lib/admin-data";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const operationalFlow = [
   {
     title: "Origem externa",
