@@ -8,6 +8,7 @@ import { StatCard } from "@/components/ui/StatCard";
 export function IntegrationStatusCard() {
   const tokenConfigured = Boolean(process.env.NOTIFICATION_API_TOKEN?.trim());
   const databaseConfigured = Boolean(process.env.DATABASE_URL?.trim());
+  const sourceConfigured = Boolean(process.env.NOTIFICATION_API_URL?.trim());
   const ready = tokenConfigured && databaseConfigured;
 
   return (
@@ -49,8 +50,8 @@ export function IntegrationStatusCard() {
             <div>
               <CardTitle>Origem das notificações</CardTitle>
               <p className="mt-1 text-sm text-graphite-500">
-                Configuração técnica das origens externas responsáveis pelo envio
-                de notificações, PDFs e links de documentos.
+                Configuração técnica da origem externa responsável pelo envio
+                de notificações, PDFs, prazos e endereços ao portal.
               </p>
             </div>
             <Badge variant={ready ? "green" : "amber"}>
@@ -76,6 +77,24 @@ export function IntegrationStatusCard() {
                 Authorization: Bearer NOTIFICATION_API_TOKEN
               </p>
             </div>
+            <div className="rounded-2xl border border-graphite-200 bg-graphite-50 p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-graphite-500">
+                Origem prevista
+              </p>
+              <p className="mt-2 break-all font-mono text-sm text-graphite-700">
+                {sourceConfigured
+                  ? process.env.NOTIFICATION_API_URL
+                  : "https://portal-de-regularizacao-c9b7c4ed.base44.app"}
+              </p>
+            </div>
+            <div className="rounded-2xl border border-graphite-200 bg-graphite-50 p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-graphite-500">
+                Campos esperados
+              </p>
+              <p className="mt-2 text-sm leading-6 text-graphite-700">
+                Empresa, CNPJ, município, rua, tipo, prazo, link do PDF e arquivos anexos.
+              </p>
+            </div>
           </div>
 
           <div className="mt-5 rounded-2xl border border-brand-100 bg-brand-50 p-5">
@@ -83,11 +102,32 @@ export function IntegrationStatusCard() {
               <PlugZap className="mt-1 h-5 w-5 shrink-0 text-brand-700" aria-hidden="true" />
               <p className="text-sm leading-6 text-brand-900">
                 As notificações recebidas pela API externa serão persistidas no
-                Neon. Quando o CNPJ existir em empresas cadastradas, o portal
-                vincula automaticamente a notificação à empresa correspondente e
-                salva os PDFs como links na tabela de documentos.
+                Neon. Quando o CNPJ ou o nome da empresa existir no cadastro, o
+                portal vincula automaticamente a notificação à empresa correta,
+                registra município, rua, prazo e salva os PDFs como links para download.
               </p>
             </div>
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-graphite-200 bg-graphite-50 p-5">
+            <p className="text-sm font-black text-graphite-950">
+              Exemplo de payload esperado
+            </p>
+            <pre className="mt-3 overflow-x-auto rounded-xl border border-graphite-200 bg-[#0f2233] p-4 text-xs leading-6 text-white">
+{`{
+  "externalId": "BASE44-123",
+  "source": "BASE44",
+  "companyName": "TELEFONICA S.A",
+  "companyDocument": "00000000000000",
+  "municipality": "SAO JOSE DOS CAMPOS",
+  "street": "Rua Exemplo",
+  "title": "Notificação de regularização",
+  "type": "OCUPACAO_EM_POSTE",
+  "deadlineDays": 15,
+  "pdfUrl": "https://...",
+  "files": [{ "name": "notificacao.pdf", "mimeType": "application/pdf", "url": "https://..." }]
+}`}
+            </pre>
           </div>
 
           <div className="mt-5">

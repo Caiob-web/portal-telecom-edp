@@ -86,10 +86,18 @@ CREATE TABLE IF NOT EXISTS portal_notifications (
   title TEXT NOT NULL,
   description TEXT,
   municipality TEXT,
+  street TEXT,
   notification_type TEXT,
+  deadline_days INTEGER,
+  due_at TIMESTAMPTZ,
   status TEXT NOT NULL DEFAULT 'NOVA'
     CHECK (status IN ('NOVA', 'EM_ANALISE', 'RESPONDIDA', 'FINALIZADA')),
+  execution_status TEXT NOT NULL DEFAULT 'PENDENTE'
+    CHECK (execution_status IN ('PENDENTE', 'ENVIADA', 'VALIDADA', 'REPROVADA')),
   source_url TEXT,
+  response_file_url TEXT,
+  response_notes TEXT,
+  responded_at TIMESTAMPTZ,
   received_at TIMESTAMPTZ DEFAULT NOW(),
   viewed BOOLEAN NOT NULL DEFAULT FALSE,
   answered BOOLEAN NOT NULL DEFAULT FALSE,
@@ -123,6 +131,15 @@ CREATE TABLE IF NOT EXISTS portal_documents (
 ALTER TABLE companies
   ADD COLUMN IF NOT EXISTS operating_cities TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];
 
+ALTER TABLE portal_notifications
+  ADD COLUMN IF NOT EXISTS street TEXT,
+  ADD COLUMN IF NOT EXISTS deadline_days INTEGER,
+  ADD COLUMN IF NOT EXISTS due_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS execution_status TEXT NOT NULL DEFAULT 'PENDENTE',
+  ADD COLUMN IF NOT EXISTS response_file_url TEXT,
+  ADD COLUMN IF NOT EXISTS response_notes TEXT,
+  ADD COLUMN IF NOT EXISTS responded_at TIMESTAMPTZ;
+
 CREATE INDEX IF NOT EXISTS idx_companies_status ON companies(status);
 CREATE INDEX IF NOT EXISTS idx_portal_users_company_id ON portal_users(company_id);
 CREATE INDEX IF NOT EXISTS idx_portal_users_status ON portal_users(status);
@@ -135,6 +152,8 @@ CREATE INDEX IF NOT EXISTS idx_login_attempts_email ON login_attempts(email);
 CREATE INDEX IF NOT EXISTS idx_login_attempts_created_at ON login_attempts(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_portal_notifications_company_id ON portal_notifications(company_id);
 CREATE INDEX IF NOT EXISTS idx_portal_notifications_status ON portal_notifications(status);
+CREATE INDEX IF NOT EXISTS idx_portal_notifications_execution_status ON portal_notifications(execution_status);
+CREATE INDEX IF NOT EXISTS idx_portal_notifications_due_at ON portal_notifications(due_at);
 CREATE INDEX IF NOT EXISTS idx_portal_notifications_received_at ON portal_notifications(received_at DESC);
 CREATE INDEX IF NOT EXISTS idx_portal_notifications_company_document ON portal_notifications(company_document);
 CREATE INDEX IF NOT EXISTS idx_portal_documents_company_id ON portal_documents(company_id);

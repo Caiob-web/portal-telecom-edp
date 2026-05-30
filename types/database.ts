@@ -1,10 +1,16 @@
 import type {
   Notification,
   NotificationAttachment,
+  NotificationExecutionStatus,
   NotificationStatus
 } from "@/types/notification";
 
-export type { Notification, NotificationAttachment, NotificationStatus };
+export type {
+  Notification,
+  NotificationAttachment,
+  NotificationExecutionStatus,
+  NotificationStatus
+};
 
 export type UserRole = "ADMIN" | "COMPANY_ADMIN" | "COMPANY_USER" | "VIEWER";
 export type UserStatus = "PENDING" | "APPROVED" | "BLOCKED" | "INACTIVE";

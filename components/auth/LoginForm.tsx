@@ -45,7 +45,11 @@ export function LoginForm() {
       return;
     }
 
-    window.localStorage.setItem("portalTelecomSession", JSON.stringify(session.user));
+    const serializedSession = JSON.stringify(session.user);
+    window.localStorage.setItem("portalTelecomSession", serializedSession);
+    document.cookie = `portalTelecomSession=${encodeURIComponent(
+      serializedSession
+    )}; path=/; SameSite=Lax; max-age=${rememberAccess ? 60 * 60 * 24 * 7 : 60 * 60 * 8}`;
     router.push(session.redirectTo);
   }
 

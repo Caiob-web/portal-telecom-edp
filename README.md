@@ -19,8 +19,8 @@ Ainda não está implementado:
 
 - Login real com usuários do Neon
 - Aprovação/reprovação administrativa
-- Integração com origem externa de notificações
-- Upload manual, leitura avan?ada ou armazenamento pr?prio de PDFs
+- Upload real de comprovantes de execução pelas empresas
+- Armazenamento próprio de PDFs quando deixar de usar links externos
 
 ## Stack
 
@@ -119,6 +119,32 @@ Respostas principais:
 - `409`: CNPJ ou e-mail duplicado
 - `500`: erro interno ou banco indisponível
 
+## Integração de notificações
+
+O portal está preparado para receber notificações da origem externa configurada
+em `NOTIFICATION_API_URL`, inicialmente o ambiente Base44 informado para geração
+de notificações. O envio deve ser feito por:
+
+```text
+POST /api/integrations/notifications
+Authorization: Bearer NOTIFICATION_API_TOKEN
+```
+
+Campos principais aceitos:
+
+- `externalId`: identificador único da notificação na origem.
+- `source`: use `BASE44`.
+- `companyName` e/ou `companyDocument`: usados para vincular a notificação à empresa cadastrada.
+- `municipality` e `street`: município e rua da ocorrência.
+- `title`, `description` e `type`: informações da notificação.
+- `deadlineDays`, `prazoDias`, `daysToRespond`, `dueAt` ou `dueDate`: prazo de atendimento.
+- `pdfUrl` ou `files[]`: links dos PDFs/anexos para download.
+
+As notificações são persistidas no Neon em `portal_notifications`; os PDFs são
+salvos como links em `portal_documents`. O admin visualiza todas as notificações
+e a área da empresa será filtrada pelo vínculo da empresa quando a autenticação
+real estiver ativa.
+
 ## Autenticação temporária
 
 O login real ainda não foi conectado aos usuários do Neon. O arquivo `lib/auth-mock.ts` segue apenas para navegação local:
@@ -183,7 +209,7 @@ public/               Assets visuais, favicon e logo EDP
 
 1. Autenticação real com usuários aprovados.
 2. Fluxo administrativo de aprovação/rejeição de solicitações.
-3. Integração com origem externa de notificações.
-4. Persistência de notificações e documentos.
-5. Upload e armazenamento de PDFs.
+3. Homologação do webhook com a origem externa/Base44.
+4. Filtro da área da empresa por sessão/autenticação real.
+5. Upload e armazenamento de comprovantes de execução.
 6. Auditoria, rastreabilidade e permissões reais.

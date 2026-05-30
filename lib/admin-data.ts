@@ -3,6 +3,7 @@ import type {
   AccessRequestStatus,
   CompanyStatus,
   DocumentStatus,
+  NotificationExecutionStatus,
   NotificationStatus,
   UserRole,
   UserStatus
@@ -42,13 +43,18 @@ export interface AdminNotificationRow {
   companyName: string | null;
   companyLegalName: string | null;
   municipality: string | null;
+  street: string | null;
   type: string | null;
   receivedAt: string;
+  dueAt: string | null;
+  deadlineDays: number | null;
   status: NotificationStatus;
+  executionStatus: NotificationExecutionStatus;
   viewed: boolean;
   answered: boolean;
   pdfLinked: boolean;
   sourceUrl: string | null;
+  responseFileUrl: string | null;
 }
 
 export interface AdminDocumentRow {
@@ -63,10 +69,35 @@ export interface AdminDocumentRow {
   url: string;
 }
 
+export interface NotificationDocumentLink {
+  id: string;
+  name: string;
+  url: string;
+  type: string;
+}
+
+export interface NotificationDetailResult {
+  configured: boolean;
+  notification: AdminNotificationRow | null;
+  documents: NotificationDocumentLink[];
+  error?: string;
+}
+
 export interface AdminDataResult<T> {
   configured: boolean;
   rows: T[];
   error?: string;
+}
+
+export interface AdminDashboardStats {
+  companies: number;
+  pendingUsers: number;
+  notifications: number;
+  documents: number;
+  pendingExecution: number;
+  overdueNotifications: number;
+  activeIntegrations: number;
+  lastAccesses: number;
 }
 
 interface CompanyDbRow {
@@ -102,13 +133,18 @@ interface NotificationDbRow {
   company_name: string | null;
   legal_name: string | null;
   municipality: string | null;
+  street: string | null;
   notification_type: string | null;
   received_at: string;
+  due_at: string | null;
+  deadline_days: number | null;
   status: NotificationStatus;
+  execution_status: NotificationExecutionStatus;
   viewed: boolean;
   answered: boolean;
   pdf_linked: boolean;
   source_url: string | null;
+  response_file_url: string | null;
 }
 
 interface DocumentDbRow {
@@ -122,6 +158,99 @@ interface DocumentDbRow {
   status: DocumentStatus;
   size_label: string | null;
   file_url: string;
+}
+
+interface NotificationDocumentDbRow {
+  id: string;
+  name: string;
+  file_url: string;
+  document_type: string;
+}
+
+interface DashboardStatsDbRow {
+  companies: string;
+  pending_users: string;
+  notifications: string;
+  documents: string;
+  pending_execution: string;
+  overdue_notifications: string;
+  last_accesses: string;
+}
+
+function asCount(value: string | number | null | undefined) {
+  const parsed = Number(value ?? 0);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function normalizeCompanyName(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .toUpperCase();
+}
+
+function companyNameMatches(candidate: string, expected: string) {
+  return (
+    Boolean(candidate) &&
+    (candidate === expected || candidate.includes(expected) || expected.includes(candidate))
+  );
+}
+
+export async function getAdminDashboardStats(): Promise<{
+  configured: boolean;
+  stats: AdminDashboardStats;
+  error?: string;
+}> {
+  const emptyStats: AdminDashboardStats = {
+    companies: 0,
+    pendingUsers: 0,
+    notifications: 0,
+    documents: 0,
+    pendingExecution: 0,
+    overdueNotifications: 0,
+    activeIntegrations: 0,
+    lastAccesses: 0
+  };
+
+  if (!isDatabaseConfigured()) {
+    return { configured: false, stats: emptyStats };
+  }
+
+  try {
+    const result = await query<DashboardStatsDbRow>(
+      `SELECT
+         (SELECT COUNT(*) FROM companies) AS companies,
+         (SELECT COUNT(*) FROM portal_users WHERE status = 'PENDING') AS pending_users,
+         (SELECT COUNT(*) FROM portal_notifications) AS notifications,
+         (SELECT COUNT(*) FROM portal_documents) AS documents,
+         (SELECT COUNT(*) FROM portal_notifications WHERE execution_status = 'PENDENTE') AS pending_execution,
+         (SELECT COUNT(*) FROM portal_notifications WHERE due_at IS NOT NULL AND due_at < NOW() AND execution_status = 'PENDENTE') AS overdue_notifications,
+         (SELECT COUNT(*) FROM audit_logs WHERE action = 'USER_LOGIN' AND created_at >= NOW() - INTERVAL '7 days') AS last_accesses`
+    );
+
+    const row = result.rows[0];
+
+    return {
+      configured: true,
+      stats: {
+        companies: asCount(row?.companies),
+        pendingUsers: asCount(row?.pending_users),
+        notifications: asCount(row?.notifications),
+        documents: asCount(row?.documents),
+        pendingExecution: asCount(row?.pending_execution),
+        overdueNotifications: asCount(row?.overdue_notifications),
+        activeIntegrations: process.env.NOTIFICATION_API_TOKEN?.trim() ? 1 : 0,
+        lastAccesses: asCount(row?.last_accesses)
+      }
+    };
+  } catch {
+    return {
+      configured: true,
+      stats: emptyStats,
+      error: "Não foi possível carregar indicadores administrativos."
+    };
+  }
 }
 
 export async function getCompaniesForAdmin(): Promise<AdminDataResult<AdminCompanyRow>> {
@@ -177,12 +306,17 @@ export async function getNotificationsForAdmin(): Promise<
          n.company_name,
          c.legal_name,
          n.municipality,
+         n.street,
          n.notification_type,
          n.received_at,
+         n.due_at,
+         n.deadline_days,
          n.status,
+         n.execution_status,
          n.viewed,
          n.answered,
          n.source_url,
+         n.response_file_url,
          EXISTS (
            SELECT 1
            FROM portal_documents d
@@ -202,13 +336,18 @@ export async function getNotificationsForAdmin(): Promise<
         companyName: row.company_name,
         companyLegalName: row.legal_name,
         municipality: row.municipality,
+        street: row.street,
         type: row.notification_type,
         receivedAt: row.received_at,
+        dueAt: row.due_at,
+        deadlineDays: row.deadline_days,
         status: row.status,
+        executionStatus: row.execution_status,
         viewed: row.viewed,
         answered: row.answered,
         pdfLinked: row.pdf_linked,
-        sourceUrl: row.source_url
+        sourceUrl: row.source_url,
+        responseFileUrl: row.response_file_url
       }))
     };
   } catch {
@@ -216,6 +355,180 @@ export async function getNotificationsForAdmin(): Promise<
       configured: true,
       rows: [],
       error: "Não foi possível carregar notificações do banco de dados."
+    };
+  }
+}
+
+export async function getNotificationsForCompany(
+  companyName: string | null | undefined
+): Promise<AdminDataResult<AdminNotificationRow>> {
+  if (!isDatabaseConfigured()) {
+    return { configured: false, rows: [] };
+  }
+
+  const normalizedCompanyName = normalizeCompanyName(companyName ?? "");
+
+  if (!normalizedCompanyName) {
+    return { configured: true, rows: [] };
+  }
+
+  try {
+    const result = await query<NotificationDbRow>(
+      `SELECT
+         n.id,
+         n.external_id,
+         n.company_name,
+         c.legal_name,
+         n.municipality,
+         n.street,
+         n.notification_type,
+         n.received_at,
+         n.due_at,
+         n.deadline_days,
+         n.status,
+         n.execution_status,
+         n.viewed,
+         n.answered,
+         n.source_url,
+         n.response_file_url,
+         EXISTS (
+           SELECT 1
+           FROM portal_documents d
+           WHERE d.notification_id = n.id
+         ) AS pdf_linked
+       FROM portal_notifications n
+       LEFT JOIN companies c ON c.id = n.company_id
+       ORDER BY n.received_at DESC
+       LIMIT 300`
+    );
+
+    return {
+      configured: true,
+      rows: result.rows
+        .filter((row) => {
+          const legalName = normalizeCompanyName(row.legal_name ?? "");
+          const externalName = normalizeCompanyName(row.company_name ?? "");
+
+          return (
+            companyNameMatches(legalName, normalizedCompanyName) ||
+            companyNameMatches(externalName, normalizedCompanyName)
+          );
+        })
+        .map((row) => ({
+          id: row.id,
+          externalId: row.external_id,
+          companyName: row.company_name,
+          companyLegalName: row.legal_name,
+          municipality: row.municipality,
+          street: row.street,
+          type: row.notification_type,
+          receivedAt: row.received_at,
+          dueAt: row.due_at,
+          deadlineDays: row.deadline_days,
+          status: row.status,
+          executionStatus: row.execution_status,
+          viewed: row.viewed,
+          answered: row.answered,
+          pdfLinked: row.pdf_linked,
+          sourceUrl: row.source_url,
+          responseFileUrl: row.response_file_url
+        }))
+    };
+  } catch {
+    return {
+      configured: true,
+      rows: [],
+      error: "Não foi possível carregar notificações da empresa."
+    };
+  }
+}
+
+export async function getNotificationDetail(
+  notificationId: string
+): Promise<NotificationDetailResult> {
+  if (!isDatabaseConfigured()) {
+    return { configured: false, notification: null, documents: [] };
+  }
+
+  try {
+    const notificationResult = await query<NotificationDbRow>(
+      `SELECT
+         n.id,
+         n.external_id,
+         n.company_name,
+         c.legal_name,
+         n.municipality,
+         n.street,
+         n.notification_type,
+         n.received_at,
+         n.due_at,
+         n.deadline_days,
+         n.status,
+         n.execution_status,
+         n.viewed,
+         n.answered,
+         n.source_url,
+         n.response_file_url,
+         EXISTS (
+           SELECT 1
+           FROM portal_documents d
+           WHERE d.notification_id = n.id
+         ) AS pdf_linked
+       FROM portal_notifications n
+       LEFT JOIN companies c ON c.id = n.company_id
+       WHERE n.id = $1
+       LIMIT 1`,
+      [notificationId]
+    );
+
+    const row = notificationResult.rows[0];
+
+    if (!row) {
+      return { configured: true, notification: null, documents: [] };
+    }
+
+    const documentsResult = await query<NotificationDocumentDbRow>(
+      `SELECT id, name, file_url, document_type
+       FROM portal_documents
+       WHERE notification_id = $1
+       ORDER BY uploaded_at DESC`,
+      [notificationId]
+    );
+
+    return {
+      configured: true,
+      notification: {
+        id: row.id,
+        externalId: row.external_id,
+        companyName: row.company_name,
+        companyLegalName: row.legal_name,
+        municipality: row.municipality,
+        street: row.street,
+        type: row.notification_type,
+        receivedAt: row.received_at,
+        dueAt: row.due_at,
+        deadlineDays: row.deadline_days,
+        status: row.status,
+        executionStatus: row.execution_status,
+        viewed: row.viewed,
+        answered: row.answered,
+        pdfLinked: row.pdf_linked,
+        sourceUrl: row.source_url,
+        responseFileUrl: row.response_file_url
+      },
+      documents: documentsResult.rows.map((document) => ({
+        id: document.id,
+        name: document.name,
+        url: document.file_url,
+        type: document.document_type
+      }))
+    };
+  } catch {
+    return {
+      configured: true,
+      notification: null,
+      documents: [],
+      error: "Não foi possível carregar os detalhes da notificação."
     };
   }
 }

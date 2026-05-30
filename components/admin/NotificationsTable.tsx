@@ -28,6 +28,13 @@ const statusLabel: Record<NotificationStatus, string> = {
   FINALIZADA: "Finalizada"
 };
 
+const executionLabel: Record<AdminNotificationRow["executionStatus"], string> = {
+  PENDENTE: "Pendente",
+  ENVIADA: "Enviada",
+  VALIDADA: "Validada",
+  REPROVADA: "Reprovada"
+};
+
 function normalizeForSearch(value: string) {
   return value
     .normalize("NFD")
@@ -57,7 +64,8 @@ export function NotificationsTable({
       const matchesQuery =
         !search ||
         normalizeForSearch(notification.externalId).includes(search) ||
-        normalizeForSearch(company).includes(search);
+        normalizeForSearch(company).includes(search) ||
+        normalizeForSearch(notification.street ?? "").includes(search);
       const matchesMunicipality =
         municipality === "TODOS" || notification.municipality === municipality;
       const matchesStatus = status === "TODOS" || notification.status === status;
@@ -96,7 +104,7 @@ export function NotificationsTable({
           />
           <Input
             className="pl-9"
-            placeholder="Buscar por ID ou empresa"
+            placeholder="Buscar por ID, empresa ou rua"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
@@ -145,12 +153,14 @@ export function NotificationsTable({
               <TH>ID externo</TH>
               <TH>Empresa</TH>
               <TH>Município</TH>
+              <TH>Rua</TH>
               <TH>Tipo</TH>
+              <TH>Prazo</TH>
               <TH>Recebimento</TH>
               <TH>Status</TH>
-              <TH>Visualizada?</TH>
-              <TH>Respondida?</TH>
-              <TH>PDF/link?</TH>
+              <TH>Execução</TH>
+              <TH>PDF</TH>
+              <TH>Comprovante</TH>
               <TH className="text-right">Ações</TH>
             </TR>
           </THead>
@@ -166,16 +176,36 @@ export function NotificationsTable({
                     "Empresa não vinculada"}
                 </TD>
                 <TD>{notification.municipality ?? "-"}</TD>
+                <TD>{notification.street ?? "-"}</TD>
                 <TD>{notification.type ?? "-"}</TD>
+                <TD>
+                  {notification.dueAt
+                    ? formatDateTime(notification.dueAt)
+                    : notification.deadlineDays
+                      ? `${notification.deadlineDays} dias`
+                      : "-"}
+                </TD>
                 <TD>{formatDateTime(notification.receivedAt)}</TD>
                 <TD>
                   <Badge variant={notification.status === "NOVA" ? "amber" : "gray"}>
                     {statusLabel[notification.status]}
                   </Badge>
                 </TD>
-                <TD>{notification.viewed ? "Sim" : "Não"}</TD>
-                <TD>{notification.answered ? "Sim" : "Não"}</TD>
+                <TD>
+                  <Badge
+                    variant={
+                      notification.executionStatus === "PENDENTE"
+                        ? "amber"
+                        : notification.executionStatus === "REPROVADA"
+                          ? "red"
+                          : "green"
+                    }
+                  >
+                    {executionLabel[notification.executionStatus]}
+                  </Badge>
+                </TD>
                 <TD>{notification.pdfLinked ? "Sim" : "Não"}</TD>
+                <TD>{notification.responseFileUrl ? "Enviado" : "Pendente"}</TD>
                 <TD className="text-right">
                   {notification.sourceUrl ? (
                     <a

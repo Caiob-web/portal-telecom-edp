@@ -11,11 +11,15 @@ import type {
 
 type CompanyLookupRow = {
   id: string;
+  legal_name?: string;
+  trade_name?: string | null;
 };
 
 type NotificationInsertRow = {
   id: string;
   company_id: string | null;
+  due_at: string | null;
+  deadline_days: number | null;
 };
 
 function asString(value: unknown) {
@@ -24,6 +28,27 @@ function asString(value: unknown) {
 
 function onlyDigits(value: string) {
   return value.replace(/\D/g, "");
+}
+
+function normalizeCompanyName(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]/g, "")
+    .toUpperCase();
+}
+
+function asNumber(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number(value.replace(",", "."));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
 }
 
 function normalizeSource(source: ExternalNotificationPayload["source"]) {
@@ -39,6 +64,33 @@ function normalizeReceivedAt(value?: string) {
   return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
 }
 
+function normalizeDueAt(receivedAt: string, payload: ExternalNotificationPayload) {
+  const explicitDueAt = asString(payload.dueAt) || asString(payload.dueDate);
+  const deadlineDays =
+    asNumber(payload.deadlineDays) ??
+    asNumber(payload.prazoDias) ??
+    asNumber(payload.daysToRespond);
+
+  if (explicitDueAt) {
+    const date = new Date(explicitDueAt);
+    return {
+      dueAt: Number.isNaN(date.getTime()) ? null : date.toISOString(),
+      deadlineDays
+    };
+  }
+
+  if (deadlineDays && deadlineDays > 0) {
+    const date = new Date(receivedAt);
+    date.setDate(date.getDate() + deadlineDays);
+    return {
+      dueAt: date.toISOString(),
+      deadlineDays
+    };
+  }
+
+  return { dueAt: null, deadlineDays };
+}
+
 function isHttpUrl(value: string) {
   try {
     const url = new URL(value);
@@ -49,8 +101,8 @@ function isHttpUrl(value: string) {
 }
 
 export async function fetchNotificationsFromSource(): Promise<Notification[]> {
-  // Implementa??o futura: consultar a origem externa se houver necessidade de pull.
-  // O fluxo principal previsto ? receber notifica??es por POST e persistir no Neon.
+  // Implementação futura: consultar a origem externa se houver necessidade de pull.
+  // O fluxo principal previsto é receber notificações por POST e persistir no Neon.
   return [];
 }
 
@@ -64,26 +116,26 @@ export function validateNotificationPayload(
   const files = Array.isArray(payload.files) ? payload.files : [];
 
   if (!externalId) {
-    errors.push("externalId ? obrigat?rio.");
+    errors.push("externalId é obrigatório.");
   }
 
   if (!title) {
-    errors.push("title ? obrigat?rio.");
+    errors.push("title é obrigatório.");
   }
 
   if (notificationUrl && !isHttpUrl(notificationUrl)) {
-    errors.push("notificationUrl deve ser um link HTTP ou HTTPS v?lido.");
+    errors.push("notificationUrl deve ser um link HTTP ou HTTPS válido.");
   }
 
   files.forEach((file, index) => {
     const fileUrl = asString(file.url);
     if (!fileUrl) {
-      errors.push(`files[${index}].url ? obrigat?rio quando um arquivo ? enviado.`);
+      errors.push(`files[${index}].url é obrigatório quando um arquivo é enviado.`);
       return;
     }
 
     if (!isHttpUrl(fileUrl)) {
-      errors.push(`files[${index}].url deve ser um link HTTP ou HTTPS v?lido.`);
+      errors.push(`files[${index}].url deve ser um link HTTP ou HTTPS válido.`);
     }
   });
 
@@ -95,12 +147,35 @@ export function validateNotificationPayload(
 
 async function findCompanyByDocument(
   client: PoolClient,
-  companyDocument: string
+  companyDocument: string,
+  companyName: string
 ) {
   const cnpj = onlyDigits(companyDocument);
 
   if (!cnpj) {
-    return null;
+    const normalizedPayloadName = normalizeCompanyName(companyName);
+
+    if (!normalizedPayloadName) {
+      return null;
+    }
+
+    const result = await client.query<CompanyLookupRow>(
+      "SELECT id, legal_name, trade_name FROM companies LIMIT 600"
+    );
+
+    const company = result.rows.find((row) => {
+      const legalName = normalizeCompanyName(row.legal_name ?? "");
+      const tradeName = normalizeCompanyName(row.trade_name ?? "");
+
+      return (
+        legalName === normalizedPayloadName ||
+        tradeName === normalizedPayloadName ||
+        legalName.includes(normalizedPayloadName) ||
+        normalizedPayloadName.includes(legalName)
+      );
+    });
+
+    return company?.id ?? null;
   }
 
   const result = await client.query<CompanyLookupRow>(
@@ -123,9 +198,12 @@ async function upsertExternalNotification(
   const title = asString(payload.title);
   const description = asString(payload.description);
   const municipality = asString(payload.municipality);
+  const street =
+    asString(payload.street) || asString(payload.rua) || asString(payload.address);
   const notificationType = asString(payload.type) || "NOTIFICACAO";
   const sourceUrl = asString(payload.notificationUrl);
   const receivedAt = normalizeReceivedAt(payload.receivedAt);
+  const { dueAt, deadlineDays } = normalizeDueAt(receivedAt, payload);
 
   const result = await client.query<NotificationInsertRow>(
     `INSERT INTO portal_notifications (
@@ -137,13 +215,17 @@ async function upsertExternalNotification(
        title,
        description,
        municipality,
+       street,
        notification_type,
+       deadline_days,
+       due_at,
        source_url,
        received_at,
        status,
+       execution_status,
        updated_at
      )
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'NOVA', NOW())
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, 'NOVA', 'PENDENTE', NOW())
      ON CONFLICT (external_source, external_id)
      DO UPDATE SET
        company_id = EXCLUDED.company_id,
@@ -152,11 +234,14 @@ async function upsertExternalNotification(
        title = EXCLUDED.title,
        description = EXCLUDED.description,
        municipality = EXCLUDED.municipality,
+       street = EXCLUDED.street,
        notification_type = EXCLUDED.notification_type,
+       deadline_days = EXCLUDED.deadline_days,
+       due_at = EXCLUDED.due_at,
        source_url = EXCLUDED.source_url,
        received_at = EXCLUDED.received_at,
        updated_at = NOW()
-     RETURNING id, company_id`,
+     RETURNING id, company_id, due_at, deadline_days`,
     [
       companyId,
       externalSource,
@@ -166,7 +251,10 @@ async function upsertExternalNotification(
       title,
       description || null,
       municipality || null,
+      street || null,
       notificationType,
+      deadlineDays,
+      dueAt,
       sourceUrl || null,
       receivedAt
     ]
@@ -183,7 +271,9 @@ async function upsertExternalNotification(
     companyId: notification.company_id,
     externalSource,
     externalId,
-    municipality
+    municipality,
+    dueAt: notification.due_at,
+    deadlineDays: notification.deadline_days
   };
 }
 
@@ -198,7 +288,17 @@ async function saveNotificationDocuments(
     municipality: string;
   }
 ) {
-  const files = Array.isArray(payload.files) ? payload.files : [];
+  const files = Array.isArray(payload.files) ? [...payload.files] : [];
+  const pdfUrl = asString(payload.pdfUrl);
+
+  if (pdfUrl) {
+    files.push({
+      name: asString(payload.pdfName) || `Notificação ${notification.externalId}.pdf`,
+      mimeType: "application/pdf",
+      url: pdfUrl
+    });
+  }
+
   let saved = 0;
 
   for (const file of files) {
@@ -271,7 +371,8 @@ export async function persistExternalNotification(
   return withTransaction(async (client) => {
     const companyId = await findCompanyByDocument(
       client,
-      asString(payload.companyDocument)
+      asString(payload.companyDocument),
+      asString(payload.companyName)
     );
     const notification = await upsertExternalNotification(client, payload, companyId);
     const documentsSaved = await saveNotificationDocuments(client, payload, notification);
@@ -285,7 +386,9 @@ export async function persistExternalNotification(
           externalSource: notification.externalSource,
           externalId: notification.externalId,
           companyId,
-          documentsSaved
+          documentsSaved,
+          dueAt: notification.dueAt,
+          deadlineDays: notification.deadlineDays
         })
       ]
     );
@@ -296,7 +399,9 @@ export async function persistExternalNotification(
       externalSource: notification.externalSource,
       companyId,
       documentsSaved,
-      routed: Boolean(companyId)
+      routed: Boolean(companyId),
+      dueAt: notification.dueAt,
+      deadlineDays: notification.deadlineDays
     };
   });
 }
@@ -310,7 +415,7 @@ export async function receiveExternalNotification(
 export function mapExternalNotificationToPortal(
   _payload: ExternalNotificationPayload
 ): Notification | null {
-  // O mapeamento visual do detalhe ser? usado quando a ?rea logada consumir dados reais.
+  // O mapeamento visual do detalhe será usado quando a área logada consumir dados reais.
   return null;
 }
 
