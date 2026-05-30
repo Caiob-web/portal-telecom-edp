@@ -36,12 +36,12 @@ export function LoginForm() {
     const submittedEmail = String(formData.get("email") ?? email);
     const submittedPassword = String(formData.get("password") ?? password);
 
-    // Mock tempor?rio para navega??o local. Futuramente ser? substitu?do pela autentica??o real do portal.
+    // Mock temporário para navegação local. Futuramente será substituído pela autenticação real do portal.
     const session = await mockLogin(submittedEmail, submittedPassword);
     setLoading(false);
 
     if (!session) {
-      setError("N?o foi poss?vel validar as credenciais informadas.");
+      setError("Não foi possível validar as credenciais informadas.");
       return;
     }
 
@@ -54,7 +54,7 @@ export function LoginForm() {
       <div className="flex justify-center">
         <Link
           href="/auth/login"
-          className="inline-flex rounded-xl bg-white p-1 shadow-[0_12px_30px_rgba(19,35,52,0.11)] ring-1 ring-[#dfe8ed]"
+          className="inline-flex rounded-xl bg-[#ffffff] p-1 shadow-[0_12px_30px_rgba(19,35,52,0.11)] ring-1 ring-[#dfe8ed]"
           aria-label="Portal Telecom EDP"
         >
           <EDPLogo compact />
@@ -69,8 +69,8 @@ export function LoginForm() {
           Acesse sua conta
         </h2>
         <p className="mx-auto mt-3 max-w-[330px] text-sm font-semibold leading-6 text-[#52616f]">
-          Use suas credenciais corporativas para acessar notifica??es, documentos
-          e comunica??es oficiais.
+          Use suas credenciais corporativas para acessar notificações, documentos
+          e comunicações oficiais.
         </p>
       </div>
 
@@ -147,7 +147,7 @@ export function LoginForm() {
             type="button"
             onClick={() => {
               setError("");
-              setNotice("Funcionalidade em prepara??o.");
+              setNotice("Funcionalidade em preparação.");
             }}
             className="text-right text-xs font-black text-[#132334] transition hover:text-[#127a45]"
           >
@@ -181,7 +181,7 @@ export function LoginForm() {
 
       <div className="mt-7 text-center">
         <p className="text-xs font-semibold text-[#6b7784]">
-          Ainda n?o possui acesso?{" "}
+          Ainda não possui acesso?{" "}
           <Link
             href="/auth/register"
             className="font-black text-[#127a45] transition hover:text-[#0d5d35]"
@@ -192,7 +192,7 @@ export function LoginForm() {
       </div>
 
       <p className="mt-6 border-t border-[#e5edf2] pt-5 text-center text-[11px] font-bold uppercase tracking-wide text-[#8a96a3]">
-        Acesso monitorado para seguran?a e rastreabilidade.
+        Acesso monitorado para segurança e rastreabilidade.
       </p>
     </div>
   );

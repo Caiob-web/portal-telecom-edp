@@ -20,7 +20,7 @@ export function EDPLogo({
           "flex items-center justify-center rounded-md px-3",
           monochrome
             ? "bg-transparent ring-0"
-            : "edp-logo-surface bg-white shadow-sm ring-1 ring-graphite-200/80",
+            : "edp-logo-surface bg-[#ffffff] shadow-sm ring-1 ring-graphite-200/80",
           compact ? "h-10 w-[104px]" : "h-11 w-[118px]"
         )}
       >

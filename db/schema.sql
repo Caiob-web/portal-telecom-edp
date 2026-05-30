@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS companies (
   main_email TEXT NOT NULL,
   phone TEXT,
   main_city TEXT,
+  operating_cities TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
   company_type TEXT,
   status TEXT NOT NULL DEFAULT 'PENDING'
     CHECK (status IN ('PENDING', 'APPROVED', 'BLOCKED', 'INACTIVE')),
@@ -118,6 +119,9 @@ CREATE TABLE IF NOT EXISTS portal_documents (
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE (notification_id, file_url)
 );
+
+ALTER TABLE companies
+  ADD COLUMN IF NOT EXISTS operating_cities TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];
 
 CREATE INDEX IF NOT EXISTS idx_companies_status ON companies(status);
 CREATE INDEX IF NOT EXISTS idx_portal_users_company_id ON portal_users(company_id);

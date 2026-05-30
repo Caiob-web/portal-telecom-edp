@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
   Building2,
+  Check,
   CheckCircle2,
   ChevronDown,
   FileText,
@@ -21,7 +22,7 @@ import {
 import { EDPLogo } from "@/components/brand/EDPLogo";
 import { Button } from "@/components/ui/Button";
 import { FormMessage } from "@/components/ui/FormMessage";
-import { Input, Label, Select } from "@/components/ui/Input";
+import { Input, Label } from "@/components/ui/Input";
 import { CONTRACTING_COMPANIES } from "@/data/contracting-companies";
 import { municipalities } from "@/data/municipalities";
 import { cn } from "@/lib/utils";
@@ -36,11 +37,43 @@ function normalizeForSearch(value: string) {
     .trim();
 }
 
+function onlyDigits(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+function formatCnpj(value: string) {
+  const digits = onlyDigits(value).slice(0, 14);
+  return digits
+    .replace(/^(\d{2})(\d)/, "$1.$2")
+    .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+    .replace(/\.(\d{3})(\d)/, ".$1/$2")
+    .replace(/(\d{4})(\d)/, "$1-$2");
+}
+
+function formatPhone(value: string) {
+  const digits = onlyDigits(value).slice(0, 11);
+
+  if (digits.length <= 10) {
+    return digits
+      .replace(/^(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{4})(\d)/, "$1-$2");
+  }
+
+  return digits
+    .replace(/^(\d{2})(\d)/, "($1) $2")
+    .replace(/(\d{5})(\d)/, "$1-$2");
+}
+
 export function RegisterForm() {
   const initialCompany = CONTRACTING_COMPANIES[0] ?? "";
   const [selectedCompany, setSelectedCompany] = useState<string>(initialCompany);
   const [companyQuery, setCompanyQuery] = useState<string>(initialCompany);
   const [companyOpen, setCompanyOpen] = useState(false);
+  const [selectedCities, setSelectedCities] = useState<string[]>([
+    "SAO JOSE DOS CAMPOS"
+  ]);
+  const [cnpj, setCnpj] = useState("");
+  const [phone, setPhone] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -49,18 +82,26 @@ export function RegisterForm() {
     const term = normalizeForSearch(companyQuery);
 
     if (!term) {
-      return CONTRACTING_COMPANIES.slice(0, 24);
+      return CONTRACTING_COMPANIES.slice(0, 28);
     }
 
     return CONTRACTING_COMPANIES.filter((item) =>
       normalizeForSearch(item).includes(term)
-    ).slice(0, 24);
+    ).slice(0, 28);
   }, [companyQuery]);
 
   function selectCompany(companyName: string) {
     setSelectedCompany(companyName);
     setCompanyQuery(companyName);
     setCompanyOpen(false);
+  }
+
+  function toggleCity(city: string) {
+    setSelectedCities((current) =>
+      current.includes(city)
+        ? current.filter((item) => item !== city)
+        : [...current, city]
+    );
   }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -76,8 +117,7 @@ export function RegisterForm() {
       selectedCompany === OTHER_COMPANY ? otherCompany : selectedCompany.trim();
     const password = String(formData.get("password") ?? "");
     const confirmPassword = String(formData.get("confirmPassword") ?? "");
-    const cnpj = String(formData.get("cnpj") ?? "");
-    const cnpjDigits = cnpj.replace(/\D/g, "");
+    const cnpjDigits = onlyDigits(cnpj);
 
     if (!selectedFromList) {
       setError("Selecione uma empresa da lista ou escolha OUTRA EMPRESA.");
@@ -104,6 +144,11 @@ export function RegisterForm() {
       return;
     }
 
+    if (!selectedCities.length) {
+      setError("Selecione ao menos um município de atuação.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -120,8 +165,9 @@ export function RegisterForm() {
           companyLegalName,
           companyTradeName: String(formData.get("companyTradeName") ?? ""),
           cnpj,
-          phone: String(formData.get("phone") ?? ""),
-          mainCity: String(formData.get("city") ?? ""),
+          phone,
+          mainCity: selectedCities.join(", "),
+          operatingCities: selectedCities,
           companyType: "TELECOM"
         })
       });
@@ -149,7 +195,7 @@ export function RegisterForm() {
   if (submitted) {
     return (
       <div>
-        <Link href="/" className="inline-flex" aria-label="Portal Telecom EDP">
+        <Link href="/auth/login" className="inline-flex" aria-label="Portal Telecom EDP">
           <EDPLogo showPortalName compact />
         </Link>
         <div className="mt-10 rounded-3xl border border-[#d7eee2] bg-[#f4fbf7] p-6 sm:p-8">
@@ -173,7 +219,7 @@ export function RegisterForm() {
             <button
               type="button"
               onClick={() => setSubmitted(false)}
-              className="inline-flex h-12 items-center justify-center rounded-xl border border-[#cfdbe5] px-5 text-sm font-bold text-[#243647] transition hover:bg-white"
+              className="inline-flex h-12 items-center justify-center rounded-xl border border-[#cfdbe5] px-5 text-sm font-bold text-[#243647] transition hover:bg-[#ffffff]"
             >
               Enviar outra solicitação
             </button>
@@ -187,15 +233,14 @@ export function RegisterForm() {
     <div>
       <div className="flex flex-col gap-5 border-b border-[#e3eaf0] pb-6 md:flex-row md:items-start md:justify-between">
         <div>
-          <Link href="/" className="inline-flex" aria-label="Portal Telecom EDP">
+          <Link href="/auth/login" className="inline-flex" aria-label="Portal Telecom EDP">
             <EDPLogo showPortalName compact />
           </Link>
           <h1 className="mt-7 text-3xl font-black leading-tight text-[#132334] sm:text-4xl">
             Solicitar acesso ao Portal Telecom EDP
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-[#52616f]">
-            Preencha os dados para análise administrativa do acesso da sua
-            empresa.
+            Preencha os dados para análise administrativa do acesso da sua empresa.
           </p>
         </div>
         <Link
@@ -268,7 +313,7 @@ export function RegisterForm() {
                 setCompanyOpen(true);
               }}
               onFocus={() => setCompanyOpen(true)}
-              className="auth-input h-12 w-full rounded-xl border border-graphite-200 bg-white px-11 text-sm text-graphite-900 outline-none transition placeholder:text-graphite-400 focus:border-edp-500 focus:ring-4 focus:ring-edp-100"
+              className="auth-input h-12 w-full rounded-xl border border-[#cfdbe5] bg-[#fbfdfe] px-11 text-sm font-semibold text-[#132334] outline-none transition placeholder:text-[#8a96a3] focus:border-[#21c866] focus:ring-4 focus:ring-[#dffbea]"
               placeholder="Pesquisar empresa contratante"
               role="combobox"
               aria-expanded={companyOpen}
@@ -285,8 +330,9 @@ export function RegisterForm() {
             {companyOpen ? (
               <div
                 id="company-options"
-                className="absolute z-30 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-[#cfdbe5] bg-white p-1 shadow-[0_20px_45px_rgba(19,35,52,0.16)]"
+                className="absolute z-40 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-[#cfdbe5] bg-[#ffffff] p-1 shadow-[0_20px_45px_rgba(19,35,52,0.16)]"
                 role="listbox"
+                style={{ backgroundColor: "#ffffff", color: "#243647" }}
               >
                 {filteredCompanies.length ? (
                   filteredCompanies.map((item) => (
@@ -297,9 +343,13 @@ export function RegisterForm() {
                         event.preventDefault();
                         selectCompany(item);
                       }}
-                      className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-[#243647] transition hover:bg-edp-50 hover:text-edp-800"
+                      className={cn(
+                        "block w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-[#243647] transition hover:bg-[#e9fff2] hover:text-[#0d5d35]",
+                        selectedCompany === item && "bg-[#dffbea] text-[#0d5d35]"
+                      )}
                       role="option"
                       aria-selected={selectedCompany === item}
+                      style={{ color: "#243647" }}
                     >
                       {item}
                     </button>
@@ -311,7 +361,7 @@ export function RegisterForm() {
                       event.preventDefault();
                       selectCompany(OTHER_COMPANY);
                     }}
-                    className="block w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-[#243647] transition hover:bg-edp-50"
+                    className="block w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-[#243647] transition hover:bg-[#e9fff2]"
                   >
                     Nenhum resultado. Selecionar OUTRA EMPRESA.
                   </button>
@@ -320,7 +370,8 @@ export function RegisterForm() {
             ) : null}
           </div>
           <p className="text-xs font-semibold text-[#6b7b88]">
-            Se a empresa não estiver na lista, selecione OUTRA EMPRESA.
+            Pesquise pelo nome da empresa contratante. Se ela não estiver na lista,
+            selecione OUTRA EMPRESA.
           </p>
         </div>
 
@@ -329,6 +380,10 @@ export function RegisterForm() {
             id="cnpj"
             name="cnpj"
             required
+            value={cnpj}
+            onChange={(event) => setCnpj(formatCnpj(event.target.value))}
+            inputMode="numeric"
+            maxLength={18}
             placeholder="00.000.000/0000-00"
             className="auth-input h-12 pl-11"
           />
@@ -348,32 +403,66 @@ export function RegisterForm() {
             id="phone"
             name="phone"
             required
+            value={phone}
+            onChange={(event) => setPhone(formatPhone(event.target.value))}
+            inputMode="tel"
             placeholder="(00) 00000-0000"
             className="auth-input h-12 pl-11"
           />
         </Field>
 
-        <div className="space-y-2">
-          <Label htmlFor="city" className="text-[#243647]">
-            Município principal de atuação
-          </Label>
-          <div className="relative">
-            <MapPinned
-              className="pointer-events-none absolute left-4 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-[#6e7d8b]"
-              aria-hidden="true"
-            />
-            <Select
-              id="city"
-              name="city"
-              defaultValue="SAO JOSE DOS CAMPOS"
-              className="auth-input h-12 pl-11"
-            >
-              {municipalities.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </Select>
+        <div className="space-y-3 md:col-span-2">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <Label className="text-[#243647]">
+                Municípios de atuação
+              </Label>
+              <p className="mt-1 text-xs font-semibold text-[#6b7b88]">
+                Selecione as cidades onde a empresa atua. As notificações futuras
+                serão vinculadas por município e rua.
+              </p>
+            </div>
+            <span className="text-xs font-black uppercase tracking-wide text-[#127a45]">
+              {selectedCities.length} selecionado(s)
+            </span>
+          </div>
+
+          <div className="max-h-64 overflow-y-auto rounded-2xl border border-[#cfdbe5] bg-[#fbfdfe] p-3 shadow-inner">
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {municipalities.map((city) => {
+                const checked = selectedCities.includes(city);
+
+                return (
+                  <label
+                    key={city}
+                    className={cn(
+                      "flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-black transition",
+                      checked
+                        ? "border-[#21c866] bg-[#e9fff2] text-[#0d5d35]"
+                        : "border-[#d8e2e8] bg-[#ffffff] text-[#324555] hover:border-[#21c866] hover:bg-[#f4fbf7]"
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={checked}
+                      onChange={() => toggleCity(city)}
+                    />
+                    <span
+                      className={cn(
+                        "flex h-5 w-5 shrink-0 items-center justify-center rounded-md border",
+                        checked
+                          ? "border-[#127a45] bg-[#21ff72] text-[#102233]"
+                          : "border-[#b9c7d2] bg-[#ffffff]"
+                      )}
+                    >
+                      {checked ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : null}
+                    </span>
+                    {city}
+                  </label>
+                );
+              })}
+            </div>
           </div>
         </div>
 

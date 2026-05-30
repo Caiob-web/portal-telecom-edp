@@ -17,6 +17,7 @@ export interface AdminCompanyRow {
   mainEmail: string;
   phone: string | null;
   mainCity: string | null;
+  operatingCities: string[];
   companyType: string | null;
   status: CompanyStatus;
   createdAt: string;
@@ -76,6 +77,7 @@ interface CompanyDbRow {
   main_email: string;
   phone: string | null;
   main_city: string | null;
+  operating_cities: string[] | null;
   company_type: string | null;
   status: CompanyStatus;
   created_at: string;
@@ -129,7 +131,7 @@ export async function getCompaniesForAdmin(): Promise<AdminDataResult<AdminCompa
 
   try {
     const result = await query<CompanyDbRow>(
-      `SELECT id, legal_name, trade_name, cnpj, main_email, phone, main_city, company_type, status, created_at
+      `SELECT id, legal_name, trade_name, cnpj, main_email, phone, main_city, operating_cities, company_type, status, created_at
        FROM companies
        ORDER BY created_at DESC
        LIMIT 200`
@@ -145,6 +147,7 @@ export async function getCompaniesForAdmin(): Promise<AdminDataResult<AdminCompa
         mainEmail: row.main_email,
         phone: row.phone,
         mainCity: row.main_city,
+        operatingCities: row.operating_cities ?? [],
         companyType: row.company_type,
         status: row.status,
         createdAt: row.created_at
@@ -154,7 +157,7 @@ export async function getCompaniesForAdmin(): Promise<AdminDataResult<AdminCompa
     return {
       configured: true,
       rows: [],
-      error: "N?o foi poss?vel carregar empresas do banco de dados."
+      error: "Não foi possível carregar empresas do banco de dados."
     };
   }
 }
@@ -212,7 +215,7 @@ export async function getNotificationsForAdmin(): Promise<
     return {
       configured: true,
       rows: [],
-      error: "N?o foi poss?vel carregar notifica??es do banco de dados."
+      error: "Não foi possível carregar notificações do banco de dados."
     };
   }
 }
@@ -262,7 +265,7 @@ export async function getDocumentsForAdmin(): Promise<
     return {
       configured: true,
       rows: [],
-      error: "N?o foi poss?vel carregar documentos do banco de dados."
+      error: "Não foi possível carregar documentos do banco de dados."
     };
   }
 }
@@ -313,7 +316,7 @@ export async function getAccessRequestsForAdmin(): Promise<
     return {
       configured: true,
       rows: [],
-      error: "N?o foi poss?vel carregar solicita??es do banco de dados."
+      error: "Não foi possível carregar solicitações do banco de dados."
     };
   }
 }

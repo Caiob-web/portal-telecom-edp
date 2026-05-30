@@ -60,7 +60,7 @@ export function CompaniesTable({
           <TH>CNPJ</TH>
           <TH>E-mail principal</TH>
           <TH>Telefone</TH>
-          <TH>Município principal</TH>
+          <TH>Municípios de atuação</TH>
           <TH>Status</TH>
           <TH>Data de cadastro</TH>
         </TR>
@@ -73,7 +73,11 @@ export function CompaniesTable({
             <TD>{company.cnpj}</TD>
             <TD>{company.mainEmail}</TD>
             <TD>{company.phone || "-"}</TD>
-            <TD>{company.mainCity || "-"}</TD>
+            <TD>
+              {company.operatingCities.length
+                ? company.operatingCities.join(", ")
+                : company.mainCity || "-"}
+            </TD>
             <TD>
               <Badge variant={company.status === "PENDING" ? "amber" : "gray"}>
                 {statusLabel[company.status]}

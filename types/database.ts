@@ -20,6 +20,7 @@ export interface Company {
   mainEmail: string;
   phone: string | null;
   mainCity: string | null;
+  operatingCities: string[];
   companyType: string | null;
   status: CompanyStatus;
   createdAt: string;

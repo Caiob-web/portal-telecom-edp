@@ -15,6 +15,7 @@ interface RegisterPayload {
   cnpj: string;
   phone: string;
   mainCity: string;
+  operatingCities: string[];
   companyType?: string;
 }
 
@@ -39,7 +40,22 @@ function onlyDigits(value: string) {
   return value.replace(/\D/g, "");
 }
 
+function asStringArray(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => asString(item))
+    .filter(Boolean);
+}
+
 function validatePayload(input: Record<string, unknown>): RegisterPayload {
+  const operatingCities = asStringArray(input.operatingCities);
+  const mainCity = operatingCities.length
+    ? operatingCities.join(", ")
+    : asString(input.mainCity);
+
   const payload: RegisterPayload = {
     fullName: asString(input.fullName),
     email: normalizeEmail(asString(input.email)),
@@ -49,7 +65,8 @@ function validatePayload(input: Record<string, unknown>): RegisterPayload {
     companyTradeName: asString(input.companyTradeName),
     cnpj: onlyDigits(asString(input.cnpj)),
     phone: asString(input.phone),
-    mainCity: asString(input.mainCity),
+    mainCity,
+    operatingCities,
     companyType: asString(input.companyType)
   };
 
@@ -63,23 +80,23 @@ function validatePayload(input: Record<string, unknown>): RegisterPayload {
     !payload.phone ||
     !payload.mainCity
   ) {
-    throw new RequestError("Preencha todos os campos obrigat?rios.", 400);
+    throw new RequestError("Preencha todos os campos obrigatórios.", 400);
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
-    throw new RequestError("Informe um e-mail v?lido.", 400);
+    throw new RequestError("Informe um e-mail válido.", 400);
   }
 
   if (payload.password.length < 6) {
-    throw new RequestError("A senha deve ter no m?nimo 6 caracteres.", 400);
+    throw new RequestError("A senha deve ter no mínimo 6 caracteres.", 400);
   }
 
   if (payload.password !== payload.confirmPassword) {
-    throw new RequestError("As senhas informadas n?o conferem.", 400);
+    throw new RequestError("As senhas informadas não conferem.", 400);
   }
 
   if (payload.cnpj.length !== 14) {
-    throw new RequestError("Informe um CNPJ v?lido com 14 d?gitos.", 400);
+    throw new RequestError("Informe um CNPJ válido com 14 dígitos.", 400);
   }
 
   return payload;
@@ -96,7 +113,7 @@ async function ensureUniqueCompanyAndUser(
   );
 
   if (companyExists.rowCount) {
-    throw new RequestError("J? existe uma empresa cadastrada com este CNPJ.", 409);
+    throw new RequestError("Já existe uma empresa cadastrada com este CNPJ.", 409);
   }
 
   const userExists = await client.query<{ id: string }>(
@@ -105,7 +122,7 @@ async function ensureUniqueCompanyAndUser(
   );
 
   if (userExists.rowCount) {
-    throw new RequestError("J? existe um usu?rio cadastrado com este e-mail.", 409);
+    throw new RequestError("Já existe um usuário cadastrado com este e-mail.", 409);
   }
 }
 
@@ -134,7 +151,7 @@ export async function POST(request: Request) {
     body = (await request.json()) as Record<string, unknown>;
   } catch {
     return NextResponse.json(
-      { message: "Payload inv?lido." },
+      { message: "Payload inválido." },
       { status: 400 }
     );
   }
@@ -148,9 +165,9 @@ export async function POST(request: Request) {
 
       const companyResult = await client.query<{ id: string }>(
         `INSERT INTO companies (
-           legal_name, trade_name, cnpj, main_email, phone, main_city, company_type, status
+           legal_name, trade_name, cnpj, main_email, phone, main_city, operating_cities, company_type, status
          )
-         VALUES ($1, $2, $3, $4, $5, $6, $7, 'PENDING')
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'PENDING')
          RETURNING id`,
         [
           payload.companyLegalName,
@@ -159,6 +176,7 @@ export async function POST(request: Request) {
           payload.email,
           payload.phone,
           payload.mainCity,
+          payload.operatingCities,
           payload.companyType || null
         ]
       );
@@ -203,7 +221,8 @@ export async function POST(request: Request) {
           JSON.stringify({
             companyId,
             cnpj: payload.cnpj,
-            email: payload.email
+            email: payload.email,
+            operatingCities: payload.operatingCities
           })
         ]
       );
@@ -212,7 +231,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message:
-          "Solicita??o enviada com sucesso. O acesso ser? analisado pela administra??o do portal."
+          "Solicitação enviada com sucesso. O acesso será analisado pela administração do portal."
       },
       { status: 201 }
     );
@@ -228,7 +247,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message:
-            "Banco de dados n?o configurado. Verifique a vari?vel DATABASE_URL."
+            "Banco de dados não configurado. Verifique a variável DATABASE_URL."
         },
         { status: 500 }
       );
@@ -237,20 +256,20 @@ export async function POST(request: Request) {
     if (isDatabaseUniqueViolation(error)) {
       if (error.constraint === "companies_cnpj_key") {
         return NextResponse.json(
-          { message: "J? existe uma empresa cadastrada com este CNPJ." },
+          { message: "Já existe uma empresa cadastrada com este CNPJ." },
           { status: 409 }
         );
       }
 
       if (error.constraint === "portal_users_email_key") {
         return NextResponse.json(
-          { message: "J? existe um usu?rio cadastrado com este e-mail." },
+          { message: "Já existe um usuário cadastrado com este e-mail." },
           { status: 409 }
         );
       }
 
       return NextResponse.json(
-        { message: "J? existe um cadastro com os dados informados." },
+        { message: "Já existe um cadastro com os dados informados." },
         { status: 409 }
       );
     }
@@ -258,7 +277,7 @@ export async function POST(request: Request) {
     logUnexpectedRegisterError(error);
 
     return NextResponse.json(
-      { message: "Erro interno ao processar solicita??o." },
+      { message: "Erro interno ao processar solicitação." },
       { status: 500 }
     );
   }
