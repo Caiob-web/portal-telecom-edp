@@ -154,7 +154,7 @@ export async function getCompaniesForAdmin(): Promise<AdminDataResult<AdminCompa
     return {
       configured: true,
       rows: [],
-      error: "Não foi possível carregar empresas do banco de dados."
+      error: "N?o foi poss?vel carregar empresas do banco de dados."
     };
   }
 }
@@ -182,10 +182,10 @@ export async function getNotificationsForAdmin(): Promise<
          n.source_url,
          EXISTS (
            SELECT 1
-           FROM documents d
+           FROM portal_documents d
            WHERE d.notification_id = n.id
          ) AS pdf_linked
-       FROM notifications n
+       FROM portal_notifications n
        LEFT JOIN companies c ON c.id = n.company_id
        ORDER BY n.received_at DESC
        LIMIT 300`
@@ -212,7 +212,7 @@ export async function getNotificationsForAdmin(): Promise<
     return {
       configured: true,
       rows: [],
-      error: "Não foi possível carregar notificações do banco de dados."
+      error: "N?o foi poss?vel carregar notifica??es do banco de dados."
     };
   }
 }
@@ -237,9 +237,9 @@ export async function getDocumentsForAdmin(): Promise<
          d.status,
          d.size_label,
          d.file_url
-       FROM documents d
+       FROM portal_documents d
        LEFT JOIN companies c ON c.id = d.company_id
-       LEFT JOIN notifications n ON n.id = d.notification_id
+       LEFT JOIN portal_notifications n ON n.id = d.notification_id
        ORDER BY d.uploaded_at DESC
        LIMIT 300`
     );
@@ -262,7 +262,7 @@ export async function getDocumentsForAdmin(): Promise<
     return {
       configured: true,
       rows: [],
-      error: "Não foi possível carregar documentos do banco de dados."
+      error: "N?o foi poss?vel carregar documentos do banco de dados."
     };
   }
 }
@@ -288,7 +288,7 @@ export async function getAccessRequestsForAdmin(): Promise<
          ar.request_status,
          ar.requested_at
        FROM access_requests ar
-       INNER JOIN users u ON u.id = ar.user_id
+       INNER JOIN portal_users u ON u.id = ar.user_id
        INNER JOIN companies c ON c.id = ar.company_id
        ORDER BY ar.requested_at DESC
        LIMIT 200`
@@ -313,7 +313,7 @@ export async function getAccessRequestsForAdmin(): Promise<
     return {
       configured: true,
       rows: [],
-      error: "Não foi possível carregar solicitações do banco de dados."
+      error: "N?o foi poss?vel carregar solicita??es do banco de dados."
     };
   }
 }

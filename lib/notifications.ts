@@ -49,8 +49,8 @@ function isHttpUrl(value: string) {
 }
 
 export async function fetchNotificationsFromSource(): Promise<Notification[]> {
-  // Implementação futura: consultar a origem externa se houver necessidade de pull.
-  // O fluxo principal previsto é receber notificações por POST e persistir no Neon.
+  // Implementa??o futura: consultar a origem externa se houver necessidade de pull.
+  // O fluxo principal previsto ? receber notifica??es por POST e persistir no Neon.
   return [];
 }
 
@@ -64,26 +64,26 @@ export function validateNotificationPayload(
   const files = Array.isArray(payload.files) ? payload.files : [];
 
   if (!externalId) {
-    errors.push("externalId é obrigatório.");
+    errors.push("externalId ? obrigat?rio.");
   }
 
   if (!title) {
-    errors.push("title é obrigatório.");
+    errors.push("title ? obrigat?rio.");
   }
 
   if (notificationUrl && !isHttpUrl(notificationUrl)) {
-    errors.push("notificationUrl deve ser um link HTTP ou HTTPS válido.");
+    errors.push("notificationUrl deve ser um link HTTP ou HTTPS v?lido.");
   }
 
   files.forEach((file, index) => {
     const fileUrl = asString(file.url);
     if (!fileUrl) {
-      errors.push(`files[${index}].url é obrigatório quando um arquivo é enviado.`);
+      errors.push(`files[${index}].url ? obrigat?rio quando um arquivo ? enviado.`);
       return;
     }
 
     if (!isHttpUrl(fileUrl)) {
-      errors.push(`files[${index}].url deve ser um link HTTP ou HTTPS válido.`);
+      errors.push(`files[${index}].url deve ser um link HTTP ou HTTPS v?lido.`);
     }
   });
 
@@ -128,7 +128,7 @@ async function upsertExternalNotification(
   const receivedAt = normalizeReceivedAt(payload.receivedAt);
 
   const result = await client.query<NotificationInsertRow>(
-    `INSERT INTO notifications (
+    `INSERT INTO portal_notifications (
        company_id,
        external_source,
        external_id,
@@ -213,7 +213,7 @@ async function saveNotificationDocuments(
     const size = asString(file.size);
 
     await client.query(
-      `INSERT INTO documents (
+      `INSERT INTO portal_documents (
          company_id,
          notification_id,
          external_source,
@@ -310,7 +310,7 @@ export async function receiveExternalNotification(
 export function mapExternalNotificationToPortal(
   _payload: ExternalNotificationPayload
 ): Notification | null {
-  // O mapeamento visual do detalhe será usado quando a área logada consumir dados reais.
+  // O mapeamento visual do detalhe ser? usado quando a ?rea logada consumir dados reais.
   return null;
 }
 

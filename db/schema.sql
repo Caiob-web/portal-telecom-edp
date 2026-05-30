@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS companies (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS portal_users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id UUID REFERENCES companies(id) ON DELETE SET NULL,
   full_name TEXT NOT NULL,
@@ -33,18 +33,18 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS access_requests (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES portal_users(id) ON DELETE CASCADE,
   request_status TEXT NOT NULL DEFAULT 'PENDING'
     CHECK (request_status IN ('PENDING', 'APPROVED', 'REJECTED')),
   requested_at TIMESTAMPTZ DEFAULT NOW(),
   reviewed_at TIMESTAMPTZ,
-  reviewed_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  reviewed_by UUID REFERENCES portal_users(id) ON DELETE SET NULL,
   notes TEXT
 );
 
 CREATE TABLE IF NOT EXISTS audit_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  user_id UUID REFERENCES portal_users(id) ON DELETE SET NULL,
   action TEXT NOT NULL,
   entity_type TEXT,
   entity_id UUID,
@@ -52,7 +52,30 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS notifications (
+CREATE TABLE IF NOT EXISTS login_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES portal_users(id) ON DELETE CASCADE,
+  session_token_hash TEXT NOT NULL UNIQUE,
+  ip_address TEXT,
+  user_agent TEXT,
+  expires_at TIMESTAMPTZ NOT NULL,
+  revoked_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS login_attempts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES portal_users(id) ON DELETE SET NULL,
+  email TEXT NOT NULL,
+  success BOOLEAN NOT NULL DEFAULT FALSE,
+  failure_reason TEXT,
+  ip_address TEXT,
+  user_agent TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS portal_notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id UUID REFERENCES companies(id) ON DELETE SET NULL,
   external_source TEXT NOT NULL DEFAULT 'BASE44',
@@ -74,10 +97,10 @@ CREATE TABLE IF NOT EXISTS notifications (
   UNIQUE (external_source, external_id)
 );
 
-CREATE TABLE IF NOT EXISTS documents (
+CREATE TABLE IF NOT EXISTS portal_documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id UUID REFERENCES companies(id) ON DELETE SET NULL,
-  notification_id UUID REFERENCES notifications(id) ON DELETE CASCADE,
+  notification_id UUID REFERENCES portal_notifications(id) ON DELETE CASCADE,
   external_source TEXT,
   external_id TEXT,
   name TEXT NOT NULL,
@@ -97,15 +120,19 @@ CREATE TABLE IF NOT EXISTS documents (
 );
 
 CREATE INDEX IF NOT EXISTS idx_companies_status ON companies(status);
-CREATE INDEX IF NOT EXISTS idx_users_company_id ON users(company_id);
-CREATE INDEX IF NOT EXISTS idx_users_status ON users(status);
+CREATE INDEX IF NOT EXISTS idx_portal_users_company_id ON portal_users(company_id);
+CREATE INDEX IF NOT EXISTS idx_portal_users_status ON portal_users(status);
 CREATE INDEX IF NOT EXISTS idx_access_requests_status ON access_requests(request_status);
 CREATE INDEX IF NOT EXISTS idx_access_requests_requested_at ON access_requests(requested_at DESC);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_notifications_company_id ON notifications(company_id);
-CREATE INDEX IF NOT EXISTS idx_notifications_status ON notifications(status);
-CREATE INDEX IF NOT EXISTS idx_notifications_received_at ON notifications(received_at DESC);
-CREATE INDEX IF NOT EXISTS idx_notifications_company_document ON notifications(company_document);
-CREATE INDEX IF NOT EXISTS idx_documents_company_id ON documents(company_id);
-CREATE INDEX IF NOT EXISTS idx_documents_notification_id ON documents(notification_id);
-CREATE INDEX IF NOT EXISTS idx_documents_uploaded_at ON documents(uploaded_at DESC);
+CREATE INDEX IF NOT EXISTS idx_login_sessions_user_id ON login_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_login_sessions_expires_at ON login_sessions(expires_at);
+CREATE INDEX IF NOT EXISTS idx_login_attempts_email ON login_attempts(email);
+CREATE INDEX IF NOT EXISTS idx_login_attempts_created_at ON login_attempts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_portal_notifications_company_id ON portal_notifications(company_id);
+CREATE INDEX IF NOT EXISTS idx_portal_notifications_status ON portal_notifications(status);
+CREATE INDEX IF NOT EXISTS idx_portal_notifications_received_at ON portal_notifications(received_at DESC);
+CREATE INDEX IF NOT EXISTS idx_portal_notifications_company_document ON portal_notifications(company_document);
+CREATE INDEX IF NOT EXISTS idx_portal_documents_company_id ON portal_documents(company_id);
+CREATE INDEX IF NOT EXISTS idx_portal_documents_notification_id ON portal_documents(notification_id);
+CREATE INDEX IF NOT EXISTS idx_portal_documents_uploaded_at ON portal_documents(uploaded_at DESC);

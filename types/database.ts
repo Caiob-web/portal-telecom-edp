@@ -65,6 +65,29 @@ export interface AuditLog {
   createdAt: string;
 }
 
+export interface LoginSession {
+  id: string;
+  userId: string;
+  sessionTokenHash: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  expiresAt: string;
+  revokedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LoginAttempt {
+  id: string;
+  userId: string | null;
+  email: string;
+  success: boolean;
+  failureReason: string | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: string;
+}
+
 export interface Document {
   id: string;
   name: string;

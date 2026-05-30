@@ -63,23 +63,23 @@ function validatePayload(input: Record<string, unknown>): RegisterPayload {
     !payload.phone ||
     !payload.mainCity
   ) {
-    throw new RequestError("Preencha todos os campos obrigatórios.", 400);
+    throw new RequestError("Preencha todos os campos obrigat?rios.", 400);
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
-    throw new RequestError("Informe um e-mail válido.", 400);
+    throw new RequestError("Informe um e-mail v?lido.", 400);
   }
 
   if (payload.password.length < 6) {
-    throw new RequestError("A senha deve ter no mínimo 6 caracteres.", 400);
+    throw new RequestError("A senha deve ter no m?nimo 6 caracteres.", 400);
   }
 
   if (payload.password !== payload.confirmPassword) {
-    throw new RequestError("As senhas informadas não conferem.", 400);
+    throw new RequestError("As senhas informadas n?o conferem.", 400);
   }
 
   if (payload.cnpj.length !== 14) {
-    throw new RequestError("Informe um CNPJ válido com 14 dígitos.", 400);
+    throw new RequestError("Informe um CNPJ v?lido com 14 d?gitos.", 400);
   }
 
   return payload;
@@ -96,16 +96,16 @@ async function ensureUniqueCompanyAndUser(
   );
 
   if (companyExists.rowCount) {
-    throw new RequestError("Já existe uma empresa cadastrada com este CNPJ.", 409);
+    throw new RequestError("J? existe uma empresa cadastrada com este CNPJ.", 409);
   }
 
   const userExists = await client.query<{ id: string }>(
-    "SELECT id FROM users WHERE email = $1 LIMIT 1",
+    "SELECT id FROM portal_users WHERE email = $1 LIMIT 1",
     [email]
   );
 
   if (userExists.rowCount) {
-    throw new RequestError("Já existe um usuário cadastrado com este e-mail.", 409);
+    throw new RequestError("J? existe um usu?rio cadastrado com este e-mail.", 409);
   }
 }
 
@@ -134,7 +134,7 @@ export async function POST(request: Request) {
     body = (await request.json()) as Record<string, unknown>;
   } catch {
     return NextResponse.json(
-      { message: "Payload inválido." },
+      { message: "Payload inv?lido." },
       { status: 400 }
     );
   }
@@ -169,7 +169,7 @@ export async function POST(request: Request) {
       }
 
       const userResult = await client.query<{ id: string }>(
-        `INSERT INTO users (
+        `INSERT INTO portal_users (
            company_id, full_name, email, password_hash, role, status
          )
          VALUES ($1, $2, $3, $4, 'COMPANY_USER', 'PENDING')
@@ -212,7 +212,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message:
-          "Solicitação enviada com sucesso. O acesso será analisado pela administração do portal."
+          "Solicita??o enviada com sucesso. O acesso ser? analisado pela administra??o do portal."
       },
       { status: 201 }
     );
@@ -228,7 +228,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           message:
-            "Banco de dados não configurado. Verifique a variável DATABASE_URL."
+            "Banco de dados n?o configurado. Verifique a vari?vel DATABASE_URL."
         },
         { status: 500 }
       );
@@ -237,20 +237,20 @@ export async function POST(request: Request) {
     if (isDatabaseUniqueViolation(error)) {
       if (error.constraint === "companies_cnpj_key") {
         return NextResponse.json(
-          { message: "Já existe uma empresa cadastrada com este CNPJ." },
+          { message: "J? existe uma empresa cadastrada com este CNPJ." },
           { status: 409 }
         );
       }
 
-      if (error.constraint === "users_email_key") {
+      if (error.constraint === "portal_users_email_key") {
         return NextResponse.json(
-          { message: "Já existe um usuário cadastrado com este e-mail." },
+          { message: "J? existe um usu?rio cadastrado com este e-mail." },
           { status: 409 }
         );
       }
 
       return NextResponse.json(
-        { message: "Já existe um cadastro com os dados informados." },
+        { message: "J? existe um cadastro com os dados informados." },
         { status: 409 }
       );
     }
@@ -258,7 +258,7 @@ export async function POST(request: Request) {
     logUnexpectedRegisterError(error);
 
     return NextResponse.json(
-      { message: "Erro interno ao processar solicitação." },
+      { message: "Erro interno ao processar solicita??o." },
       { status: 500 }
     );
   }

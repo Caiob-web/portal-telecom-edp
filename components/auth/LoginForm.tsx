@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   CheckCircle2,
+  Eye,
+  EyeOff,
   LockKeyhole,
-  Mail,
-  ShieldCheck
+  Mail
 } from "lucide-react";
 import { EDPLogo } from "@/components/brand/EDPLogo";
 import { Button } from "@/components/ui/Button";
@@ -20,6 +21,7 @@ export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberAccess, setRememberAccess] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,12 +36,12 @@ export function LoginForm() {
     const submittedEmail = String(formData.get("email") ?? email);
     const submittedPassword = String(formData.get("password") ?? password);
 
-    // Mock temporário para navegação local. Futuramente será substituído pela autenticação real do portal.
+    // Mock tempor?rio para navega??o local. Futuramente ser? substitu?do pela autentica??o real do portal.
     const session = await mockLogin(submittedEmail, submittedPassword);
     setLoading(false);
 
     if (!session) {
-      setError("Não foi possível validar as credenciais informadas.");
+      setError("N?o foi poss?vel validar as credenciais informadas.");
       return;
     }
 
@@ -48,35 +50,33 @@ export function LoginForm() {
   }
 
   return (
-    <div>
-      <div className="flex items-start justify-between gap-4">
-        <Link href="/" className="inline-flex" aria-label="Portal Telecom EDP">
-          <EDPLogo showPortalName compact />
+    <div className="text-[#132334]">
+      <div className="flex justify-center">
+        <Link
+          href="/"
+          className="inline-flex rounded-xl bg-white p-1 shadow-[0_10px_28px_rgba(19,35,52,0.08)] ring-1 ring-[#dfe8ed]"
+          aria-label="Portal Telecom EDP"
+        >
+          <EDPLogo compact />
         </Link>
-        <div className="hidden rounded-full bg-[#eef8f3] px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[#127a45] sm:inline-flex">
-          Acesso monitorado
-        </div>
       </div>
 
-      <div className="mt-9">
-        <div className="inline-flex items-center gap-2 rounded-full border border-[#d7eee2] bg-[#f4fbf7] px-3 py-1.5 text-sm font-bold text-[#127a45]">
-          <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-          Ambiente empresarial
-        </div>
-        <h2 className="mt-5 text-3xl font-black leading-tight text-[#132334] sm:text-4xl">
+      <div className="mt-8 text-center">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#127a45]">
+          Portal Telecom EDP
+        </p>
+        <h2 className="mt-3 text-2xl font-black leading-tight text-[#132334] sm:text-3xl">
           Acesse sua conta
         </h2>
-        <p className="mt-3 text-base leading-7 text-[#52616f]">
-          Portal exclusivo para empresas autorizadas acompanharem notificações, documentos e comunicações oficiais.
-        </p>
-        <p className="mt-2 text-sm font-semibold text-[#74818e]">
-          Use suas credenciais corporativas para continuar.
+        <p className="mx-auto mt-3 max-w-[330px] text-sm font-semibold leading-6 text-[#52616f]">
+          Use suas credenciais corporativas para acessar notifica??es, documentos
+          e comunica??es oficiais.
         </p>
       </div>
 
-      <form className="mt-8 space-y-5" onSubmit={onSubmit}>
+      <form className="mt-7 space-y-4" onSubmit={onSubmit}>
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-[#243647]">
+          <Label htmlFor="email" className="text-xs font-black text-[#243647]">
             E-mail corporativo
           </Label>
           <div className="relative">
@@ -90,7 +90,7 @@ export function LoginForm() {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="auth-input h-12 rounded-xl pl-11"
+              className="auth-input h-12 rounded-lg border-[#d8e2e8] bg-[#fbfdfe] pl-11 text-sm font-semibold"
               autoComplete="email"
               placeholder="nome@empresa.com"
               required
@@ -99,7 +99,7 @@ export function LoginForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-[#243647]">
+          <Label htmlFor="password" className="text-xs font-black text-[#243647]">
             Senha
           </Label>
           <div className="relative">
@@ -110,24 +110,36 @@ export function LoginForm() {
             <Input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="auth-input h-12 rounded-xl pl-11"
+              className="auth-input h-12 rounded-lg border-[#d8e2e8] bg-[#fbfdfe] pl-11 pr-11 text-sm font-semibold"
               autoComplete="current-password"
               placeholder="Informe sua senha"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((value) => !value)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6e7d8b] transition hover:text-[#132334]"
+              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            >
+              {showPassword ? (
+                <EyeOff className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <Eye className="h-4 w-4" aria-hidden="true" />
+              )}
+            </button>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <label className="flex items-center gap-2 text-sm font-semibold text-[#52616f]">
+        <div className="flex items-center justify-between gap-4">
+          <label className="flex items-center gap-2 text-xs font-bold text-[#52616f]">
             <input
               type="checkbox"
               checked={rememberAccess}
               onChange={(event) => setRememberAccess(event.target.checked)}
-              className="h-4 w-4 rounded border-[#c7d2dc] text-[#21ff72] focus:ring-[#21ff72]"
+              className="h-4 w-4 rounded border-[#c7d2dc] text-[#127a45] focus:ring-[#21ff72]"
             />
             Lembrar acesso
           </label>
@@ -135,9 +147,9 @@ export function LoginForm() {
             type="button"
             onClick={() => {
               setError("");
-              setNotice("Funcionalidade em preparacao.");
+              setNotice("Funcionalidade em prepara??o.");
             }}
-            className="text-left text-sm font-bold text-[#127a45] transition hover:text-[#0d5d35] sm:text-right"
+            className="text-right text-xs font-black text-[#132334] transition hover:text-[#127a45]"
           >
             Esqueci minha senha
           </button>
@@ -158,26 +170,29 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="h-12 w-full rounded-xl bg-[#21ff72] text-base font-black text-[#102233] shadow-[0_18px_36px_rgba(33,255,114,0.28)] hover:bg-[#12df5f]"
+          className="mt-2 h-12 w-full rounded-lg bg-[#101315] text-sm font-black text-white shadow-[0_18px_34px_rgba(16,19,21,0.28)] hover:bg-[#182126]"
           size="lg"
           disabled={loading}
         >
           {loading ? "Validando acesso..." : "Entrar no portal"}
-          <ArrowRight className="h-5 w-5" aria-hidden="true" />
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Button>
       </form>
 
-      <div className="mt-8 rounded-2xl border border-[#e3eaf0] bg-[#f7fafb] p-4 text-center">
-        <p className="text-sm font-semibold text-[#52616f]">
-          Ainda não possui acesso?{" "}
-          <Link href="/auth/register" className="font-black text-[#127a45] hover:text-[#0d5d35]">
+      <div className="mt-7 text-center">
+        <p className="text-xs font-semibold text-[#6b7784]">
+          Ainda n?o possui acesso?{" "}
+          <Link
+            href="/auth/register"
+            className="font-black text-[#127a45] transition hover:text-[#0d5d35]"
+          >
             Solicitar cadastro
           </Link>
         </p>
       </div>
 
-      <p className="mt-5 text-center text-xs font-semibold uppercase tracking-wide text-[#8a96a3]">
-        Ambiente exclusivo para empresas compartilhantes autorizadas.
+      <p className="mt-6 border-t border-[#e5edf2] pt-5 text-center text-[11px] font-bold uppercase tracking-wide text-[#8a96a3]">
+        Acesso monitorado para seguran?a e rastreabilidade.
       </p>
     </div>
   );
