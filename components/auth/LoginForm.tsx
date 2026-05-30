@@ -53,8 +53,8 @@ export function LoginForm() {
     <div className="text-[#132334]">
       <div className="flex justify-center">
         <Link
-          href="/"
-          className="inline-flex rounded-xl bg-white p-1 shadow-[0_10px_28px_rgba(19,35,52,0.08)] ring-1 ring-[#dfe8ed]"
+          href="/auth/login"
+          className="inline-flex rounded-xl bg-white p-1 shadow-[0_12px_30px_rgba(19,35,52,0.11)] ring-1 ring-[#dfe8ed]"
           aria-label="Portal Telecom EDP"
         >
           <EDPLogo compact />
@@ -170,7 +170,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="mt-2 h-12 w-full rounded-lg bg-[#101315] text-sm font-black text-white shadow-[0_18px_34px_rgba(16,19,21,0.28)] hover:bg-[#182126]"
+          className="mt-2 h-12 w-full rounded-lg bg-[#21ff72] text-sm font-black text-[#102233] shadow-[0_18px_34px_rgba(33,255,114,0.26)] hover:bg-[#16e766]"
           size="lg"
           disabled={loading}
         >

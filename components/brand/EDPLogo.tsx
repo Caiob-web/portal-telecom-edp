@@ -4,25 +4,34 @@ export function EDPLogo({
   className,
   showPortalName = false,
   inverted = false,
-  compact = false
+  compact = false,
+  monochrome = false
 }: {
   className?: string;
   showPortalName?: boolean;
   inverted?: boolean;
   compact?: boolean;
+  monochrome?: boolean;
 }) {
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <span
         className={cn(
-          "edp-logo-surface flex items-center justify-center rounded-md bg-white px-3 shadow-sm ring-1 ring-graphite-200/80",
+          "flex items-center justify-center rounded-md px-3",
+          monochrome
+            ? "bg-transparent ring-0"
+            : "edp-logo-surface bg-white shadow-sm ring-1 ring-graphite-200/80",
           compact ? "h-10 w-[104px]" : "h-11 w-[118px]"
         )}
       >
         <img
           src="/edp-logo.svg"
           alt="EDP"
-          className={cn("w-auto", compact ? "h-7" : "h-8")}
+          className={cn(
+            "w-auto",
+            compact ? "h-7" : "h-8",
+            monochrome && "brightness-0 invert"
+          )}
         />
       </span>
       {showPortalName ? (
